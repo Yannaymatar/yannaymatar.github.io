@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('click', function() {
             const videoId = card.getAttribute('data-video');
             
-            // Standard working behavior for ALL videos
-            const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/preview';
+            // SOLUTION 1: Use embed URL that hides download options
+            const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/preview?usp=embed&chrome=false';
             videoFrame.src = videoUrl;
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
@@ -85,6 +85,21 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' && modal.style.display === 'block') {
             closeModal();
+        }
+    });
+    
+    // SOLUTION 2: Disable right-click on video frame to prevent "Save video as"
+    videoFrame.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        return false;
+    });
+    
+    // SOLUTION 3: Disable common keyboard shortcuts for downloading
+    videoFrame.addEventListener('keydown', function(event) {
+        // Prevent Ctrl+S (Save), Ctrl+Shift+S (Save As), etc.
+        if (event.ctrlKey && (event.key === 's' || event.key === 'S')) {
+            event.preventDefault();
+            return false;
         }
     });
     
