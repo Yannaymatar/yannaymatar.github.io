@@ -4,7 +4,290 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yannay Matarasso - Director</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 6px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 300;
+            letter-spacing: 5px;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav a:hover {
+            opacity: 0.6;
+        }
+
+        /* Hero */
+        .hero {
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 100;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 5px;
+            opacity: 0.8;
+        }
+
+        /* Title Image Control */
+        .hero-title-image {
+            max-width: 800px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Portfolio */
+        .portfolio-section {
+            padding: 1rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 100;
+            letter-spacing: 2px;
+            margin-bottom: 3rem;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+            justify-content: center;
+        }
+
+        .video-card {
+            background: #111;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-info {
+            padding: 1.5rem;
+        }
+
+        .video-info h3 {
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-info p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            letter-spacing: 0.5px;
+        }
+
+        /* About */
+        .about-section {
+            background: #111;
+            padding: 6rem 3rem;
+            text-align: center;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-content h2 {
+            font-size: 3rem;
+            font-weight: 100;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            font-weight: 300;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        /* Contact */
+        .contact-section {
+            padding: 6rem 3rem;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            font-size: 2.5rem;
+            font-weight: 100;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+        }
+
+        .contact-section a {
+            font-size: 1.3rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: #fff;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .contact-section a:hover {
+            opacity: 0.6;
+        }
+
+        /* Video Modal */
+        .video-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #000;
+            margin: 5% auto;
+            width: 90%;
+            max-width: 1000px;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            color: #fff;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+            transition: opacity 0.3s ease;
+        }
+
+        .close-btn:hover {
+            opacity: 0.6;
+        }
+
+        #videoFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 2rem;
+            }
+            
+            .nav {
+                display: none;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-title-image {
+                max-width: 467px;
+            }
+            
+            .portfolio-section {
+                padding: 2rem 1rem;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 2% auto;
+                aspect-ratio: 16/9;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -26,10 +309,9 @@
     <section class="portfolio-section" id="work">
         <h2 class="section-title">CELEBRITIES</h2>
         <div class="video-grid">
-            <div class="video-card" data-video="1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8" data-gif="1PqLd0nSzecm8zU-JzEIdi0l28LKzoqtb">
+            <div class="video-card" data-video="1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8&sz=w640-h360" alt="Celebrity Project 05" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1PqLd0nSzecm8zU-JzEIdi0l28LKzoqtb/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8&sz=w640-h360" alt="Celebrity Project 05">
                 </div>
                 <div class="video-info">
                     <h3>David Schwimmer</h3>
@@ -37,10 +319,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4" data-gif="1qm26cbqUmXUuLlJs9WMSDK1bMN-RXZ-z">
+            <div class="video-card" data-video="19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4&sz=w640-h360" alt="Celebrity Project 07" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1qm26cbqUmXUuLlJs9WMSDK1bMN-RXZ-z/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4&sz=w640-h360" alt="Celebrity Project 07">
                 </div>
                 <div class="video-info">
                     <h3>David Schwimmer</h3>
@@ -48,10 +329,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="112kFP1glNJw4gp5azgUb_U7-ZofYQYbW" data-gif="1D3mZ9Svxa6REzte5aU5suTMTD1oubsOn">
+            <div class="video-card" data-video="112kFP1glNJw4gp5azgUb_U7-ZofYQYbW">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=112kFP1glNJw4gp5azgUb_U7-ZofYQYbW&sz=w640-h360" alt="Celebrity Project 03" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1D3mZ9Svxa6REzte5aU5suTMTD1oubsOn/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=112kFP1glNJw4gp5azgUb_U7-ZofYQYbW&sz=w640-h360" alt="Celebrity Project 03">
                 </div>
                 <div class="video-info">
                     <h3>Chuck Norris</h3>
@@ -59,10 +339,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a" data-gif="13M9UX89mkcN-EOrHJ2YWCpCjEkfR3YkF">
+            <div class="video-card" data-video="1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a&sz=w640-h360" alt="Celebrity Project 04" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/13M9UX89mkcN-EOrHJ2YWCpCjEkfR3YkF/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a&sz=w640-h360" alt="Celebrity Project 04">
                 </div>
                 <div class="video-info">
                     <h3>Chuck Norris</h3>
@@ -70,10 +349,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv" data-gif="1HeLmEWnQPDwmRpAog1hpm4qMLvF47_7D">
+            <div class="video-card" data-video="12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv&sz=w640-h360" alt="Celebrity Project 01" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1HeLmEWnQPDwmRpAog1hpm4qMLvF47_7D/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv&sz=w640-h360" alt="Celebrity Project 01">
                 </div>
                 <div class="video-info">
                     <h3>Dani & Danny Dyer</h3>
@@ -81,10 +359,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="1evsDx4HDN6OmGS977rnDR956-gPM_6LS" data-gif="137YIs93-KKPJImM8qWrj3oBFpQKkY0Dd">
+            <div class="video-card" data-video="1evsDx4HDN6OmGS977rnDR956-gPM_6LS">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1evsDx4HDN6OmGS977rnDR956-gPM_6LS&sz=w640-h360" alt="Celebrity Project 02" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/137YIs93-KKPJImM8qWrj3oBFpQKkY0Dd/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1evsDx4HDN6OmGS977rnDR956-gPM_6LS&sz=w640-h360" alt="Celebrity Project 02">
                 </div>
                 <div class="video-info">
                     <h3>Dani & Danny Dyer</h3>
@@ -92,10 +369,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj" data-gif="1eKqyuw7mzUYkTGxGKAH_ZmbY3Ph-QTGg">
+            <div class="video-card" data-video="1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj&sz=w640-h360" alt="Celebrity Project 08" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1eKqyuw7mzUYkTGxGKAH_ZmbY3Ph-QTGg/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj&sz=w640-h360" alt="Celebrity Project 08">
                 </div>
                 <div class="video-info">
                     <h3>Kim Cattrall</h3>
@@ -103,10 +379,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw" data-gif="1_iu9-4F0JqlMFptEQptfeSDIiBMdFYj3">
+            <div class="video-card" data-video="1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw&sz=w640-h360" alt="Celebrity Project 09" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1_iu9-4F0JqlMFptEQptfeSDIiBMdFYj3/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw&sz=w640-h360" alt="Celebrity Project 09">
                 </div>
                 <div class="video-info">
                     <h3>Kim Cattrall</h3>
@@ -114,10 +389,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK" data-gif="198tNfLKsjI0QWBYYPvF5ENwJvoF_aix8">
+            <div class="video-card" data-video="1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK&sz=w640-h360" alt="Celebrity Project 10" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/198tNfLKsjI0QWBYYPvF5ENwJvoF_aix8/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK&sz=w640-h360" alt="Celebrity Project 10">
                 </div>
                 <div class="video-info">
                     <h3>Jennifer Lopez</h3>
@@ -125,10 +399,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="16mNqexuSkv2d6QlN993e9PP65vucGska" data-gif="1RmrIq3mn-UD7KiE3fszeFhesw7ZWA0xb">
+            <div class="video-card" data-video="16mNqexuSkv2d6QlN993e9PP65vucGska">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=16mNqexuSkv2d6QlN993e9PP65vucGska&sz=w640-h360" alt="Celebrity Project 12" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1RmrIq3mn-UD7KiE3fszeFhesw7ZWA0xb/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=16mNqexuSkv2d6QlN993e9PP65vucGska&sz=w640-h360" alt="Celebrity Project 12">
                 </div>
                 <div class="video-info">
                     <h3>David Beckham</h3>
@@ -136,10 +409,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6" data-gif="1V1beXGjjW6XUwFCLW21mEQ6LYXL59QW8">
+            <div class="video-card" data-video="1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6&sz=w640-h360" alt="Celebrity Project 13" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1V1beXGjjW6XUwFCLW21mEQ6LYXL59QW8/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6&sz=w640-h360" alt="Celebrity Project 13">
                 </div>
                 <div class="video-info">
                     <h3>John Stamos</h3>
@@ -147,10 +419,9 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="13TTwXy5OVhB65X5qUgvkC84qabqYbLDK" data-gif="1Mt-K6SK4HHp0-IrVjCRJsl533DRXeoUN">
+            <div class="video-card" data-video="13TTwXy5OVhB65X5qUgvkC84qabqYbLDK">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=13TTwXy5OVhB65X5qUgvkC84qabqYbLDK&sz=w640-h360" alt="Celebrity Project 14" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1Mt-K6SK4HHp0-IrVjCRJsl533DRXeoUN/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=13TTwXy5OVhB65X5qUgvkC84qabqYbLDK&sz=w640-h360" alt="Celebrity Project 14">
                 </div>
                 <div class="video-info">
                     <h3>John Stamos</h3>
@@ -161,86 +432,75 @@
 
         <h2 class="section-title">MYSTERY</h2>
         <div class="video-grid">
-            <div class="video-card" data-video="1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi" data-gif="1KvIuQWQtFl9kov5gWnSjI8r5HIgGxxd8">
+            <div class="video-card" data-video="1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi&sz=w640-h360" alt="Mystery Project 01" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1KvIuQWQtFl9kov5gWnSjI8r5HIgGxxd8/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi&sz=w640-h360" alt="Mystery Project 01">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl" data-gif="130Y_YArEPpp2XFMPW6hT4TFn3n1QV9GZ">
+            <div class="video-card" data-video="1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl&sz=w640-h360" alt="Mystery Project 02" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/130Y_YArEPpp2XFMPW6hT4TFn3n1QV9GZ/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl&sz=w640-h360" alt="Mystery Project 02">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J" data-gif="1G5JIQ_UJCs7erKvxI_7x_hGyHxdavAYi">
+            <div class="video-card" data-video="1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J&sz=w640-h360" alt="Mystery Project 03" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1G5JIQ_UJCs7erKvxI_7x_hGyHxdavAYi/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J&sz=w640-h360" alt="Mystery Project 03">
                 </div>
             </div>
         </div>
 
         <h2 class="section-title">COMEDY</h2>
         <div class="video-grid">
-            <div class="video-card" data-video="1YB9yNzRYQcs4lQieQFIz4qG011swnt-F" data-gif="15ivaoLlcV4uln9wwb6FXe0zJDl7ghz4t">
+            <div class="video-card" data-video="1YB9yNzRYQcs4lQieQFIz4qG011swnt-F">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1YB9yNzRYQcs4lQieQFIz4qG011swnt-F&sz=w640-h360" alt="Comedy Project 01" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/15ivaoLlcV4uln9wwb6FXe0zJDl7ghz4t/preview?usp=embed&chrome=false" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1YB9yNzRYQcs4lQieQFIz4qG011swnt-F&sz=w640-h360" alt="Comedy Project 01">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf" data-gif="1RTiHEWbICfYswGuM8lvRY04Ytx0s87TR">
+            <div class="video-card" data-video="1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf&sz=w640-h360" alt="Comedy Project 02" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1RTiHEWbICfYswGuM8lvRY04Ytx0s87TR/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf&sz=w640-h360" alt="Comedy Project 02">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt" data-gif="1SROYRBvH-A6ucTL1Oi4NYxyy8HjIzcet">
+            <div class="video-card" data-video="1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt&sz=w640-h360" alt="Comedy Project 03" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1SROYRBvH-A6ucTL1Oi4NYxyy8HjIzcet/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt&sz=w640-h360" alt="Comedy Project 03">
                 </div>
             </div>
         </div>
 
         <h2 class="section-title">ANIMATION</h2>
         <div class="video-grid">
-            <div class="video-card" data-video="1dayuByq6-No8TRFpVrOSaboVVKo5F-zQ" data-gif="1aeeDb5F4NFlsAFLRXD47xfch0C3Wnigm">
+            <div class="video-card" data-video="1dayuByq6-No8TRFpVrOSaboVVKo5F-zQ">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1JuJDawnfuF_xvHtPG2yIUGjXjgVb7mk2&sz=w640-h360" alt="Animation Project 01" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1aeeDb5F4NFlsAFLRXD47xfch0C3Wnigm/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1JuJDawnfuF_xvHtPG2yIUGjXjgVb7mk2&sz=w640-h360" alt="Animation Project 01">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj" data-gif="1bMJJz52rgk9kkLUYauCrVWBgJ69T8Ib4">
+            <div class="video-card" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1uS4tnui2_a23MCVR22G-hI7wS_o8sPt1&sz=w640-h360" alt="Animation Project 03" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1bMJJz52rgk9kkLUYauCrVWBgJ69T8Ib4/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1uS4tnui2_a23MCVR22G-hI7wS_o8sPt1&sz=w640-h360" alt="Animation Project 03">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1ed0UmUi3ueRlqqdquEMRAYjjYLgown67" data-gif="1OSRnWzcm0HsCzoUUQVYFuLekG080jwJN">
+            <div class="video-card" data-video="1ed0UmUi3ueRlqqdquEMRAYjjYLgown67">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1iZ0gaGjARhGBNcirkWEU4JyP7fus1YQu&sz=w640-h360" alt="Animation Project 04" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1OSRnWzcm0HsCzoUUQVYFuLekG080jwJN/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1iZ0gaGjARhGBNcirkWEU4JyP7fus1YQu&sz=w640-h360" alt="Animation Project 04">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1gO5oeW2JVbQjmDHutJP0q3ZTTnadFICq" data-gif="17SAHFOZKAcXbTJmhj4huXEvUk5Mz2unP">
+            <div class="video-card" data-video="1gO5oeW2JVbQjmDHutJP0q3ZTTnadFICq">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1S-dBZR9t91App7lqHHherQmJyv4gpcMd&sz=w640-h360" alt="Animation Project 05" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/17SAHFOZKAcXbTJmhj4huXEvUk5Mz2unP/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1S-dBZR9t91App7lqHHherQmJyv4gpcMd&sz=w640-h360" alt="Animation Project 05">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1oLGGrMmk5ZTO-PAJxkNqi81liQ_03VMg" data-gif="1bUhD8rIE0jAuTqMaSkRPmPLQm-xQLnE5">
+            <div class="video-card" data-video="1oLGGrMmk5ZTO-PAJxkNqi81liQ_03VMg">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1uUFxsw-vRLOqqQoSjzsmtICF2M6Td0YR&sz=w640-h360" alt="Animation Project 07" class="static-thumb">
-                    <object data="https://drive.google.com/file/d/1bUhD8rIE0jAuTqMaSkRPmPLQm-xQLnE5/preview" class="gif-preview" type="text/html"></object>
+                    <img src="https://drive.google.com/thumbnail?id=1uUFxsw-vRLOqqQoSjzsmtICF2M6Td0YR&sz=w640-h360" alt="Animation Project 07">
                 </div>
             </div>
         </div>
@@ -249,7 +509,7 @@
     <section class="about-section" id="about">
         <div class="about-content">
             <h2>ABOUT</h2>
-            <p>Yannay Matarasso writes and directs commercials, managing large-scale shoots with A-list talent. With 8 years as a creative director in the mobile game marketing industry, he brings deep industry insight to projects from comedy to animation and everything in between.</p>
+            <p>Yannay Matarasso writes and directs commercials, managing large-scale shoots with A-list talent. With 8 years as a creative director in mobile games, he brings deep industry insight to projects from comedy to animation and everything in between.</p>
         </div>
     </section>
 
@@ -272,6 +532,60 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('videoModal');
+            const videoFrame = document.getElementById('videoFrame');
+            const closeBtn = document.getElementById('closeBtn');
+            const videoCards = document.querySelectorAll('.video-card');
+            
+            videoCards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    const videoId = card.getAttribute('data-video');
+                    const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/preview';
+                    
+                    videoFrame.src = videoUrl;
+                    modal.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            function closeModal() {
+                modal.style.display = 'none';
+                videoFrame.src = '';
+                document.body.style.overflow = 'auto';
+            }
+            
+            closeBtn.addEventListener('click', closeModal);
+            
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && modal.style.display === 'block') {
+                    closeModal();
+                }
+            });
+            
+            const navLinks = document.querySelectorAll('.nav a');
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
