@@ -247,7 +247,7 @@
             width: auto;
             height: auto;
             transform: translate(-50%, -50%);
-            z-index: -2;
+            z-index: 0;
             opacity: 1;
         }
 
@@ -262,13 +262,13 @@
             height: auto;
             transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.1);
-            z-index: -1;
+            z-index: 1;
         }
 
         .hero-content {
             max-width: 1200px;
             position: relative;
-            z-index: 2;
+            z-index: 10;
         }
 
         /* Glow effect behind the name */
@@ -282,7 +282,7 @@
             height: 150px;
             background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 70%);
             filter: blur(20px);
-            z-index: -1;
+            z-index: 2;
             animation: pulse-glow 4s ease-in-out infinite alternate;
         }
 
@@ -306,9 +306,9 @@
             text-transform: uppercase;
             margin-bottom: 0.5rem;
             color: #FFD700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(255, 215, 0, 0.2);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(255, 215, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.8);
             position: relative;
-            z-index: 1;
+            z-index: 5;
         }
 
         .hero-title {
@@ -560,6 +560,7 @@
                 width: 120%;
                 height: auto;
                 transform: translate(-50%, -60%);
+                z-index: 0;
             }
 
             .hero-video-overlay {
@@ -569,12 +570,13 @@
                 height: auto;
                 transform: translate(-50%, -60%);
                 background: rgba(0, 0, 0, 0.1);
+                z-index: 1;
             }
             
             .hero-name {
                 font-size: 3rem;
                 letter-spacing: 5px;
-                text-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3);
+                text-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3), 0 6px 12px rgba(0, 0, 0, 0.8);
             }
 
             .hero-title {
@@ -591,6 +593,7 @@
                 height: 120px;
                 filter: blur(15px);
                 background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%);
+                z-index: 2;
             }
             
             .portfolio-section {
