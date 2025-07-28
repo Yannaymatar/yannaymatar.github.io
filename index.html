@@ -1,18 +1,4 @@
-.hero-title {
-                font-size: 1rem;
-                letter-spacing: 4px;
-                text-shadow: 
-                    0 0 12px rgba(0, 0, 0, 0.9),
-                    0 0 24px rgba(0, 0, 0, 0.7),
-                    2px 2px 6px rgba(0, 0, 0, 1);
-            }
-
-            .hero-description {
-                text-shadow: 
-                    0 0 12px rgba(0, 0, 0, 0.9),
-                    0 0 24px rgba(0, 0, 0, 0.7),
-                    2px 2px 6px rgba(0, 0, 0, 1);
-            }<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -306,10 +292,7 @@
             text-transform: uppercase;
             margin-bottom: 0.5rem;
             color: #FFD700;
-            text-shadow: 
-                0 0 20px rgba(255, 215, 0, 0.6),
-                0 0 40px rgba(255, 215, 0, 0.4),
-                0 0 80px rgba(255, 215, 0, 0.2);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(255, 215, 0, 0.2);
             position: relative;
             z-index: 1;
         }
@@ -322,10 +305,7 @@
             text-transform: uppercase;
             color: #fff;
             margin-bottom: 2rem;
-            text-shadow: 
-                0 0 10px rgba(0, 0, 0, 0.8),
-                0 0 20px rgba(0, 0, 0, 0.6),
-                2px 2px 4px rgba(0, 0, 0, 0.9);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.9);
         }
 
         .hero-description {
@@ -334,10 +314,7 @@
             letter-spacing: 2px;
             color: #fff;
             font-style: italic;
-            text-shadow: 
-                0 0 10px rgba(0, 0, 0, 0.8),
-                0 0 20px rgba(0, 0, 0, 0.6),
-                2px 2px 4px rgba(0, 0, 0, 0.9);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.9);
         }
 
         /* Portfolio */
@@ -563,56 +540,33 @@
             }
             
             .hero-video {
-                opacity: 0.6;
-                min-width: 80%;
-                min-height: 80%;
-                width: 80%;
+                opacity: 0.5;
+                min-width: 100%;
+                min-height: 100%;
+                width: 100%;
                 height: auto;
             }
             
             .hero-name {
                 font-size: 3rem;
                 letter-spacing: 5px;
-                text-shadow: 
-                    0 0 15px rgba(255, 215, 0, 0.7),
-                    0 0 30px rgba(255, 215, 0, 0.5),
-                    0 0 60px rgba(255, 215, 0, 0.3);
+                text-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3);
+            }
+
+            .hero-title {
+                font-size: 1rem;
+                letter-spacing: 4px;
+                text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.7), 2px 2px 6px rgba(0, 0, 0, 1);
+            }
+
+            .hero-description {
+                text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.7), 2px 2px 6px rgba(0, 0, 0, 1);
             }
 
             .hero-content::before {
                 height: 120px;
                 filter: blur(15px);
                 background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%);
-            }
-
-            /* Mobile starfield adjustment */
-            body::after {
-                box-shadow: 
-                    25px 30px 0 0 rgba(255,255,255,0.5),
-                    90px 40px 0 0 rgba(255,255,255,0.6),
-                    160px 30px 0 0 rgba(255,255,255,0.5),
-                    240px 50px 0 0 rgba(255,255,255,0.6),
-                    320px 70px 0 0 rgba(255,255,255,0.5),
-                    50px 120px 0 0 rgba(255,255,255,0.6),
-                    150px 150px 0 0 rgba(255,255,255,0.5),
-                    250px 180px 0 0 rgba(255,255,255,0.6),
-                    350px 200px 0 0 rgba(255,255,255,0.5),
-                    40px 250px 0 0 rgba(255,255,255,0.6),
-                    140px 280px 0 0 rgba(255,255,255,0.5),
-                    240px 300px 0 0 rgba(255,255,255,0.6),
-                    340px 320px 0 0 rgba(255,255,255,0.5),
-                    80px 360px 0 0 rgba(255,255,255,0.6),
-                    180px 400px 0 0 rgba(255,255,255,0.5),
-                    280px 420px 0 0 rgba(255,255,255,0.6),
-                    120px 450px 0 0 rgba(255,255,255,0.5),
-                    220px 480px 0 0 rgba(255,255,255,0.6),
-                    320px 500px 0 0 rgba(255,255,255,0.5),
-                    60px 540px 0 0 rgba(255,255,255,0.6);
-            }
-            
-            .hero-title {
-                font-size: 1rem;
-                letter-spacing: 4px;
             }
             
             .portfolio-section {
@@ -638,6 +592,31 @@
             
             .static-thumb {
                 opacity: 1 !important;
+            }
+
+            /* Mobile starfield adjustment */
+            body::after {
+                box-shadow: 
+                    25px 30px 0 0 rgba(255,255,255,0.5),
+                    90px 40px 0 0 rgba(255,255,255,0.6),
+                    160px 30px 0 0 rgba(255,255,255,0.5),
+                    240px 50px 0 0 rgba(255,255,255,0.6),
+                    320px 70px 0 0 rgba(255,255,255,0.5),
+                    50px 120px 0 0 rgba(255,255,255,0.6),
+                    150px 150px 0 0 rgba(255,255,255,0.5),
+                    250px 180px 0 0 rgba(255,255,255,0.6),
+                    350px 200px 0 0 rgba(255,255,255,0.5),
+                    40px 250px 0 0 rgba(255,255,255,0.6),
+                    140px 280px 0 0 rgba(255,255,255,0.5),
+                    240px 300px 0 0 rgba(255,255,255,0.6),
+                    340px 320px 0 0 rgba(255,255,255,0.5),
+                    80px 360px 0 0 rgba(255,255,255,0.6),
+                    180px 400px 0 0 rgba(255,255,255,0.5),
+                    280px 420px 0 0 rgba(255,255,255,0.6),
+                    120px 450px 0 0 rgba(255,255,255,0.5),
+                    220px 480px 0 0 rgba(255,255,255,0.6),
+                    320px 500px 0 0 rgba(255,255,255,0.5),
+                    60px 540px 0 0 rgba(255,255,255,0.6);
             }
         }
     </style>
