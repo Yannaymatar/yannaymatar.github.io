@@ -232,11 +232,28 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Video */
+        .hero-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            z-index: -2;
+            opacity: 0.6;
         }
 
         .hero-content {
             max-width: 1200px;
             position: relative;
+            z-index: 2;
         }
 
         /* Glow effect behind the name */
@@ -513,6 +530,10 @@
                 display: flex;
             }
             
+            .hero-video {
+                opacity: 0.4;
+            }
+            
             .hero-name {
                 font-size: 3rem;
                 letter-spacing: 5px;
@@ -608,6 +629,9 @@
     </nav>
 
     <section class="hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="https://github.com/yannay87/Yannay87.github.io/raw/0a9c295cedbdeb3e4fcd7fe18a41ac333e15b4d4/Timeline%202.mp4" type="video/mp4">
+        </video>
         <div class="hero-content">
             <h1 class="hero-name">YANNAY MATARASSO</h1>
             <h2 class="hero-title">DIRECTOR</h2>
