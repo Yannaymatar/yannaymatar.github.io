@@ -248,7 +248,21 @@
             height: auto;
             transform: translate(-50%, -50%);
             z-index: -2;
-            opacity: 0.6;
+            opacity: 1;
+        }
+
+        /* Dark overlay on video to hide stars */
+        .hero-video-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.1);
+            z-index: -1;
         }
 
         .hero-content {
@@ -336,7 +350,7 @@
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 0;
+            gap: 1.5rem;
             margin-bottom: 4rem;
             justify-content: center;
         }
@@ -536,15 +550,25 @@
             }
             
             .hero {
-                margin-top: 80px;
+                margin-top: 60px;
             }
             
             .hero-video {
-                opacity: 0.5;
-                min-width: 100%;
-                min-height: 100%;
-                width: 100%;
+                opacity: 1;
+                min-width: 120%;
+                min-height: 120%;
+                width: 120%;
                 height: auto;
+                transform: translate(-50%, -60%);
+            }
+
+            .hero-video-overlay {
+                min-width: 120%;
+                min-height: 120%;
+                width: 120%;
+                height: auto;
+                transform: translate(-50%, -60%);
+                background: rgba(0, 0, 0, 0.1);
             }
             
             .hero-name {
@@ -647,6 +671,7 @@
         <video class="hero-video" autoplay muted loop playsinline>
             <source src="https://github.com/yannay87/Yannay87.github.io/raw/0a9c295cedbdeb3e4fcd7fe18a41ac333e15b4d4/Timeline%202.mp4" type="video/mp4">
         </video>
+        <div class="hero-video-overlay"></div>
         <div class="hero-content">
             <h1 class="hero-name">YANNAY MATARASSO</h1>
             <h2 class="hero-title">DIRECTOR</h2>
