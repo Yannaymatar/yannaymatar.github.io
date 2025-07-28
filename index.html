@@ -234,6 +234,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            margin-top: 100px;
         }
 
         /* Background Video */
@@ -282,7 +283,7 @@
             }
         }
 
-        /* Main name styling - Helvetica ultra-spaced + glow */
+        /* Main name styling - Helvetica ultra-spaced + glow + Tarantino Yellow */
         .hero-name {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             font-size: 4.2rem;
@@ -290,11 +291,11 @@
             letter-spacing: 20px;
             text-transform: uppercase;
             margin-bottom: 0.5rem;
-            color: #fff;
+            color: #FFD700;
             text-shadow: 
-                0 0 20px rgba(255, 255, 255, 0.5),
-                0 0 40px rgba(255, 255, 255, 0.3),
-                0 0 80px rgba(255, 255, 255, 0.1);
+                0 0 20px rgba(255, 215, 0, 0.6),
+                0 0 40px rgba(255, 215, 0, 0.4),
+                0 0 80px rgba(255, 215, 0, 0.2);
             position: relative;
             z-index: 1;
         }
@@ -530,17 +531,25 @@
                 display: flex;
             }
             
+            .hero {
+                margin-top: 80px;
+            }
+            
             .hero-video {
-                opacity: 0.4;
+                opacity: 0.3;
+                min-width: 50%;
+                min-height: 50%;
+                width: 50%;
+                height: auto;
             }
             
             .hero-name {
                 font-size: 3rem;
                 letter-spacing: 5px;
                 text-shadow: 
-                    0 0 15px rgba(255, 255, 255, 0.6),
-                    0 0 30px rgba(255, 255, 255, 0.4),
-                    0 0 60px rgba(255, 255, 255, 0.2);
+                    0 0 15px rgba(255, 215, 0, 0.7),
+                    0 0 30px rgba(255, 215, 0, 0.5),
+                    0 0 60px rgba(255, 215, 0, 0.3);
             }
 
             .hero-content::before {
