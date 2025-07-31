@@ -270,10 +270,13 @@
             white-space: nowrap; /* Force single line */
         }
         
-        /* Desktop - no line break between names */
+        /* Desktop - keep names inline */
+        .desktop-hero .hero-name .last-name {
+            display: inline !important; /* Keep inline on desktop */
+        }
+        
         .desktop-hero .hero-name .last-name::before {
-            content: " "; /* Just a space on desktop */
-            white-space: normal;
+            content: " " !important; /* Space between names on desktop */
         }
 
         .hero-title {
@@ -610,10 +613,14 @@
                 transform: none !important;
             }
             
+            /* Keep names inline for landscape - override the block display */
+            .mobile-text-section .hero-name .last-name {
+                display: inline !important; /* Keep inline in landscape */
+            }
+            
             /* Remove line break for landscape */
             .mobile-text-section .hero-name .last-name::before {
                 content: " " !important; /* Space instead of line break */
-                white-space: normal !important;
             }
             
             .mobile-text-section .hero-title {
