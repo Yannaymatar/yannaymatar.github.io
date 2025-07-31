@@ -547,8 +547,8 @@
             white-space: normal !important;
         }
 
-        /* Mobile Landscape Orientation - PHONES ONLY - Title under video */
-        @media (max-width: 480px) and (orientation: landscape) {
+        /* Mobile Landscape Orientation - PHONES (not iPads) - Title under video */
+        @media (max-width: 767px) and (orientation: landscape) and (max-height: 1024px) {
             .mobile-hero {
                 display: flex !important;
                 flex-direction: column !important;
