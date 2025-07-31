@@ -269,6 +269,12 @@
             z-index: 5;
             white-space: nowrap; /* Force single line */
         }
+        
+        /* Desktop - no line break between names */
+        .desktop-hero .hero-name .last-name::before {
+            content: " "; /* Just a space on desktop */
+            white-space: normal;
+        }
 
         .hero-title {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -522,6 +528,12 @@
                 letter-spacing: 6px;
             }
         }
+        
+        /* Ensure desktop always has space, never line break */
+        .desktop-hero .hero-name .last-name::before {
+            content: " " !important;
+            white-space: normal !important;
+        }
 
         /* Mobile Landscape Orientation - Title under video */
         @media (max-width: 768px) and (orientation: landscape) {
@@ -591,11 +603,17 @@
                 font-size: 1.8rem !important;
                 letter-spacing: 4px !important;
                 margin-bottom: 0.5rem !important;
-                white-space: nowrap !important;
+                white-space: nowrap !important; /* Keep single line in landscape */
                 position: relative !important;
                 top: auto !important;
                 left: auto !important;
                 transform: none !important;
+            }
+            
+            /* Remove line break for landscape */
+            .mobile-text-section .hero-name .last-name::before {
+                content: " " !important; /* Space instead of line break */
+                white-space: normal !important;
             }
             
             .mobile-text-section .hero-title {
@@ -775,7 +793,7 @@
             </video>
             <div class="hero-video-overlay"></div>
             <div class="hero-content">
-                <h1 class="hero-name">YANNAY MATARASSO</h1>
+                <h1 class="hero-name"><span class="first-name">YANNAY</span> <span class="last-name">MATARASSO</span></h1>
                 <h2 class="hero-title">DIRECTOR</h2>
                 <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
             </div>
@@ -791,7 +809,7 @@
             
             <div class="mobile-text-section">
                 <div class="hero-content">
-                    <h1 class="hero-name">YANNAY MATARASSO</h1>
+                    <h1 class="hero-name"><span class="first-name">YANNAY</span> <span class="last-name">MATARASSO</span></h1>
                     <h2 class="hero-title">DIRECTOR</h2>
                     <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
                 </div>
