@@ -20,8 +20,10 @@
             overflow-x: hidden;
         }
 
+
+
         /* Starfield background */
-        body::before {
+        body::after {
             content: '';
             position: fixed;
             top: 0;
@@ -64,67 +66,9 @@
             animation: sparkle 15s ease-in-out infinite;
         }
 
-        /* Alternative starfield method using box-shadow */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            opacity: 0.4;
-            box-shadow: 
-                25px 30px 0 0 rgba(255,255,255,0.3),
-                90px 40px 0 0 rgba(255,255,255,0.5),
-                160px 30px 0 0 rgba(255,255,255,0.4),
-                240px 50px 0 0 rgba(255,255,255,0.5),
-                320px 70px 0 0 rgba(255,255,255,0.4),
-                400px 90px 0 0 rgba(255,255,255,0.5),
-                480px 60px 0 0 rgba(255,255,255,0.4),
-                560px 30px 0 0 rgba(255,255,255,0.5),
-                640px 50px 0 0 rgba(255,255,255,0.4),
-                720px 70px 0 0 rgba(255,255,255,0.5),
-                800px 40px 0 0 rgba(255,255,255,0.3),
-                880px 80px 0 0 rgba(255,255,255,0.4),
-                960px 30px 0 0 rgba(255,255,255,0.5),
-                1040px 60px 0 0 rgba(255,255,255,0.3),
-                1120px 90px 0 0 rgba(255,255,255,0.4),
-                50px 120px 0 0 rgba(255,255,255,0.4),
-                150px 150px 0 0 rgba(255,255,255,0.3),
-                250px 180px 0 0 rgba(255,255,255,0.5),
-                350px 200px 0 0 rgba(255,255,255,0.3),
-                450px 220px 0 0 rgba(255,255,255,0.4),
-                550px 180px 0 0 rgba(255,255,255,0.3),
-                650px 160px 0 0 rgba(255,255,255,0.5),
-                750px 200px 0 0 rgba(255,255,255,0.3),
-                850px 150px 0 0 rgba(255,255,255,0.4),
-                950px 190px 0 0 rgba(255,255,255,0.3),
-                1050px 170px 0 0 rgba(255,255,255,0.5),
-                40px 250px 0 0 rgba(255,255,255,0.3),
-                140px 280px 0 0 rgba(255,255,255,0.4),
-                240px 300px 0 0 rgba(255,255,255,0.3),
-                340px 320px 0 0 rgba(255,255,255,0.5),
-                440px 280px 0 0 rgba(255,255,255,0.3),
-                540px 300px 0 0 rgba(255,255,255,0.4),
-                640px 270px 0 0 rgba(255,255,255,0.3),
-                740px 290px 0 0 rgba(255,255,255,0.5),
-                840px 320px 0 0 rgba(255,255,255,0.3),
-                940px 250px 0 0 rgba(255,255,255,0.4);
-            pointer-events: none;
-            z-index: -1;
-            animation: twinkle 12s ease-in-out infinite;
-        }
-
         @keyframes sparkle {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.8; }
         }
 
         /* Header */
@@ -225,19 +169,24 @@
             cursor: pointer;
         }
 
-        /* Hero */
-        .hero {
+        /* Hero Section - Desktop and Mobile Structure */
+        .desktop-hero {
+            display: block;
             height: 70vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
             position: relative;
             overflow: hidden;
+        }
+        
+        .mobile-hero {
+            display: none;
+        }
+
+        /* Hero Section - Desktop */
+        .hero {
             margin-top: 100px;
         }
 
-        /* Background Video */
+        /* Background Video - Desktop */
         .hero-video {
             position: absolute;
             top: 50%;
@@ -248,10 +197,11 @@
             height: auto;
             transform: translate(-50%, -50%);
             z-index: 0;
+            object-fit: contain; /* Changed from cover to contain to prevent cropping */
             opacity: 1;
         }
 
-        /* Dark overlay on video to hide stars */
+        /* Dark overlay on video */
         .hero-video-overlay {
             position: absolute;
             top: 50%;
@@ -263,6 +213,16 @@
             transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.5);
             z-index: 1;
+        }
+
+        .desktop-hero .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 1200px;
+            text-align: center;
+            z-index: 10;
         }
 
         .hero-content {
@@ -297,7 +257,7 @@
             }
         }
 
-        /* Main name styling - Helvetica ultra-spaced + glow + Tarantino Yellow */
+        /* Main name styling */
         .hero-name {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             font-size: 4.2rem;
@@ -535,7 +495,7 @@
             border: none;
         }
 
-        /* Responsive */
+        /* MOBILE RESPONSIVE STYLES */
         @media (max-width: 768px) {
             .header {
                 padding: 1rem 2rem;
@@ -549,51 +509,89 @@
                 display: flex;
             }
             
+            /* Show mobile hero, hide desktop hero */
+            .desktop-hero {
+                display: none;
+            }
+            
+            .mobile-hero {
+                display: block;
+            }
+            
+            /* MOBILE HERO CHANGES - Separate video and text sections */
             .hero {
                 margin-top: 60px;
             }
             
-            .hero-video {
-                opacity: 1;
-                min-width: 120%;
-                min-height: 120%;
-                width: 120%;
-                height: auto;
-                transform: translate(-50%, -60%);
-                z-index: 0;
+            /* Mobile Video Section */
+            .mobile-video-section {
+                width: 100%;
+                height: 40vh; /* Adjust height as needed */
+                position: relative;
+                overflow: hidden;
+                background: #000;
+                margin-bottom: 2rem;
             }
-
-            .hero-video-overlay {
-                min-width: 120%;
-                min-height: 120%;
-                width: 120%;
-                height: auto;
-                transform: translate(-50%, -60%);
-                background: rgba(0, 0, 0, 0.5);
+            
+            .mobile-video-section .hero-video {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 100%;
+                height: 100%;
+                transform: translate(-50%, -50%);
+                object-fit: contain; /* Prevent cropping - shows full video with letterboxing if needed */
                 z-index: 1;
             }
             
+            /* Mobile Text Section */
+            .mobile-text-section {
+                width: 100%;
+                padding: 2rem 1rem;
+                text-align: center;
+                background: transparent;
+                position: relative;
+                z-index: 10;
+            }
+            
+            /* Glow effect behind mobile text */
+            .mobile-text-section::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+                height: 120px;
+                background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%);
+                filter: blur(15px);
+                z-index: 2;
+                animation: pulse-glow 4s ease-in-out infinite alternate;
+            }
+            
+            .mobile-text-section .hero-content {
+                position: relative;
+                z-index: 5;
+            }
+            
             .hero-name {
-                font-size: 3rem;
-                letter-spacing: 5px;
+                font-size: 2.5rem;
+                letter-spacing: 8px;
                 text-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3), 0 6px 12px rgba(0, 0, 0, 0.8);
+                margin-bottom: 1rem;
             }
 
             .hero-title {
                 font-size: 1rem;
                 letter-spacing: 4px;
                 text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.7), 2px 2px 6px rgba(0, 0, 0, 1);
+                margin-bottom: 1rem;
             }
 
             .hero-description {
+                font-size: 0.9rem;
+                letter-spacing: 1px;
                 text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.7), 2px 2px 6px rgba(0, 0, 0, 1);
-            }
-
-            .hero-content::before {
-                height: 120px;
-                filter: blur(15px);
-                background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%);
-                z-index: 2;
             }
             
             .portfolio-section {
@@ -619,31 +617,6 @@
             
             .static-thumb {
                 opacity: 1 !important;
-            }
-
-            /* Mobile starfield adjustment */
-            body::after {
-                box-shadow: 
-                    25px 30px 0 0 rgba(255,255,255,0.5),
-                    90px 40px 0 0 rgba(255,255,255,0.6),
-                    160px 30px 0 0 rgba(255,255,255,0.5),
-                    240px 50px 0 0 rgba(255,255,255,0.6),
-                    320px 70px 0 0 rgba(255,255,255,0.5),
-                    50px 120px 0 0 rgba(255,255,255,0.6),
-                    150px 150px 0 0 rgba(255,255,255,0.5),
-                    250px 180px 0 0 rgba(255,255,255,0.6),
-                    350px 200px 0 0 rgba(255,255,255,0.5),
-                    40px 250px 0 0 rgba(255,255,255,0.6),
-                    140px 280px 0 0 rgba(255,255,255,0.5),
-                    240px 300px 0 0 rgba(255,255,255,0.6),
-                    340px 320px 0 0 rgba(255,255,255,0.5),
-                    80px 360px 0 0 rgba(255,255,255,0.6),
-                    180px 400px 0 0 rgba(255,255,255,0.5),
-                    280px 420px 0 0 rgba(255,255,255,0.6),
-                    120px 450px 0 0 rgba(255,255,255,0.5),
-                    220px 480px 0 0 rgba(255,255,255,0.6),
-                    320px 500px 0 0 rgba(255,255,255,0.5),
-                    60px 540px 0 0 rgba(255,255,255,0.6);
             }
         }
     </style>
@@ -671,14 +644,34 @@
     </nav>
 
     <section class="hero">
-        <video class="hero-video" autoplay muted loop playsinline>
-            <source src="https://github.com/yannay87/Yannay87.github.io/raw/0a9c295cedbdeb3e4fcd7fe18a41ac333e15b4d4/Timeline%202.mp4" type="video/mp4">
-        </video>
-        <div class="hero-video-overlay"></div>
-        <div class="hero-content">
-            <h1 class="hero-name">YANNAY MATARASSO</h1>
-            <h2 class="hero-title">DIRECTOR</h2>
-            <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
+        <!-- Desktop: Video with overlay text -->
+        <div class="desktop-hero">
+            <video class="hero-video" autoplay muted loop playsinline>
+                <source src="https://github.com/yannay87/Yannay87.github.io/raw/0a9c295cedbdeb3e4fcd7fe18a41ac333e15b4d4/Timeline%202.mp4" type="video/mp4">
+            </video>
+            <div class="hero-video-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-name">YANNAY MATARASSO</h1>
+                <h2 class="hero-title">DIRECTOR</h2>
+                <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
+            </div>
+        </div>
+        
+        <!-- Mobile: Separate video and text sections -->
+        <div class="mobile-hero">
+            <div class="mobile-video-section">
+                <video class="hero-video" autoplay muted loop playsinline>
+                    <source src="https://github.com/yannay87/Yannay87.github.io/raw/0a9c295cedbdeb3e4fcd7fe18a41ac333e15b4d4/Timeline%202.mp4" type="video/mp4">
+                </video>
+            </div>
+            
+            <div class="mobile-text-section">
+                <div class="hero-content">
+                    <h1 class="hero-name">YANNAY MATARASSO</h1>
+                    <h2 class="hero-title">DIRECTOR</h2>
+                    <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -822,7 +815,7 @@
 
             <div class="video-card" data-video="1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J" data-gif="1G5JIQ_UJCs7erKvxI_7x_hGyHxdavAYi">
                 <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J&sz=w640-h360" alt="Mystery Project 03" class="static-thumb">
+                    <img src="https://drive.google.com/thumbnail?id=1mm5B3mCospZiSLEo_jVBkWBBZ_31SY22J&sz=w640-h360" alt="Mystery Project 03" class="static-thumb">
                 </div>
             </div>
         </div>
@@ -941,7 +934,7 @@
             // Smart mobile detection (only for REAL mobile phones)
             function isMobileDevice() {
                 const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                const isSmallScreen = window.innerWidth <= 480; // Very small threshold
+                const isSmallScreen = window.innerWidth <= 480;
                 return isMobileUA && isSmallScreen;
             }
             
