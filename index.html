@@ -267,7 +267,8 @@
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(255, 215, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.8);
             position: relative;
             z-index: 5;
-            white-space: nowrap; /* Force single line */
+            white-space: nowrap !important; /* Force single line always */
+            overflow: visible !important; /* Ensure text is visible */
         }
         
         /* Desktop - keep names inline (includes iPads) */
@@ -515,29 +516,43 @@
         /* Desktop responsive font sizing - prevent title line breaks */
         @media (max-width: 1400px) {
             .desktop-hero .hero-name {
-                font-size: 3.8rem;
-                letter-spacing: 18px;
+                font-size: 3.5rem;
+                letter-spacing: 16px;
+            }
+        }
+        
+        @media (max-width: 1300px) {
+            .desktop-hero .hero-name {
+                font-size: 3.2rem;
+                letter-spacing: 12px;
             }
         }
         
         @media (max-width: 1200px) {
             .desktop-hero .hero-name {
-                font-size: 3.2rem;
-                letter-spacing: 14px;
+                font-size: 2.8rem;
+                letter-spacing: 8px;
+            }
+        }
+        
+        @media (max-width: 1100px) {
+            .desktop-hero .hero-name {
+                font-size: 2.5rem;
+                letter-spacing: 6px;
             }
         }
         
         @media (max-width: 1000px) {
             .desktop-hero .hero-name {
-                font-size: 2.8rem;
-                letter-spacing: 10px;
+                font-size: 2.2rem;
+                letter-spacing: 4px;
             }
         }
         
         @media (max-width: 900px) and (min-width: 769px) {
             .desktop-hero .hero-name {
-                font-size: 2.2rem;
-                letter-spacing: 6px;
+                font-size: 1.9rem;
+                letter-spacing: 3px;
             }
         }
         
