@@ -270,13 +270,22 @@
             white-space: nowrap; /* Force single line */
         }
         
-        /* Desktop - keep names inline */
+        /* Desktop - keep names inline (includes iPads) */
         .desktop-hero .hero-name .last-name {
-            display: inline !important; /* Keep inline on desktop */
+            display: inline !important; /* Keep inline on desktop and iPad */
         }
         
         .desktop-hero .hero-name .last-name::before {
             content: " " !important; /* Space between names on desktop */
+        }
+        
+        /* Default - all hero names stay inline unless specifically mobile portrait */
+        .hero-name .last-name {
+            display: inline !important;
+        }
+        
+        .hero-name .last-name::before {
+            content: " " !important;
         }
 
         .hero-title {
@@ -538,8 +547,8 @@
             white-space: normal !important;
         }
 
-        /* Mobile Landscape Orientation - Title under video */
-        @media (max-width: 768px) and (orientation: landscape) {
+        /* Mobile Landscape Orientation - PHONES ONLY - Title under video */
+        @media (max-width: 480px) and (orientation: landscape) {
             .mobile-hero {
                 display: flex !important;
                 flex-direction: column !important;
