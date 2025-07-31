@@ -17,7 +17,7 @@
             color: #fff;
             line-height: 1.6;
             position: relative;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
 
 
@@ -673,6 +673,7 @@
                 background: transparent;
                 position: relative;
                 z-index: 10;
+                overflow-x: hidden; /* Prevent horizontal scrolling in text section */
             }
             
             /* Glow effect behind mobile text */
@@ -693,6 +694,8 @@
             .mobile-text-section .hero-content {
                 position: relative;
                 z-index: 5;
+                max-width: 100%; /* Ensure content doesn't overflow */
+                margin: 0 auto; /* Center the content */
             }
             
             .hero-name {
