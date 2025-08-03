@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,1227 +12,1434 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background: #000;
-            color: #fff;
-            line-height: 1.6;
-            position: relative;
-            overflow-x: hidden; /* Prevent horizontal scrolling */
+```
+    body {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        background: #000;
+        color: #fff;
+        line-height: 1.6;
+        position: relative;
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+
+    /* Password Protection Overlay */
+    .password-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .password-overlay.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .password-container {
+        text-align: center;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 3rem 2rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        max-width: 400px;
+        width: 90%;
+        position: relative;
+    }
+
+    .password-container::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120%;
+        height: 120%;
+        background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 70%);
+        filter: blur(20px);
+        z-index: -1;
+        animation: pulse-glow 4s ease-in-out infinite alternate;
+    }
+
+    .password-title {
+        font-size: 2rem;
+        font-weight: 100;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        color: #FFD700;
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4);
+    }
+
+    .password-subtitle {
+        font-size: 0.9rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        margin-bottom: 2rem;
+        opacity: 0.8;
+        text-transform: uppercase;
+    }
+
+    .password-input {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        color: #fff;
+        font-size: 1rem;
+        letter-spacing: 2px;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .password-input:focus {
+        outline: none;
+        border-color: #FFD700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .password-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 1px;
+    }
+
+    .password-button {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(45deg, #FFD700, #FFA500);
+        border: none;
+        border-radius: 5px;
+        color: #000;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .password-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+    }
+
+    .password-error {
+        color: #ff4444;
+        font-size: 0.8rem;
+        margin-top: 1rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .password-error.show {
+        opacity: 1;
+    }
+
+    /* Main content initially hidden */
+    .main-content {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .main-content.show {
+        opacity: 1;
+    }
+
+
+
+    /* Starfield background */
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.5), transparent),
+            radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(1px 1px at 200px 90px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 240px 50px, rgba(255,255,255,0.5), transparent),
+            radial-gradient(1px 1px at 280px 10px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 320px 70px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(1px 1px at 360px 40px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 400px 90px, rgba(255,255,255,0.5), transparent),
+            radial-gradient(1px 1px at 440px 20px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 480px 60px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(1px 1px at 520px 90px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 560px 30px, rgba(255,255,255,0.5), transparent),
+            radial-gradient(1px 1px at 600px 80px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 640px 50px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(1px 1px at 680px 10px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 720px 70px, rgba(255,255,255,0.5), transparent),
+            radial-gradient(1px 1px at 760px 40px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(1px 1px at 50px 120px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(2px 2px at 150px 150px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(1px 1px at 250px 180px, rgba(255,255,255,0.5), transparent),
+            radial-gradient(2px 2px at 350px 200px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(1px 1px at 450px 220px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(2px 2px at 550px 180px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(1px 1px at 650px 160px, rgba(255,255,255,0.5), transparent),
+            radial-gradient(2px 2px at 750px 200px, rgba(255,255,255,0.3), transparent);
+        background-repeat: repeat;
+        background-size: 800px 400px;
+        pointer-events: none;
+        z-index: -1;
+        animation: sparkle 15s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    /* Header */
+    .header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 2rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(15px);
+        z-index: 1000;
+        transition: background 0.3s ease;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+        font-weight: 300;
+        letter-spacing: 4px;
+        color: #ccc;
+    }
+
+    .nav {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 300;
+        letter-spacing: 3px;
+        font-size: 0.9rem;
+        transition: opacity 0.3s ease;
+    }
+
+    .nav a:hover {
+        opacity: 0.6;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-btn {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .mobile-menu-btn span {
+        width: 22px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.7);
+        margin: 4px 0;
+        transition: 0.3s;
+    }
+
+    .mobile-nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        z-index: 1001;
+        padding-top: 100px;
+        text-align: center;
+    }
+
+    .mobile-nav.active {
+        display: block;
+    }
+
+    .mobile-nav a {
+        display: block;
+        color: #fff;
+        text-decoration: none;
+        font-size: 1.5rem;
+        font-weight: 300;
+        letter-spacing: 3px;
+        margin: 2rem 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .mobile-nav a:hover {
+        opacity: 0.6;
+    }
+
+    .mobile-close {
+        position: absolute;
+        top: 2rem;
+        right: 3rem;
+        font-size: 2rem;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    /* Hero Section - Desktop and Mobile Structure */
+    .desktop-hero {
+        display: block;
+        height: 70vh;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .mobile-hero {
+        display: none;
+    }
+
+    /* Hero Section - Desktop */
+    .hero {
+        margin-top: 100px;
+    }
+
+    /* Background Video - Desktop */
+    .desktop-hero .hero-video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        transform: translate(-50%, -50%);
+        z-index: 0;
+        object-fit: contain; /* Shows full 16:9 video without cropping */
+        opacity: 1;
+    }
+
+    /* Dark overlay on video */
+    .hero-video-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+
+    .desktop-hero .hero-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 1200px;
+        text-align: center;
+        z-index: 10;
+    }
+
+    .hero-content {
+        max-width: 1200px;
+        position: relative;
+        z-index: 10;
+    }
+
+    /* Glow effect behind the name - Desktop only */
+    .desktop-hero .hero-content::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 150px;
+        background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 70%);
+        filter: blur(20px);
+        z-index: 2;
+        animation: pulse-glow 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse-glow {
+        0% { 
+            opacity: 0.3;
+            transform: translate(-50%, -50%) scale(1);
         }
-
-
-
-        /* Starfield background */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.4), transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 200px 90px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(2px 2px at 240px 50px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 280px 10px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(2px 2px at 320px 70px, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 360px 40px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(2px 2px at 400px 90px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 440px 20px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(2px 2px at 480px 60px, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 520px 90px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(2px 2px at 560px 30px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 600px 80px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(2px 2px at 640px 50px, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 680px 10px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(2px 2px at 720px 70px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 760px 40px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1px 1px at 50px 120px, rgba(255,255,255,0.4), transparent),
-                radial-gradient(2px 2px at 150px 150px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1px 1px at 250px 180px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(2px 2px at 350px 200px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1px 1px at 450px 220px, rgba(255,255,255,0.4), transparent),
-                radial-gradient(2px 2px at 550px 180px, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1px 1px at 650px 160px, rgba(255,255,255,0.5), transparent),
-                radial-gradient(2px 2px at 750px 200px, rgba(255,255,255,0.3), transparent);
-            background-repeat: repeat;
-            background-size: 800px 400px;
-            pointer-events: none;
-            z-index: -1;
-            animation: sparkle 15s ease-in-out infinite;
+        100% { 
+            opacity: 0.6;
+            transform: translate(-50%, -50%) scale(1.1);
         }
+    }
 
-        @keyframes sparkle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+    /* Main name styling */
+    .hero-name {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 4.2rem;
+        font-weight: 100;
+        letter-spacing: 20px;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+        color: #FFD700;
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(255, 215, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.8);
+        position: relative;
+        z-index: 5;
+        white-space: nowrap !important; /* Force single line always */
+        overflow: visible !important; /* Ensure text is visible */
+    }
+    
+    /* Desktop - keep names inline (includes iPads) */
+    .desktop-hero .hero-name .last-name {
+        display: inline !important; /* Keep inline on desktop and iPad */
+    }
+    
+    .desktop-hero .hero-name .last-name::before {
+        content: " " !important; /* Space between names on desktop */
+    }
+    
+    /* Force no line breaks on desktop/iPad - additional enforcement */
+    .desktop-hero .hero-name,
+    .desktop-hero .hero-name .first-name,
+    .desktop-hero .hero-name .last-name {
+        white-space: nowrap !important;
+        display: inline !important;
+    }
+    
+    /* Default - all hero names stay inline unless specifically mobile portrait */
+    .hero-name .last-name {
+        display: inline !important;
+    }
+    
+    .hero-name .last-name::before {
+        content: " " !important;
+    }
+
+    .hero-title {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        font-size: 1.2rem;
+        font-weight: 200;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: #fff;
+        margin-bottom: 2rem;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.9);
+    }
+
+    .hero-description {
+        font-size: 1rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        color: #fff;
+        font-style: italic;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.9);
+    }
+
+    /* Portfolio */
+    .portfolio-section {
+        padding: 4rem 3rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 100;
+        letter-spacing: 2px;
+        margin-bottom: 3rem;
+        text-align: center;
+        opacity: 0.8;
+    }
+
+    .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 4rem;
+        justify-content: center;
+    }
+
+    .video-card {
+        background: #111;
+        border-radius: 0;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+    }
+
+    .video-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+    }
+
+    .video-thumbnail {
+        position: relative;
+        aspect-ratio: 16/9;
+        overflow: hidden;
+    }
+
+    .video-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.3s ease;
+    }
+
+    /* GIF Preview Styles */
+    .static-thumb {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .gif-preview {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        border: none;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .video-card:hover .static-thumb {
+        opacity: 0;
+    }
+
+    .video-card:hover .gif-preview {
+        opacity: 1;
+    }
+
+    .video-info {
+        padding: 1.5rem;
+    }
+
+    .video-info h3 {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        font-size: 1rem;
+        font-weight: 200;
+        letter-spacing: 3px;
+        margin-bottom: 0.3rem;
+        text-transform: uppercase;
+    }
+
+    .video-info p {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        font-size: 0.8rem;
+        font-weight: 100;
+        letter-spacing: 2px;
+        opacity: 0.6;
+        text-transform: uppercase;
+    }
+
+    /* About */
+    .about-section {
+        background: #111;
+        padding: 6rem 3rem;
+        text-align: center;
+    }
+
+    .about-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .about-content h2 {
+        font-size: 3rem;
+        font-weight: 100;
+        letter-spacing: 2px;
+        margin-bottom: 2rem;
+    }
+
+    .about-content p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        font-weight: 300;
+        opacity: 0.9;
+        letter-spacing: 0.5px;
+    }
+
+    /* Contact */
+    .contact-section {
+        padding: 6rem 3rem;
+        text-align: center;
+    }
+
+    .contact-section h2 {
+        font-size: 2.5rem;
+        font-weight: 100;
+        letter-spacing: 2px;
+        margin-bottom: 2rem;
+    }
+
+    .contact-section a {
+        font-size: 1.3rem;
+        font-weight: 300;
+        letter-spacing: 1px;
+        color: #fff;
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .contact-section a:hover {
+        opacity: 0.6;
+    }
+
+    /* Video Modal */
+    .video-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        overflow-y: auto;
+    }
+
+    .modal-content {
+        position: relative;
+        background-color: #000;
+        margin: 5% auto;
+        width: 90%;
+        max-width: 1000px;
+        aspect-ratio: 16/9;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    .close-btn {
+        position: absolute;
+        top: -50px;
+        right: 0;
+        color: #fff;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 2001;
+        transition: opacity 0.3s ease;
+    }
+
+    .close-btn:hover {
+        opacity: 0.6;
+    }
+
+    #videoFrame {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Desktop responsive font sizing - prevent title line breaks */
+    @media (max-width: 1400px) {
+        .desktop-hero .hero-name {
+            font-size: 3.5rem;
+            letter-spacing: 16px;
         }
+    }
+    
+    @media (max-width: 1300px) {
+        .desktop-hero .hero-name {
+            font-size: 3.0rem;
+            letter-spacing: 10px;
+        }
+    }
+    
+    @media (max-width: 1200px) {
+        .desktop-hero .hero-name {
+            font-size: 2.6rem;
+            letter-spacing: 6px;
+        }
+    }
+    
+    /* Specific fix for iPad landscape and similar sizes */
+    @media (max-width: 1194px) and (min-width: 900px) {
+        .desktop-hero .hero-name {
+            font-size: 2.2rem !important;
+            letter-spacing: 4px !important;
+            white-space: nowrap !important;
+        }
+    }
+    
+    @media (max-width: 1100px) {
+        .desktop-hero .hero-name {
+            font-size: 2.0rem;
+            letter-spacing: 3px;
+        }
+    }
+    
+    @media (max-width: 1000px) {
+        .desktop-hero .hero-name {
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+        }
+    }
+    
+    @media (max-width: 900px) and (min-width: 769px) {
+        .desktop-hero .hero-name {
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+        }
+    }
+    
+    /* Ensure desktop always has space, never line break */
+    .desktop-hero .hero-name .last-name::before {
+        content: " " !important;
+        white-space: normal !important;
+    }
 
-        /* Header */
+    /* Mobile Landscape Orientation - PHONES (not iPads) - Title under video */
+    @media (max-width: 767px) and (orientation: landscape) and (max-height: 1024px) {
+        .mobile-hero {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100vh !important;
+            width: 100% !important;
+        }
+        
+        .mobile-video-section {
+            height: 60vh !important;
+            width: 100% !important;
+            margin-bottom: 0 !important;
+            position: relative !important;
+            overflow: hidden !important;
+            background: #000 !important;
+        }
+        
+        .mobile-video-section .hero-video {
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: 100% !important;
+            height: 100% !important;
+            transform: translate(-50%, -50%) !important;
+            object-fit: contain !important;
+            z-index: 1 !important;
+        }
+        
+        .mobile-text-section {
+            height: 40vh !important;
+            width: 100% !important;
+            padding: 1rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            position: relative !important;
+            background: transparent !important;
+            z-index: 10 !important;
+        }
+        
+        .mobile-text-section::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 100% !important;
+            height: 80px !important;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%) !important;
+            filter: blur(10px) !important;
+            z-index: 2 !important;
+            animation: pulse-glow 4s ease-in-out infinite alternate !important;
+        }
+        
+        .mobile-text-section .hero-content {
+            position: relative !important;
+            z-index: 5 !important;
+            text-align: center !important;
+            top: auto !important;
+            left: auto !important;
+            transform: none !important;
+        }
+        
+        .mobile-text-section .hero-name {
+            font-size: 1.8rem !important;
+            letter-spacing: 4px !important;
+            margin-bottom: 0.5rem !important;
+            white-space: nowrap !important; /* Keep single line in landscape */
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            transform: none !important;
+        }
+        
+        /* Keep names inline for landscape - override the block display */
+        .mobile-text-section .hero-name .last-name {
+            display: inline !important; /* Keep inline in landscape */
+        }
+        
+        /* Remove line break for landscape */
+        .mobile-text-section .hero-name .last-name::before {
+            content: " " !important; /* Space instead of line break */
+        }
+        
+        .mobile-text-section .hero-title {
+            font-size: 0.8rem !important;
+            letter-spacing: 2px !important;
+            margin-bottom: 0.5rem !important;
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            transform: none !important;
+        }
+        
+        .mobile-text-section .hero-description {
+            font-size: 0.7rem !important;
+            letter-spacing: 1px !important;
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            transform: none !important;
+        }
+    }
+    @media (max-width: 768px) {
         .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 2rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            z-index: 1000;
-            transition: background 0.3s ease;
+            padding: 1rem 2rem;
         }
-
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 4px;
-            color: #ccc;
-        }
-
+        
         .nav {
-            display: flex;
-            gap: 2rem;
+            display: none;
         }
-
-        .nav a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 300;
-            letter-spacing: 3px;
-            font-size: 0.9rem;
-            transition: opacity 0.3s ease;
-        }
-
-        .nav a:hover {
-            opacity: 0.6;
-        }
-
-        /* Mobile Menu */
+        
         .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            padding: 5px;
+            display: flex;
         }
-
-        .mobile-menu-btn span {
-            width: 22px;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.7);
-            margin: 4px 0;
-            transition: 0.3s;
-        }
-
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 1001;
-            padding-top: 100px;
-            text-align: center;
-        }
-
-        .mobile-nav.active {
-            display: block;
-        }
-
-        .mobile-nav a {
-            display: block;
-            color: #fff;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: 300;
-            letter-spacing: 3px;
-            margin: 2rem 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .mobile-nav a:hover {
-            opacity: 0.6;
-        }
-
-        .mobile-close {
-            position: absolute;
-            top: 2rem;
-            right: 3rem;
-            font-size: 2rem;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        /* Hero Section - Desktop and Mobile Structure */
+        
+        /* Show mobile hero, hide desktop hero */
         .desktop-hero {
-            display: block;
-            height: 70vh;
-            position: relative;
-            overflow: hidden;
+            display: none;
         }
         
         .mobile-hero {
-            display: none;
+            display: block;
         }
-
-        /* Hero Section - Desktop */
+        
+        /* MOBILE HERO CHANGES - Separate video and text sections */
         .hero {
-            margin-top: 100px;
+            margin-top: 60px;
         }
-
-        /* Background Video - Desktop */
-        .desktop-hero .hero-video {
+        
+        /* Mobile Video Section */
+        .mobile-video-section {
+            width: 100%;
+            height: 40vh; /* Adjust height as needed */
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 2rem;
+        }
+        
+        .mobile-video-section .hero-video {
             position: absolute;
             top: 50%;
             left: 50%;
             width: 100%;
             height: 100%;
             transform: translate(-50%, -50%);
-            z-index: 0;
-            object-fit: contain; /* Shows full 16:9 video without cropping */
-            opacity: 1;
-        }
-
-        /* Dark overlay on video */
-        .hero-video-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.5);
+            object-fit: contain; /* Prevent cropping - shows full video with letterboxing if needed */
             z-index: 1;
         }
-
-        .desktop-hero .hero-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 1200px;
+        
+        /* Mobile Text Section - FIXED TO PREVENT TEXT CUTOFF */
+        .mobile-text-section {
+            width: 100%;
+            padding: 2rem 0.5rem; /* Reduced side padding to give more space */
             text-align: center;
-            z-index: 10;
-        }
-
-        .hero-content {
-            max-width: 1200px;
+            background: transparent;
             position: relative;
             z-index: 10;
+            /* REMOVED overflow-x: hidden that was cutting off text */
         }
-
-        /* Glow effect behind the name - Desktop only */
-        .desktop-hero .hero-content::before {
+        
+        /* Glow effect behind mobile text */
+        .mobile-text-section::before {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 100%;
-            height: 150px;
-            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 70%);
-            filter: blur(20px);
+            height: 120px;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%);
+            filter: blur(15px);
             z-index: 2;
             animation: pulse-glow 4s ease-in-out infinite alternate;
         }
-
-        @keyframes pulse-glow {
-            0% { 
-                opacity: 0.3;
-                transform: translate(-50%, -50%) scale(1);
-            }
-            100% { 
-                opacity: 0.6;
-                transform: translate(-50%, -50%) scale(1.1);
-            }
-        }
-
-        /* Main name styling */
-        .hero-name {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: 4.2rem;
-            font-weight: 100;
-            letter-spacing: 20px;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            color: #FFD700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(255, 215, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.8);
+        
+        .mobile-text-section .hero-content {
             position: relative;
             z-index: 5;
-            white-space: nowrap !important; /* Force single line always */
-            overflow: visible !important; /* Ensure text is visible */
+            width: 100%; /* Full width to prevent cutoff */
+            margin: 0 auto; /* Center the content */
         }
         
-        /* Desktop - keep names inline (includes iPads) */
-        .desktop-hero .hero-name .last-name {
-            display: inline !important; /* Keep inline on desktop and iPad */
-        }
-        
-        .desktop-hero .hero-name .last-name::before {
-            content: " " !important; /* Space between names on desktop */
-        }
-        
-        /* Force no line breaks on desktop/iPad - additional enforcement */
-        .desktop-hero .hero-name,
-        .desktop-hero .hero-name .first-name,
-        .desktop-hero .hero-name .last-name {
-            white-space: nowrap !important;
-            display: inline !important;
-        }
-        
-        /* Default - all hero names stay inline unless specifically mobile portrait */
-        .hero-name .last-name {
-            display: inline !important;
-        }
-        
-        .hero-name .last-name::before {
-            content: " " !important;
+        .hero-name {
+            font-size: 2.2rem; /* Slightly reduced from 2.5rem */
+            letter-spacing: 3px; /* REDUCED from 8px to prevent overflow */
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3), 0 6px 12px rgba(0, 0, 0, 0.8);
+            margin-bottom: 1rem;
+            white-space: nowrap; /* Prevent line breaking */
+            overflow: visible; /* Allow text to be visible */
         }
 
         .hero-title {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 1.2rem;
-            font-weight: 200;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            color: #fff;
-            margin-bottom: 2rem;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.9);
+            font-size: 1rem;
+            letter-spacing: 3px; /* Reduced from 4px */
+            text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.7), 2px 2px 6px rgba(0, 0, 0, 1);
+            margin-bottom: 1rem;
         }
 
         .hero-description {
-            font-size: 1rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            color: #fff;
-            font-style: italic;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.9);
-        }
-
-        /* Portfolio */
-        .portfolio-section {
-            padding: 4rem 3rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 100;
-            letter-spacing: 2px;
-            margin-bottom: 3rem;
-            text-align: center;
-            opacity: 0.8;
-        }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 4rem;
-            justify-content: center;
-        }
-
-        .video-card {
-            background: #111;
-            border-radius: 0;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-        }
-
-        .video-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
-        }
-
-        .video-thumbnail {
-            position: relative;
-            aspect-ratio: 16/9;
-            overflow: hidden;
-        }
-
-        .video-thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 0.3s ease;
-        }
-
-        /* GIF Preview Styles */
-        .static-thumb {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .gif-preview {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            border: none;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .video-card:hover .static-thumb {
-            opacity: 0;
-        }
-
-        .video-card:hover .gif-preview {
-            opacity: 1;
-        }
-
-        .video-info {
-            padding: 1.5rem;
-        }
-
-        .video-info h3 {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 1rem;
-            font-weight: 200;
-            letter-spacing: 3px;
-            margin-bottom: 0.3rem;
-            text-transform: uppercase;
-        }
-
-        .video-info p {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 0.8rem;
-            font-weight: 100;
-            letter-spacing: 2px;
-            opacity: 0.6;
-            text-transform: uppercase;
-        }
-
-        /* About */
-        .about-section {
-            background: #111;
-            padding: 6rem 3rem;
-            text-align: center;
-        }
-
-        .about-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .about-content h2 {
-            font-size: 3rem;
-            font-weight: 100;
-            letter-spacing: 2px;
-            margin-bottom: 2rem;
-        }
-
-        .about-content p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            font-weight: 300;
-            opacity: 0.9;
-            letter-spacing: 0.5px;
-        }
-
-        /* Contact */
-        .contact-section {
-            padding: 6rem 3rem;
-            text-align: center;
-        }
-
-        .contact-section h2 {
-            font-size: 2.5rem;
-            font-weight: 100;
-            letter-spacing: 2px;
-            margin-bottom: 2rem;
-        }
-
-        .contact-section a {
-            font-size: 1.3rem;
-            font-weight: 300;
+            font-size: 0.9rem;
             letter-spacing: 1px;
-            color: #fff;
-            text-decoration: none;
-            transition: opacity 0.3s ease;
+            text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.7), 2px 2px 6px rgba(0, 0, 0, 1);
         }
-
-        .contact-section a:hover {
-            opacity: 0.6;
+        
+        .portfolio-section {
+            padding: 2rem 1rem;
         }
-
-        /* Video Modal */
-        .video-modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            overflow-y: auto;
+        
+        .video-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
-
+        
         .modal-content {
-            position: relative;
-            background-color: #000;
-            margin: 5% auto;
-            width: 90%;
-            max-width: 1000px;
+            width: 95%;
+            margin: 2% auto;
             aspect-ratio: 16/9;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
         }
 
-        .close-btn {
-            position: absolute;
-            top: -50px;
-            right: 0;
-            color: #fff;
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 2001;
-            transition: opacity 0.3s ease;
-        }
-
-        .close-btn:hover {
-            opacity: 0.6;
-        }
-
-        #videoFrame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Desktop responsive font sizing - prevent title line breaks */
-        @media (max-width: 1400px) {
-            .desktop-hero .hero-name {
-                font-size: 3.5rem;
-                letter-spacing: 16px;
-            }
+        /* Mobile backup: Force hide GIFs */
+        .gif-preview {
+            display: none !important;
+            opacity: 0 !important;
         }
         
-        @media (max-width: 1300px) {
-            .desktop-hero .hero-name {
-                font-size: 3.0rem;
-                letter-spacing: 10px;
-            }
+        .static-thumb {
+            opacity: 1 !important;
+        }
+    }
+
+    /* Additional fix for very small screens */
+    @media (max-width: 480px) {
+        .hero-name {
+            font-size: 1.8rem !important; /* Even smaller for very small screens */
+            letter-spacing: 2px !important; /* Minimal letter spacing */
         }
         
-        @media (max-width: 1200px) {
-            .desktop-hero .hero-name {
-                font-size: 2.6rem;
-                letter-spacing: 6px;
-            }
+        .mobile-text-section {
+            padding: 2rem 0.25rem !important; /* Even less padding */
         }
-        
-        /* Specific fix for iPad landscape and similar sizes */
-        @media (max-width: 1194px) and (min-width: 900px) {
-            .desktop-hero .hero-name {
-                font-size: 2.2rem !important;
-                letter-spacing: 4px !important;
-                white-space: nowrap !important;
-            }
-        }
-        
-        @media (max-width: 1100px) {
-            .desktop-hero .hero-name {
-                font-size: 2.0rem;
-                letter-spacing: 3px;
-            }
-        }
-        
-        @media (max-width: 1000px) {
-            .desktop-hero .hero-name {
-                font-size: 1.8rem;
-                letter-spacing: 2px;
-            }
-        }
-        
-        @media (max-width: 900px) and (min-width: 769px) {
-            .desktop-hero .hero-name {
-                font-size: 1.6rem;
-                letter-spacing: 2px;
-            }
-        }
-        
-        /* Ensure desktop always has space, never line break */
-        .desktop-hero .hero-name .last-name::before {
-            content: " " !important;
-            white-space: normal !important;
-        }
+    }
 
-        /* Mobile Landscape Orientation - PHONES (not iPads) - Title under video */
-        @media (max-width: 767px) and (orientation: landscape) and (max-height: 1024px) {
-            .mobile-hero {
-                display: flex !important;
-                flex-direction: column !important;
-                height: 100vh !important;
-                width: 100% !important;
-            }
-            
-            .mobile-video-section {
-                height: 60vh !important;
-                width: 100% !important;
-                margin-bottom: 0 !important;
-                position: relative !important;
-                overflow: hidden !important;
-                background: #000 !important;
-            }
-            
-            .mobile-video-section .hero-video {
-                position: absolute !important;
-                top: 50% !important;
-                left: 50% !important;
-                width: 100% !important;
-                height: 100% !important;
-                transform: translate(-50%, -50%) !important;
-                object-fit: contain !important;
-                z-index: 1 !important;
-            }
-            
-            .mobile-text-section {
-                height: 40vh !important;
-                width: 100% !important;
-                padding: 1rem !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                position: relative !important;
-                background: transparent !important;
-                z-index: 10 !important;
-            }
-            
-            .mobile-text-section::before {
-                content: '' !important;
-                position: absolute !important;
-                top: 50% !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) !important;
-                width: 100% !important;
-                height: 80px !important;
-                background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%) !important;
-                filter: blur(10px) !important;
-                z-index: 2 !important;
-                animation: pulse-glow 4s ease-in-out infinite alternate !important;
-            }
-            
-            .mobile-text-section .hero-content {
-                position: relative !important;
-                z-index: 5 !important;
-                text-align: center !important;
-                top: auto !important;
-                left: auto !important;
-                transform: none !important;
-            }
-            
-            .mobile-text-section .hero-name {
-                font-size: 1.8rem !important;
-                letter-spacing: 4px !important;
-                margin-bottom: 0.5rem !important;
-                white-space: nowrap !important; /* Keep single line in landscape */
-                position: relative !important;
-                top: auto !important;
-                left: auto !important;
-                transform: none !important;
-            }
-            
-            /* Keep names inline for landscape - override the block display */
-            .mobile-text-section .hero-name .last-name {
-                display: inline !important; /* Keep inline in landscape */
-            }
-            
-            /* Remove line break for landscape */
-            .mobile-text-section .hero-name .last-name::before {
-                content: " " !important; /* Space instead of line break */
-            }
-            
-            .mobile-text-section .hero-title {
-                font-size: 0.8rem !important;
-                letter-spacing: 2px !important;
-                margin-bottom: 0.5rem !important;
-                position: relative !important;
-                top: auto !important;
-                left: auto !important;
-                transform: none !important;
-            }
-            
-            .mobile-text-section .hero-description {
-                font-size: 0.7rem !important;
-                letter-spacing: 1px !important;
-                position: relative !important;
-                top: auto !important;
-                left: auto !important;
-                transform: none !important;
-            }
+    /* Fix for extra small screens */
+    @media (max-width: 360px) {
+        .hero-name {
+            font-size: 1.5rem !important;
+            letter-spacing: 1px !important;
         }
-        @media (max-width: 768px) {
-            .header {
-                padding: 1rem 2rem;
-            }
-            
-            .nav {
-                display: none;
-            }
-            
-            .mobile-menu-btn {
-                display: flex;
-            }
-            
-            /* Show mobile hero, hide desktop hero */
-            .desktop-hero {
-                display: none;
-            }
-            
-            .mobile-hero {
-                display: block;
-            }
-            
-            /* MOBILE HERO CHANGES - Separate video and text sections */
-            .hero {
-                margin-top: 60px;
-            }
-            
-            /* Mobile Video Section */
-            .mobile-video-section {
-                width: 100%;
-                height: 40vh; /* Adjust height as needed */
-                position: relative;
-                overflow: hidden;
-                background: #000;
-                margin-bottom: 2rem;
-            }
-            
-            .mobile-video-section .hero-video {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 100%;
-                height: 100%;
-                transform: translate(-50%, -50%);
-                object-fit: contain; /* Prevent cropping - shows full video with letterboxing if needed */
-                z-index: 1;
-            }
-            
-            /* Mobile Text Section - FIXED TO PREVENT TEXT CUTOFF */
-            .mobile-text-section {
-                width: 100%;
-                padding: 2rem 0.5rem; /* Reduced side padding to give more space */
-                text-align: center;
-                background: transparent;
-                position: relative;
-                z-index: 10;
-                /* REMOVED overflow-x: hidden that was cutting off text */
-            }
-            
-            /* Glow effect behind mobile text */
-            .mobile-text-section::before {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 100%;
-                height: 120px;
-                background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 30%, transparent 70%);
-                filter: blur(15px);
-                z-index: 2;
-                animation: pulse-glow 4s ease-in-out infinite alternate;
-            }
-            
-            .mobile-text-section .hero-content {
-                position: relative;
-                z-index: 5;
-                width: 100%; /* Full width to prevent cutoff */
-                margin: 0 auto; /* Center the content */
-            }
-            
-            .hero-name {
-                font-size: 2.2rem; /* Slightly reduced from 2.5rem */
-                letter-spacing: 3px; /* REDUCED from 8px to prevent overflow */
-                text-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3), 0 6px 12px rgba(0, 0, 0, 0.8);
-                margin-bottom: 1rem;
-                white-space: nowrap; /* Prevent line breaking */
-                overflow: visible; /* Allow text to be visible */
-            }
+    }
+</style>
+```
 
-            .hero-title {
-                font-size: 1rem;
-                letter-spacing: 3px; /* Reduced from 4px */
-                text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.7), 2px 2px 6px rgba(0, 0, 0, 1);
-                margin-bottom: 1rem;
-            }
-
-            .hero-description {
-                font-size: 0.9rem;
-                letter-spacing: 1px;
-                text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.7), 2px 2px 6px rgba(0, 0, 0, 1);
-            }
-            
-            .portfolio-section {
-                padding: 2rem 1rem;
-            }
-            
-            .video-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            
-            .modal-content {
-                width: 95%;
-                margin: 2% auto;
-                aspect-ratio: 16/9;
-            }
-
-            /* Mobile backup: Force hide GIFs */
-            .gif-preview {
-                display: none !important;
-                opacity: 0 !important;
-            }
-            
-            .static-thumb {
-                opacity: 1 !important;
-            }
-        }
-
-        /* Additional fix for very small screens */
-        @media (max-width: 480px) {
-            .hero-name {
-                font-size: 1.8rem !important; /* Even smaller for very small screens */
-                letter-spacing: 2px !important; /* Minimal letter spacing */
-            }
-            
-            .mobile-text-section {
-                padding: 2rem 0.25rem !important; /* Even less padding */
-            }
-        }
-
-        /* Fix for extra small screens */
-        @media (max-width: 360px) {
-            .hero-name {
-                font-size: 1.5rem !important;
-                letter-spacing: 1px !important;
-            }
-        }
-    </style>
 </head>
 <body>
-    <header class="header">
-        <div class="logo">YANNAY MATARASSO</div>
-        <nav class="nav">
-            <a href="#work">WORK</a>
-            <a href="#about">ABOUT</a>
-            <a href="#contact">CONTACT</a>
-        </nav>
-        <div class="mobile-menu-btn" id="mobileMenuBtn">
-            <span></span>
-            <span></span>
-            <span></span>
+    <!-- Password Protection Overlay -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-container">
+            <h1 class="password-title">Access</h1>
+            <p class="password-subtitle">Enter Password to Continue</p>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Password" autocomplete="off">
+            <button class="password-button" id="passwordButton">Enter</button>
+            <div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
         </div>
-    </header>
+    </div>
 
-    <nav class="mobile-nav" id="mobileNav">
-        <div class="mobile-close" id="mobileClose">&times;</div>
+```
+<!-- Main Website Content -->
+<div class="main-content" id="mainContent">
+<header class="header">
+    <div class="logo">YANNAY MATARASSO</div>
+    <nav class="nav">
         <a href="#work">WORK</a>
         <a href="#about">ABOUT</a>
         <a href="#contact">CONTACT</a>
     </nav>
+    <div class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</header>
 
-    <section class="hero">
-        <!-- Desktop: Video with overlay text -->
-        <div class="desktop-hero">
+<nav class="mobile-nav" id="mobileNav">
+    <div class="mobile-close" id="mobileClose">&times;</div>
+    <a href="#work">WORK</a>
+    <a href="#about">ABOUT</a>
+    <a href="#contact">CONTACT</a>
+</nav>
+
+<section class="hero">
+    <!-- Desktop: Video with overlay text -->
+    <div class="desktop-hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="https://github.com/yannay87/Yannay87.github.io/raw/0a9c295cedbdeb3e4fcd7fe18a41ac333e15b4d4/Timeline%202.mp4" type="video/mp4">
+        </video>
+        <div class="hero-video-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-name"><span class="first-name">YANNAY</span> <span class="last-name">MATARASSO</span></h1>
+            <h2 class="hero-title">DIRECTOR</h2>
+            <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
+        </div>
+    </div>
+    
+    <!-- Mobile: Separate video and text sections -->
+    <div class="mobile-hero">
+        <div class="mobile-video-section">
             <video class="hero-video" autoplay muted loop playsinline>
                 <source src="https://github.com/yannay87/Yannay87.github.io/raw/0a9c295cedbdeb3e4fcd7fe18a41ac333e15b4d4/Timeline%202.mp4" type="video/mp4">
             </video>
-            <div class="hero-video-overlay"></div>
+        </div>
+        
+        <div class="mobile-text-section">
             <div class="hero-content">
                 <h1 class="hero-name"><span class="first-name">YANNAY</span> <span class="last-name">MATARASSO</span></h1>
                 <h2 class="hero-title">DIRECTOR</h2>
                 <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
             </div>
         </div>
-        
-        <!-- Mobile: Separate video and text sections -->
-        <div class="mobile-hero">
-            <div class="mobile-video-section">
-                <video class="hero-video" autoplay muted loop playsinline>
-                    <source src="https://github.com/yannay87/Yannay87.github.io/raw/0a9c295cedbdeb3e4fcd7fe18a41ac333e15b4d4/Timeline%202.mp4" type="video/mp4">
-                </video>
-            </div>
-            
-            <div class="mobile-text-section">
-                <div class="hero-content">
-                    <h1 class="hero-name"><span class="first-name">YANNAY</span> <span class="last-name">MATARASSO</span></h1>
-                    <h2 class="hero-title">DIRECTOR</h2>
-                    <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
-    <section class="portfolio-section" id="work">
-        <h2 class="section-title">WORK</h2>
-        <div class="video-grid">
-            <div class="video-card" data-video="1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8" data-gif="1PqLd0nSzecm8zU-JzEIdi0l28LKzoqtb">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8&sz=w640-h360" alt="Celebrity Project 05" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>David Schwimmer</h3>
-                    <p>Coin Master</p>
-                </div>
+<section class="portfolio-section" id="work">
+    <h2 class="section-title">WORK</h2>
+    <div class="video-grid">
+        <div class="video-card" data-video="1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8" data-gif="1PqLd0nSzecm8zU-JzEIdi0l28LKzoqtb">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8&sz=w640-h360" alt="Celebrity Project 05" class="static-thumb">
             </div>
-
-            <div class="video-card" data-video="19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4" data-gif="1qm26cbqUmXUuLlJs9WMSDK1bMN-RXZ-z">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4&sz=w640-h360" alt="Celebrity Project 07" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>David Schwimmer</h3>
-                    <p>Coin Master</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="112kFP1glNJw4gp5azgUb_U7-ZofYQYbW" data-gif="1D3mZ9Svxa6REzte5aU5suTMTD1oubsOn">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=112kFP1glNJw4gp5azgUb_U7-ZofYQYbW&sz=w640-h360" alt="Celebrity Project 03" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>Chuck Norris</h3>
-                    <p>Coin Master</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a" data-gif="13M9UX89mkcN-EOrHJ2YWCpCjEkfR3YkF">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a&sz=w640-h360" alt="Celebrity Project 04" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>Chuck Norris</h3>
-                    <p>Coin Master</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv" data-gif="1HeLmEWnQPDwmRpAog1hpm4qMLvF47_7D">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv&sz=w640-h360" alt="Celebrity Project 01" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>Dani & Danny Dyer</h3>
-                    <p>Travel Town</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1evsDx4HDN6OmGS977rnDR956-gPM_6LS" data-gif="137YIs93-KKPJImM8qWrj3oBFpQKkY0Dd">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1evsDx4HDN6OmGS977rnDR956-gPM_6LS&sz=w640-h360" alt="Celebrity Project 02" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>Dani & Danny Dyer</h3>
-                    <p>Travel Town</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj" data-gif="1eKqyuw7mzUYkTGxGKAH_ZmbY3Ph-QTGg">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj&sz=w640-h360" alt="Celebrity Project 08" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>Kim Cattrall</h3>
-                    <p>Coin Master</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw" data-gif="1_iu9-4F0JqlMFptEQptfeSDIiBMdFYj3">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw&sz=w640-h360" alt="Celebrity Project 09" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>Kim Cattrall</h3>
-                    <p>Coin Master</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK" data-gif="198tNfLKsjI0QWBYYPvF5ENwJvoF_aix8">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK&sz=w640-h360" alt="Celebrity Project 10" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>Jennifer Lopez</h3>
-                    <p>Coin Master</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="16mNqexuSkv2d6QlN993e9PP65vucGska" data-gif="1RmrIq3mn-UD7KiE3fszeFhesw7ZWA0xb">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=16mNqexuSkv2d6QlN993e9PP65vucGska&sz=w640-h360" alt="Celebrity Project 12" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>David Beckham</h3>
-                    <p>Coin Master</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6" data-gif="1V1beXGjjW6XUwFCLW21mEQ6LYXL59QW8">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6&sz=w640-h360" alt="Celebrity Project 13" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>John Stamos</h3>
-                    <p>Coin Master</p>
-                </div>
-            </div>
-
-            <div class="video-card" data-video="13TTwXy5OVhB65X5qUgvkC84qabqYbLDK" data-gif="1Mt-K6SK4HHp0-IrVjCRJsl533DRXeoUN">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=13TTwXy5OVhB65X5qUgvkC84qabqYbLDK&sz=w640-h360" alt="Celebrity Project 14" class="static-thumb">
-                </div>
-                <div class="video-info">
-                    <h3>John Stamos</h3>
-                    <p>Coin Master</p>
-                </div>
+            <div class="video-info">
+                <h3>David Schwimmer</h3>
+                <p>Coin Master</p>
             </div>
         </div>
 
-        <h2 class="section-title">MYSTERY</h2>
-        <div class="video-grid">
-            <div class="video-card" data-video="1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi" data-gif="1KvIuQWQtFl9kov5gWnSjI8r5HIgGxxd8">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi&sz=w640-h360" alt="Mystery Project 01" class="static-thumb">
-                </div>
+        <div class="video-card" data-video="19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4" data-gif="1qm26cbqUmXUuLlJs9WMSDK1bMN-RXZ-z">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4&sz=w640-h360" alt="Celebrity Project 07" class="static-thumb">
             </div>
-
-            <div class="video-card" data-video="1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl" data-gif="130Y_YArEPpp2XFMPW6hT4TFn3n1QV9GZ">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl&sz=w640-h360" alt="Mystery Project 02" class="static-thumb">
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J" data-gif="1G5JIQ_UJCs7erKvxI_7x_hGyHxdavAYi">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J&sz=w640-h360" alt="Mystery Project 03" class="static-thumb">
-                </div>
+            <div class="video-info">
+                <h3>David Schwimmer</h3>
+                <p>Coin Master</p>
             </div>
         </div>
 
-        <h2 class="section-title">COMEDY</h2>
-        <div class="video-grid">
-            <div class="video-card" data-video="1YB9yNzRYQcs4lQieQFIz4qG011swnt-F" data-gif="15ivaoLlcV4uln9wwb6FXe0zJDl7ghz4t">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1YB9yNzRYQcs4lQieQFIz4qG011swnt-F&sz=w640-h360" alt="Comedy Project 01" class="static-thumb">
-                </div>
+        <div class="video-card" data-video="112kFP1glNJw4gp5azgUb_U7-ZofYQYbW" data-gif="1D3mZ9Svxa6REzte5aU5suTMTD1oubsOn">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=112kFP1glNJw4gp5azgUb_U7-ZofYQYbW&sz=w640-h360" alt="Celebrity Project 03" class="static-thumb">
             </div>
-
-            <div class="video-card" data-video="1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf" data-gif="1RTiHEWbICfYswGuM8lvRY04Ytx0s87TR">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf&sz=w640-h360" alt="Comedy Project 02" class="static-thumb">
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt" data-gif="1SROYRBvH-A6ucTL1Oi4NYxyy8HjIzcet">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt&sz=w640-h360" alt="Comedy Project 03" class="static-thumb">
-                </div>
+            <div class="video-info">
+                <h3>Chuck Norris</h3>
+                <p>Coin Master</p>
             </div>
         </div>
 
-        <h2 class="section-title">ANIMATION</h2>
-        <div class="video-grid">
-            <div class="video-card" data-video="1dayuByq6-No8TRFpVrOSaboVVKo5F-zQ" data-gif="1aeeDb5F4NFlsAFLRXD47xfch0C3Wnigm">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1JuJDawnfuF_xvHtPG2yIUGjXjgVb7mk2&sz=w640-h360" alt="Animation Project 01" class="static-thumb">
-                </div>
+        <div class="video-card" data-video="1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a" data-gif="13M9UX89mkcN-EOrHJ2YWCpCjEkfR3YkF">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a&sz=w640-h360" alt="Celebrity Project 04" class="static-thumb">
             </div>
-
-            <div class="video-card" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj" data-gif="1bMJJz52rgk9kkLUYauCrVWBgJ69T8Ib4">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1uS4tnui2_a23MCVR22G-hI7wS_o8sPt1&sz=w640-h360" alt="Animation Project 03" class="static-thumb">
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1ed0UmUi3ueRlqqdquEMRAYjjYLgown67" data-gif="1OSRnWzcm0HsCzoUUQVYFuLekG080jwJN">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1iZ0gaGjARhGBNcirkWEU4JyP7fus1YQu&sz=w640-h360" alt="Animation Project 04" class="static-thumb">
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1gO5oeW2JVbQjmDHutJP0q3ZTTnadFICq" data-gif="17SAHFOZKAcXbTJmhj4huXEvUk5Mz2unP">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1S-dBZR9t91App7lqHHherQmJyv4gpcMd&sz=w640-h360" alt="Animation Project 05" class="static-thumb">
-                </div>
-            </div>
-
-            <div class="video-card" data-video="1oLGGrMmk5ZTO-PAJxkNqi81liQ_03VMg" data-gif="1bUhD8rIE0jAuTqMaSkRPmPLQm-xQLnE5">
-                <div class="video-thumbnail">
-                    <img src="https://drive.google.com/thumbnail?id=1uUFxsw-vRLOqqQoSjzsmtICF2M6Td0YR&sz=w640-h360" alt="Animation Project 07" class="static-thumb">
-                </div>
+            <div class="video-info">
+                <h3>Chuck Norris</h3>
+                <p>Coin Master</p>
             </div>
         </div>
-    </section>
 
-    <section class="about-section" id="about">
-        <div class="about-content">
-            <h2>ABOUT</h2>
-            <p>Yannay Matarasso writes and directs commercials, managing large-scale shoots with A-list talent. With 8 years as a creative director in mobile games, he brings deep industry insight to projects from comedy to animation and everything in between.</p>
+        <div class="video-card" data-video="12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv" data-gif="1HeLmEWnQPDwmRpAog1hpm4qMLvF47_7D">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv&sz=w640-h360" alt="Celebrity Project 01" class="static-thumb">
+            </div>
+            <div class="video-info">
+                <h3>Dani & Danny Dyer</h3>
+                <p>Travel Town</p>
+            </div>
         </div>
-    </section>
 
-    <section class="contact-section" id="contact">
-        <h2>LET'S WORK TOGETHER</h2>
-        <a href="mailto:yannaymatarasso@gmail.com">yannaymatarasso@gmail.com</a>
-    </section>
+        <div class="video-card" data-video="1evsDx4HDN6OmGS977rnDR956-gPM_6LS" data-gif="137YIs93-KKPJImM8qWrj3oBFpQKkY0Dd">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1evsDx4HDN6OmGS977rnDR956-gPM_6LS&sz=w640-h360" alt="Celebrity Project 02" class="static-thumb">
+            </div>
+            <div class="video-info">
+                <h3>Dani & Danny Dyer</h3>
+                <p>Travel Town</p>
+            </div>
+        </div>
 
-    <div class="video-modal" id="videoModal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeBtn">&times;</span>
-            <iframe id="videoFrame" 
-                    src="" 
-                    frameborder="0" 
-                    allowfullscreen
-                    allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                    referrerpolicy="no-referrer-when-downgrade"
-                    loading="lazy">
-            </iframe>
+        <div class="video-card" data-video="1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj" data-gif="1eKqyuw7mzUYkTGxGKAH_ZmbY3Ph-QTGg">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj&sz=w640-h360" alt="Celebrity Project 08" class="static-thumb">
+            </div>
+            <div class="video-info">
+                <h3>Kim Cattrall</h3>
+                <p>Coin Master</p>
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw" data-gif="1_iu9-4F0JqlMFptEQptfeSDIiBMdFYj3">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw&sz=w640-h360" alt="Celebrity Project 09" class="static-thumb">
+            </div>
+            <div class="video-info">
+                <h3>Kim Cattrall</h3>
+                <p>Coin Master</p>
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK" data-gif="198tNfLKsjI0QWBYYPvF5ENwJvoF_aix8">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK&sz=w640-h360" alt="Celebrity Project 10" class="static-thumb">
+            </div>
+            <div class="video-info">
+                <h3>Jennifer Lopez</h3>
+                <p>Coin Master</p>
+            </div>
+        </div>
+
+        <div class="video-card" data-video="16mNqexuSkv2d6QlN993e9PP65vucGska" data-gif="1RmrIq3mn-UD7KiE3fszeFhesw7ZWA0xb">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=16mNqexuSkv2d6QlN993e9PP65vucGska&sz=w640-h360" alt="Celebrity Project 12" class="static-thumb">
+            </div>
+            <div class="video-info">
+                <h3>David Beckham</h3>
+                <p>Coin Master</p>
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6" data-gif="1V1beXGjjW6XUwFCLW21mEQ6LYXL59QW8">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6&sz=w640-h360" alt="Celebrity Project 13" class="static-thumb">
+            </div>
+            <div class="video-info">
+                <h3>John Stamos</h3>
+                <p>Coin Master</p>
+            </div>
+        </div>
+
+        <div class="video-card" data-video="13TTwXy5OVhB65X5qUgvkC84qabqYbLDK" data-gif="1Mt-K6SK4HHp0-IrVjCRJsl533DRXeoUN">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=13TTwXy5OVhB65X5qUgvkC84qabqYbLDK&sz=w640-h360" alt="Celebrity Project 14" class="static-thumb">
+            </div>
+            <div class="video-info">
+                <h3>John Stamos</h3>
+                <p>Coin Master</p>
+            </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('videoModal');
-            const videoFrame = document.getElementById('videoFrame');
-            const closeBtn = document.getElementById('closeBtn');
-            const videoCards = document.querySelectorAll('.video-card');
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mobileNav = document.getElementById('mobileNav');
-            const mobileClose = document.getElementById('mobileClose');
+    <h2 class="section-title">MYSTERY</h2>
+    <div class="video-grid">
+        <div class="video-card" data-video="1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi" data-gif="1KvIuQWQtFl9kov5gWnSjI8r5HIgGxxd8">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi&sz=w640-h360" alt="Mystery Project 01" class="static-thumb">
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl" data-gif="130Y_YArEPpp2XFMPW6hT4TFn3n1QV9GZ">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl&sz=w640-h360" alt="Mystery Project 02" class="static-thumb">
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J" data-gif="1G5JIQ_UJCs7erKvxI_7x_hGyHxdavAYi">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J&sz=w640-h360" alt="Mystery Project 03" class="static-thumb">
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">COMEDY</h2>
+    <div class="video-grid">
+        <div class="video-card" data-video="1YB9yNzRYQcs4lQieQFIz4qG011swnt-F" data-gif="15ivaoLlcV4uln9wwb6FXe0zJDl7ghz4t">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1YB9yNzRYQcs4lQieQFIz4qG011swnt-F&sz=w640-h360" alt="Comedy Project 01" class="static-thumb">
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf" data-gif="1RTiHEWbICfYswGuM8lvRY04Ytx0s87TR">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf&sz=w640-h360" alt="Comedy Project 02" class="static-thumb">
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt" data-gif="1SROYRBvH-A6ucTL1Oi4NYxyy8HjIzcet">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt&sz=w640-h360" alt="Comedy Project 03" class="static-thumb">
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">ANIMATION</h2>
+    <div class="video-grid">
+        <div class="video-card" data-video="1dayuByq6-No8TRFpVrOSaboVVKo5F-zQ" data-gif="1aeeDb5F4NFlsAFLRXD47xfch0C3Wnigm">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1JuJDawnfuF_xvHtPG2yIUGjXjgVb7mk2&sz=w640-h360" alt="Animation Project 01" class="static-thumb">
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj" data-gif="1bMJJz52rgk9kkLUYauCrVWBgJ69T8Ib4">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1uS4tnui2_a23MCVR22G-hI7wS_o8sPt1&sz=w640-h360" alt="Animation Project 03" class="static-thumb">
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1ed0UmUi3ueRlqqdquEMRAYjjYLgown67" data-gif="1OSRnWzcm0HsCzoUUQVYFuLekG080jwJN">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1iZ0gaGjARhGBNcirkWEU4JyP7fus1YQu&sz=w640-h360" alt="Animation Project 04" class="static-thumb">
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1gO5oeW2JVbQjmDHutJP0q3ZTTnadFICq" data-gif="17SAHFOZKAcXbTJmhj4huXEvUk5Mz2unP">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1S-dBZR9t91App7lqHHherQmJyv4gpcMd&sz=w640-h360" alt="Animation Project 05" class="static-thumb">
+            </div>
+        </div>
+
+        <div class="video-card" data-video="1oLGGrMmk5ZTO-PAJxkNqi81liQ_03VMg" data-gif="1bUhD8rIE0jAuTqMaSkRPmPLQm-xQLnE5">
+            <div class="video-thumbnail">
+                <img src="https://drive.google.com/thumbnail?id=1uUFxsw-vRLOqqQoSjzsmtICF2M6Td0YR&sz=w640-h360" alt="Animation Project 07" class="static-thumb">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-section" id="about">
+    <div class="about-content">
+        <h2>ABOUT</h2>
+        <p>Yannay Matarasso writes and directs commercials, managing large-scale shoots with A-list talent. With 8 years as a creative director in mobile games, he brings deep industry insight to projects from comedy to animation and everything in between.</p>
+    </div>
+</section>
+
+<section class="contact-section" id="contact">
+    <h2>LET'S WORK TOGETHER</h2>
+    <a href="mailto:yannaymatarasso@gmail.com">yannaymatarasso@gmail.com</a>
+</section>
+
+<div class="video-modal" id="videoModal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeBtn">&times;</span>
+        <iframe id="videoFrame" 
+                src="" 
+                frameborder="0" 
+                allowfullscreen
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                referrerpolicy="no-referrer-when-downgrade"
+                loading="lazy">
+        </iframe>
+    </div>
+</div>
+
+</div> <!-- End main-content -->
+
+<script>
+    // Password Protection
+    const CORRECT_PASSWORD = 'yannay2025'; // Change this to your desired password
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordOverlay = document.getElementById('passwordOverlay');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordButton = document.getElementById('passwordButton');
+        const passwordError = document.getElementById('passwordError');
+        const mainContent = document.getElementById('mainContent');
+        
+        // Check if user is already authenticated in this session
+        if (sessionStorage.getItem('authenticated') === 'true') {
+            showMainContent();
+        } else {
+            // Focus on password input
+            passwordInput.focus();
+        }
+        
+        // Handle password submission
+        function checkPassword() {
+            const enteredPassword = passwordInput.value;
             
-            // Mobile menu functionality
-            mobileMenuBtn.addEventListener('click', function() {
-                mobileNav.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-            
-            mobileClose.addEventListener('click', function() {
+            if (enteredPassword === CORRECT_PASSWORD) {
+                // Correct password
+                sessionStorage.setItem('authenticated', 'true');
+                showMainContent();
+            } else {
+                // Wrong password
+                passwordError.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // Hide error after 3 seconds
+                setTimeout(() => {
+                    passwordError.classList.remove('show');
+                }, 3000);
+            }
+        }
+        
+        function showMainContent() {
+            passwordOverlay.classList.add('hidden');
+            mainContent.classList.add('show');
+        }
+        
+        // Event listeners
+        passwordButton.addEventListener('click', checkPassword);
+        
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        
+        // Rest of the existing JavaScript code
+        const modal = document.getElementById('videoModal');
+        const videoFrame = document.getElementById('videoFrame');
+        const closeBtn = document.getElementById('closeBtn');
+        const videoCards = document.querySelectorAll('.video-card');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const mobileClose = document.getElementById('mobileClose');
+        
+        // Mobile menu functionality
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        mobileClose.addEventListener('click', function() {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close mobile menu when clicking on nav links
+        const mobileNavLinks = mobileNav.querySelectorAll('a');
+        mobileNavLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
                 mobileNav.classList.remove('active');
                 document.body.style.overflow = 'auto';
             });
-            
-            // Close mobile menu when clicking on nav links
-            const mobileNavLinks = mobileNav.querySelectorAll('a');
-            mobileNavLinks.forEach(function(link) {
-                link.addEventListener('click', function() {
-                    mobileNav.classList.remove('active');
-                    document.body.style.overflow = 'auto';
-                });
-            });
-            
-            // Smart mobile detection (only for REAL mobile phones)
-            function isMobileDevice() {
-                const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                const isSmallScreen = window.innerWidth <= 480;
-                return isMobileUA && isSmallScreen;
+        });
+        
+        // Smart mobile detection (only for REAL mobile phones)
+        function isMobileDevice() {
+            const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isSmallScreen = window.innerWidth <= 480;
+            return isMobileUA && isSmallScreen;
+        }
+        
+        // Setup GIF previews (skip only on real mobile)
+        function setupGifPreviews() {
+            if (isMobileDevice()) {
+                console.log('Mobile detected - skipping GIF previews');
+                return;
             }
             
-            // Setup GIF previews (skip only on real mobile)
-            function setupGifPreviews() {
-                if (isMobileDevice()) {
-                    console.log('Mobile detected - skipping GIF previews');
-                    return;
-                }
-                
-                console.log('Desktop/tablet detected - creating GIF previews');
-                
-                videoCards.forEach(function(card) {
-                    const videoId = card.getAttribute('data-video');
-                    const gifId = card.getAttribute('data-gif');
-                    const thumbnail = card.querySelector('.video-thumbnail');
-                    
-                    if (!gifId || !thumbnail) return;
-                    
-                    // Skip if already has GIF
-                    if (thumbnail.querySelector('.gif-preview')) return;
-                    
-                    // Create GIF preview object
-                    const gifPreview = document.createElement('object');
-                    gifPreview.classList.add('gif-preview');
-                    gifPreview.type = 'text/html';
-                    gifPreview.data = `https://drive.google.com/file/d/${gifId}/preview`;
-                    
-                    // Add to thumbnail
-                    thumbnail.appendChild(gifPreview);
-                });
-            }
+            console.log('Desktop/tablet detected - creating GIF previews');
             
-            // Setup GIFs
-            setupGifPreviews();
-            
-            // Video click handlers
             videoCards.forEach(function(card) {
-                card.addEventListener('click', function() {
-                    const videoId = card.getAttribute('data-video');
-                    const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/preview';
-                    
-                    videoFrame.src = videoUrl;
-                    modal.style.display = 'block';
-                    document.body.style.overflow = 'hidden';
-                });
+                const videoId = card.getAttribute('data-video');
+                const gifId = card.getAttribute('data-gif');
+                const thumbnail = card.querySelector('.video-thumbnail');
+                
+                if (!gifId || !thumbnail) return;
+                
+                // Skip if already has GIF
+                if (thumbnail.querySelector('.gif-preview')) return;
+                
+                // Create GIF preview object
+                const gifPreview = document.createElement('object');
+                gifPreview.classList.add('gif-preview');
+                gifPreview.type = 'text/html';
+                gifPreview.data = `https://drive.google.com/file/d/${gifId}/preview`;
+                
+                // Add to thumbnail
+                thumbnail.appendChild(gifPreview);
             });
-            
-            function closeModal() {
-                modal.style.display = 'none';
-                videoFrame.src = '';
-                document.body.style.overflow = 'auto';
-            }
-            
-            closeBtn.addEventListener('click', closeModal);
-            
-            modal.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-            
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape' && modal.style.display === 'block') {
-                    closeModal();
-                }
-            });
-            
-            // Smooth scrolling for navigation links
-            const navLinks = document.querySelectorAll('.nav a, .mobile-nav a');
-            navLinks.forEach(function(link) {
-                link.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    
-                    if (targetElement) {
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
+        }
+        
+        // Setup GIFs
+        setupGifPreviews();
+        
+        // Video click handlers
+        videoCards.forEach(function(card) {
+            card.addEventListener('click', function() {
+                const videoId = card.getAttribute('data-video');
+                const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/preview';
+                
+                videoFrame.src = videoUrl;
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
             });
         });
-    </script>
+        
+        function closeModal() {
+            modal.style.display = 'none';
+            videoFrame.src = '';
+            document.body.style.overflow = 'auto';
+        }
+        
+        closeBtn.addEventListener('click', closeModal);
+        
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                closeModal();
+            }
+        });
+        
+        // Smooth scrolling for navigation links
+        const navLinks = document.querySelectorAll('.nav a, .mobile-nav a');
+        navLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    });
+</script>
+```
+
 </body>
 </html>
