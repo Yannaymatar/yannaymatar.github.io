@@ -1392,7 +1392,7 @@
             videoCards.forEach(function(card) {
                 card.addEventListener('click', function() {
                     const videoId = card.getAttribute('data-video');
-                    const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/preview';
+                    const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/embed';
                     
                     // AGGRESSIVE MOBILE FIX: Completely destroy and recreate iframe
                     const oldFrame = document.getElementById('videoFrame');
