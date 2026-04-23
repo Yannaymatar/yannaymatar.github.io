@@ -1388,13 +1388,20 @@
             // Setup GIFs
             setupGifPreviews();
             
-            // Video click handlers
+           // Video click handlers
             videoCards.forEach(function(card) {
                 card.addEventListener('click', function() {
                     const videoId = card.getAttribute('data-video');
                     const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/preview';
                     
-                    videoFrame.src = videoUrl;
+                    // MOBILE FIX: Clear iframe completely first
+                    videoFrame.src = '';
+                    
+                    // Small delay to ensure iframe is cleared (especially important for iPhone)
+                    setTimeout(function() {
+                        videoFrame.src = videoUrl;
+                    }, 100);
+                    
                     modal.style.display = 'block';
                     document.body.style.overflow = 'hidden';
                 });
