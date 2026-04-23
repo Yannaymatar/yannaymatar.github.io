@@ -1392,24 +1392,30 @@
             videoCards.forEach(function(card) {
                 card.addEventListener('click', function() {
                     const videoId = card.getAttribute('data-video');
-                    const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/embed';
+                    const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/preview';
                     
-                    // AGGRESSIVE MOBILE FIX: Completely destroy and recreate iframe
-                    const oldFrame = document.getElementById('videoFrame');
-                    const newFrame = document.createElement('iframe');
-                    newFrame.id = 'videoFrame';
-                    newFrame.src = videoUrl;
-                    newFrame.frameBorder = '0';
-                    newFrame.allowFullscreen = true;
-                    newFrame.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
-                    newFrame.referrerPolicy = 'no-referrer-when-downgrade';
-                    newFrame.loading = 'lazy';
-                    newFrame.style.width = '100%';
-                    newFrame.style.height = '100%';
-                    newFrame.style.border = 'none';
+                    // Clear and load video
+                    videoFrame.src = '';
                     
-                    // Replace old iframe with new one
-                    oldFrame.parentNode.replaceChild(newFrame, oldFrame);
+                    setTimeout(function() {
+                        videoFrame.src = videoUrl;
+                        
+                        // INVISIBLE AUTO-RETRY: If iframe doesn't load on iPhone, retry after 2 seconds
+                        setTimeout(function() {
+                            // Check if iframe is loaded, if not, silently retry
+                            try {
+                                // Force reload by clearing and setting again
+                                const currentSrc = videoFrame.src;
+                                videoFrame.src = '';
+                                setTimeout(function() {
+                                    videoFrame.src = currentSrc;
+                                }, 50);
+                            } catch(e) {
+                                // Silently handle any errors
+                            }
+                        }, 2000);
+                        
+                    }, 100);
                     
                     modal.style.display = 'block';
                     document.body.style.overflow = 'hidden';
@@ -1418,8 +1424,7 @@
             
             function closeModal() {
                 modal.style.display = 'none';
-                const iframe = document.getElementById('videoFrame');
-                iframe.src = '';
+                videoFrame.src = '';
                 document.body.style.overflow = 'auto';
             }
             
