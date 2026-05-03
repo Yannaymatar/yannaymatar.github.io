@@ -560,7 +560,7 @@
 
         /* About */
         .about-section {
-            background: #060606;
+            background: #000000;
             padding: 7rem 3rem;
             text-align: center;
             position: relative;
@@ -572,8 +572,8 @@
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(circle at 50% 18%, rgba(255,255,255,0.06), transparent 30%),
-                radial-gradient(circle at 50% 50%, rgba(196, 161, 102, 0.08), transparent 28%);
+                radial-gradient(circle at 50% 18%, rgba(255,255,255,0.025), transparent 26%),
+                radial-gradient(circle at 50% 52%, rgba(196, 161, 102, 0.035), transparent 24%);
             pointer-events: none;
         }
 
@@ -609,17 +609,17 @@
         }
 
         .about-portrait {
-            width: 260px;
-            height: 260px;
+            width: 208px;
+            height: 208px;
             border-radius: 50%;
             overflow: hidden;
             position: relative;
             border: 1.5px solid rgba(203, 169, 109, 0.6);
             box-shadow:
-                0 0 0 1px rgba(255,255,255,0.06),
-                0 0 28px rgba(203, 169, 109, 0.12),
-                0 24px 70px rgba(0, 0, 0, 0.55);
-            background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.12), rgba(0,0,0,0.96) 65%);
+                0 0 0 1px rgba(255,255,255,0.04),
+                0 0 18px rgba(203, 169, 109, 0.08),
+                0 18px 48px rgba(0, 0, 0, 0.6);
+            background: radial-gradient(circle at 50% 28%, rgba(255,255,255,0.06), rgba(0,0,0,1) 68%);
         }
 
         .about-portrait::before {
@@ -627,7 +627,7 @@
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            box-shadow: inset 0 0 90px rgba(0,0,0,0.48);
+            box-shadow: inset 0 0 95px rgba(0,0,0,0.58);
             pointer-events: none;
             z-index: 1;
         }
@@ -646,9 +646,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: center 28%;
-            filter: grayscale(100%) contrast(1.6) brightness(1.08) saturate(0);
-            transform: scale(1.03);
+            object-position: center 22%;
+            filter: grayscale(100%) contrast(1.8) brightness(1.02) saturate(0);
+            transform: scale(1.08);
         }
 
         .about-accent {
@@ -1011,8 +1011,8 @@
             }
 
             .about-portrait {
-                width: 200px;
-                height: 200px;
+                width: 166px;
+                height: 166px;
             }
             
             .video-grid {
