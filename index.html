@@ -1316,8 +1316,24 @@
             const passwordError = document.getElementById('passwordError');
             const mainContent = document.getElementById('mainContent');
             
-            // Check if user is already authenticated in this session
-            if (sessionStorage.getItem('authenticated') === 'true') {
+            // Recruiter access links
+            // Use: https://yannaymatar.github.io/?access=recruiter2025
+            // This bypasses the password screen for portfolio-review links.
+            const RECRUITER_ACCESS_KEYS = ['recruiter2025'];
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessKey = urlParams.get('access');
+            const hasRecruiterAccess = RECRUITER_ACCESS_KEYS.includes(accessKey);
+            
+            function cleanRecruiterUrl() {
+                if (!hasRecruiterAccess) return;
+                const cleanUrl = window.location.origin + window.location.pathname + window.location.hash;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+            
+            // Check if user is already authenticated in this session or entered through a recruiter link
+            if (sessionStorage.getItem('authenticated') === 'true' || hasRecruiterAccess) {
+                sessionStorage.setItem('authenticated', 'true');
+                cleanRecruiterUrl();
                 showMainContent();
             } else {
                 // Focus on password input
