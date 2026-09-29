@@ -1031,7 +1031,90 @@
                 transition-duration: 0.01ms !important;
             }
         }
-    </style>
+    
+
+        /* --------------------------------------------------
+           iPhone / iOS Google Drive rendering test
+           Deliberately strips clipping/compositing effects from the modal
+           while we isolate the black/transparent playback issue.
+           -------------------------------------------------- */
+        @supports (-webkit-touch-callout: none) {
+            @media (max-width: 932px) and (hover: none) and (pointer: coarse) {
+                .video-modal {
+                    padding: 0 !important;
+                    background: #000 !important;
+                    overflow: hidden !important;
+                }
+
+                .video-modal.active {
+                    display: block !important;
+                }
+
+                .modal-shell {
+                    width: 100% !important;
+                    max-width: none !important;
+                    height: 100vh !important;
+                    height: 100dvh !important;
+                    display: flex !important;
+                    flex-direction: column !important;
+                    background: #000 !important;
+                }
+
+                .modal-toolbar {
+                    flex: 0 0 auto !important;
+                    min-height: 52px !important;
+                    padding:
+                        max(6px, env(safe-area-inset-top))
+                        max(10px, env(safe-area-inset-right))
+                        6px
+                        max(10px, env(safe-area-inset-left)) !important;
+                    background: #000 !important;
+                }
+
+                .modal-player {
+                    position: relative !important;
+                    flex: 0 0 auto !important;
+                    width: 100% !important;
+                    aspect-ratio: 16 / 9 !important;
+                    overflow: visible !important;
+                    border-radius: 0 !important;
+                    box-shadow: none !important;
+                    background: transparent !important;
+                    opacity: 1 !important;
+                    transform: none !important;
+                    -webkit-transform: none !important;
+                    filter: none !important;
+                    contain: none !important;
+                    isolation: auto !important;
+                }
+
+                .modal-player::before {
+                    display: none !important;
+                    content: none !important;
+                }
+
+                .modal-player iframe {
+                    position: static !important;
+                    display: block !important;
+                    width: 100% !important;
+                    height: auto !important;
+                    aspect-ratio: 16 / 9 !important;
+                    border: 0 !important;
+                    border-radius: 0 !important;
+                    background: transparent !important;
+                    opacity: 1 !important;
+                    transform: none !important;
+                    -webkit-transform: none !important;
+                    filter: none !important;
+                    clip-path: none !important;
+                    -webkit-mask: none !important;
+                    mask: none !important;
+                    backface-visibility: visible !important;
+                    -webkit-backface-visibility: visible !important;
+                }
+            }
+        }
+</style>
 </head>
 
 <body class="site-locked">
@@ -1504,8 +1587,9 @@
                Configuration
                -------------------------------------------------- */
 
-            const CORRECT_PASSWORD = 'yannay2025';
-            const RECRUITER_ACCESS_KEYS = ['recruiter2025'];
+            const CORRECT_PASSWORD = 'yannay2026';
+            const RECRUITER_ACCESS_KEYS = []; // Temporarily disabled while testing
+            const AUTH_SESSION_KEY = 'portfolio_authenticated_yannay2026_test';
 
             /* --------------------------------------------------
                DOM references
@@ -1630,7 +1714,7 @@
 
             function checkPassword() {
                 if (passwordInput.value === CORRECT_PASSWORD) {
-                    safeSessionSet('authenticated', 'true');
+                    safeSessionSet(AUTH_SESSION_KEY, 'true');
                     unlockSite();
                 } else {
                     showPasswordError();
@@ -1963,8 +2047,8 @@
                Initial access decision
                -------------------------------------------------- */
 
-            if (safeSessionGet('authenticated') === 'true' || hasRecruiterAccess) {
-                safeSessionSet('authenticated', 'true');
+            if (safeSessionGet(AUTH_SESSION_KEY) === 'true' || hasRecruiterAccess) {
+                safeSessionSet(AUTH_SESSION_KEY, 'true');
                 cleanRecruiterUrl();
                 unlockSite();
             } else {
