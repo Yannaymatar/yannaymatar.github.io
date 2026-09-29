@@ -857,6 +857,59 @@
             object-fit: contain;
         }
 
+        /* iPhone uses a plain video element with NO browser-native controls.
+           The controls below live outside the video surface so WebKit cannot
+           place its dark native control layer over the picture. */
+        .ios-video-controls {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 46px;
+            padding: 8px 2px 0;
+        }
+
+        .ios-video-controls.active {
+            display: flex;
+        }
+
+        .ios-play-btn {
+            flex: 0 0 auto;
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+            color: #fff;
+            font-size: 1rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .ios-seek {
+            flex: 1 1 auto;
+            min-width: 0;
+            accent-color: #fff;
+        }
+
+        .ios-time {
+            flex: 0 0 auto;
+            min-width: 86px;
+            text-align: right;
+            font-size: 0.75rem;
+            font-variant-numeric: tabular-nums;
+            color: rgba(255,255,255,0.82);
+        }
+
+        .ios-native-video {
+            opacity: 1 !important;
+            filter: none !important;
+            mix-blend-mode: normal !important;
+            object-fit: contain !important;
+        }
+
         .native-video-fallback {
             position: absolute;
             inset: 0;
@@ -1117,13 +1170,15 @@
                 <video
                     class="hero-video"
                     id="heroVideo"
-                    src="Timeline%202.mp4"
                     autoplay
                     muted
                     loop
                     playsinline
                     preload="auto"
                     aria-label="Yannay Matarasso showreel">
+                    <source src="https://github.com/yannay87/Yannay87.github.io/raw/0a9c295cedbdeb3e4fcd7fe18a41ac333e15b4d4/Timeline%202.mp4" type="video/mp4">
+                    <source src="https://raw.githubusercontent.com/Yannaymatar/yannaymatar.github.io/main/Timeline%202.mp4" type="video/mp4">
+                    <source src="./Timeline%202.mp4" type="video/mp4">
                 </video>
                 <div class="hero-video-overlay"></div>
             </div>
@@ -1523,6 +1578,11 @@
                 <button class="modal-control close-btn" id="closeBtn" type="button" aria-label="Close video" title="Close">&times;</button>
             </div>
             <div class="modal-player" id="modalPlayer"></div>
+            <div class="ios-video-controls" id="iosVideoControls" aria-hidden="true">
+                <button class="ios-play-btn" id="iosPlayBtn" type="button" aria-label="Pause video">&#10074;&#10074;</button>
+                <input class="ios-seek" id="iosSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="Video progress">
+                <div class="ios-time" id="iosTime">0:00 / 0:00</div>
+            </div>
         </div>
     </div>
 
@@ -1562,6 +1622,10 @@
             const modalPlayer = document.getElementById('modalPlayer');
             const reloadBtn = document.getElementById('reloadBtn');
             const closeBtn = document.getElementById('closeBtn');
+            const iosVideoControls = document.getElementById('iosVideoControls');
+            const iosPlayBtn = document.getElementById('iosPlayBtn');
+            const iosSeek = document.getElementById('iosSeek');
+            const iosTime = document.getElementById('iosTime');
 
             /* --------------------------------------------------
                State
@@ -1570,6 +1634,8 @@
             let siteUnlocked = false;
             let heroSourceInitialized = true;
             let currentVideoId = null;
+            let currentNativeVideo = null;
+            let nativeSeekActive = false;
             let lastFocusedCard = null;
             let passwordErrorTimer = null;
 
@@ -1708,6 +1774,12 @@
                 heroVideo.loop = true;
                 heroVideo.playsInline = true;
                 heroVideo.autoplay = true;
+
+                // Force the browser to re-evaluate the original showreel source
+                // after the password screen is removed.
+                if (heroVideo.readyState === 0) {
+                    heroVideo.load();
+                }
                 syncHeroPlayback();
             }
 
@@ -1883,43 +1955,135 @@
                 modalPlayer.classList.add('is-loaded');
             }
 
+            function formatVideoTime(seconds) {
+                if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+                const whole = Math.floor(seconds);
+                const minutes = Math.floor(whole / 60);
+                const secs = String(whole % 60).padStart(2, '0');
+                return `${minutes}:${secs}`;
+            }
+
+            function resetIOSVideoControls() {
+                currentNativeVideo = null;
+                nativeSeekActive = false;
+                iosVideoControls.classList.remove('active');
+                iosVideoControls.setAttribute('aria-hidden', 'true');
+                iosSeek.value = '0';
+                iosPlayBtn.innerHTML = '&#9654;';
+                iosPlayBtn.setAttribute('aria-label', 'Play video');
+                iosTime.textContent = '0:00 / 0:00';
+            }
+
+            function syncIOSVideoControls() {
+                const video = currentNativeVideo;
+                if (!video || !video.isConnected) return;
+
+                const duration = Number.isFinite(video.duration) ? video.duration : 0;
+                const current = Number.isFinite(video.currentTime) ? video.currentTime : 0;
+
+                if (!nativeSeekActive && duration > 0) {
+                    iosSeek.value = String(Math.round((current / duration) * 1000));
+                }
+
+                iosTime.textContent = `${formatVideoTime(current)} / ${formatVideoTime(duration)}`;
+
+                if (video.paused || video.ended) {
+                    iosPlayBtn.innerHTML = '&#9654;';
+                    iosPlayBtn.setAttribute('aria-label', 'Play video');
+                } else {
+                    iosPlayBtn.innerHTML = '&#10074;&#10074;';
+                    iosPlayBtn.setAttribute('aria-label', 'Pause video');
+                }
+            }
+
+            iosPlayBtn.addEventListener('click', () => {
+                const video = currentNativeVideo;
+                if (!video) return;
+
+                if (video.paused || video.ended) {
+                    safePlay(video);
+                } else {
+                    video.pause();
+                }
+            });
+
+            iosSeek.addEventListener('pointerdown', () => {
+                nativeSeekActive = true;
+            });
+
+            iosSeek.addEventListener('pointerup', () => {
+                nativeSeekActive = false;
+            });
+
+            iosSeek.addEventListener('input', () => {
+                const video = currentNativeVideo;
+                if (!video || !Number.isFinite(video.duration) || video.duration <= 0) return;
+                video.currentTime = (Number(iosSeek.value) / 1000) * video.duration;
+                syncIOSVideoControls();
+            });
+
             function createDrivePlayer(videoId) {
                 modalPlayer.classList.remove('is-loaded');
                 modalPlayer.replaceChildren();
+                resetIOSVideoControls();
 
-                // All iPhone browsers use WebKit. Google Drive's embedded preview can
-                // render a dark compositing layer over video there, so iPhone gets a
-                // native HTML5 video element instead of Drive's iframe UI.
+                // Every browser on iPhone uses WebKit. The browser-native video
+                // controls are the black layer visible in the screenshot, so on
+                // iPhone/iPad we deliberately do NOT set the controls attribute.
+                // The small custom controls below sit outside the video surface.
                 if (isIOSFamily) {
                     const video = document.createElement('video');
+                    video.className = 'ios-native-video';
                     video.src = buildDriveDirectVideoUrl(videoId);
-                    video.controls = true;
+                    video.controls = false;
                     video.playsInline = true;
-                    video.preload = 'metadata';
+                    video.preload = 'auto';
+                    video.muted = false;
                     video.setAttribute('playsinline', '');
                     video.setAttribute('webkit-playsinline', '');
-                    video.setAttribute('controlsList', 'nodownload');
                     video.setAttribute('disablePictureInPicture', '');
+                    video.setAttribute('disableRemotePlayback', '');
                     video.setAttribute('aria-label', 'Portfolio video');
+                    video.removeAttribute('controls');
+
+                    currentNativeVideo = video;
+                    iosVideoControls.classList.add('active');
+                    iosVideoControls.setAttribute('aria-hidden', 'false');
+
+                    video.addEventListener('loadedmetadata', syncIOSVideoControls);
+                    video.addEventListener('durationchange', syncIOSVideoControls);
+                    video.addEventListener('timeupdate', syncIOSVideoControls);
+                    video.addEventListener('play', syncIOSVideoControls);
+                    video.addEventListener('pause', syncIOSVideoControls);
+                    video.addEventListener('ended', syncIOSVideoControls);
 
                     video.addEventListener('loadeddata', () => {
                         if (video.isConnected) {
                             modalPlayer.classList.add('is-loaded');
+                            syncIOSVideoControls();
                         }
                     }, { once: true });
 
                     video.addEventListener('error', () => {
+                        resetIOSVideoControls();
                         showNativeVideoFallback(videoId);
                     }, { once: true });
 
+                    // Tapping the picture toggles playback without invoking any
+                    // browser control chrome.
+                    video.addEventListener('click', () => {
+                        if (video.paused || video.ended) {
+                            safePlay(video);
+                        } else {
+                            video.pause();
+                        }
+                    });
+
                     modalPlayer.appendChild(video);
 
-                    const playPromise = video.play();
-                    if (playPromise && typeof playPromise.catch === 'function') {
-                        playPromise.catch(() => {
-                            // The controls remain available if iOS declines autoplay.
-                        });
-                    }
+                    // This is still inside the card click/reload user gesture.
+                    safePlay(video);
+                    syncIOSVideoControls();
                     return;
                 }
 
@@ -1973,6 +2137,7 @@
                 // Removing the iframe destroys Google's old player/browsing context.
                 modalPlayer.replaceChildren();
                 modalPlayer.classList.remove('is-loaded');
+                resetIOSVideoControls();
                 currentVideoId = null;
 
                 updateScrollLock();
