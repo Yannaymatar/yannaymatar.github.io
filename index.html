@@ -908,6 +908,54 @@
             filter: none !important;
             mix-blend-mode: normal !important;
             object-fit: contain !important;
+            pointer-events: none !important;
+            -webkit-appearance: none !important;
+        }
+
+        /* iOS/WebKit can inject its own large media chrome even when the
+           controls attribute is absent. Hide every WebKit media-control
+           pseudo-element we can target. The video itself never receives taps;
+           all interaction happens through our controls outside the video. */
+        .ios-native-video::-webkit-media-controls,
+        .ios-native-video::-webkit-media-controls-enclosure,
+        .ios-native-video::-webkit-media-controls-panel,
+        .ios-native-video::-webkit-media-controls-overlay-play-button,
+        .ios-native-video::-webkit-media-controls-start-playback-button,
+        .ios-native-video::-webkit-media-controls-play-button,
+        .ios-native-video::-webkit-media-controls-timeline,
+        .ios-native-video::-webkit-media-controls-current-time-display,
+        .ios-native-video::-webkit-media-controls-time-remaining-display,
+        .ios-native-video::-webkit-media-controls-mute-button,
+        .ios-native-video::-webkit-media-controls-volume-slider,
+        .ios-native-video::-webkit-media-controls-fullscreen-button {
+            display: none !important;
+            -webkit-appearance: none !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        .mobile-start-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            display: grid;
+            place-items: center;
+            background: transparent;
+        }
+
+        .mobile-start-overlay button {
+            width: 68px;
+            height: 68px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,0.48);
+            border-radius: 50%;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            font-size: 1.35rem;
+            line-height: 1;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .native-video-fallback {
@@ -1646,6 +1694,8 @@
             const hoverPreviewQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
             const isIOSFamily = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const touchPlayerQuery = window.matchMedia('(hover: none), (pointer: coarse)');
+            const useCustomTouchPlayer = isIOSFamily || navigator.maxTouchPoints > 0 || touchPlayerQuery.matches;
 
             /* --------------------------------------------------
                Small helpers
@@ -2001,6 +2051,7 @@
                 if (!video) return;
 
                 if (video.paused || video.ended) {
+                    forceInlineCustomVideo(video);
                     safePlay(video);
                 } else {
                     video.pause();
@@ -2022,71 +2073,118 @@
                 syncIOSVideoControls();
             });
 
+            function forceInlineCustomVideo(video) {
+                // Keep WebKit's native chrome out of the player. iOS sometimes
+                // re-applies media UI after metadata/playback state changes, so
+                // enforce the state more than once.
+                video.controls = false;
+                video.removeAttribute('controls');
+                video.playsInline = true;
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+                video.setAttribute('controlsList', 'nodownload noplaybackrate nofullscreen noremoteplayback');
+                video.disablePictureInPicture = true;
+                video.disableRemotePlayback = true;
+
+                try {
+                    if (typeof video.webkitSetPresentationMode === 'function' &&
+                        video.webkitPresentationMode !== 'inline') {
+                        video.webkitSetPresentationMode('inline');
+                    }
+                } catch (error) {
+                    // Some WebKit builds expose the API but reject the call.
+                }
+            }
+
             function createDrivePlayer(videoId) {
                 modalPlayer.classList.remove('is-loaded');
                 modalPlayer.replaceChildren();
                 resetIOSVideoControls();
 
-                // Every browser on iPhone uses WebKit. The browser-native video
-                // controls are the black layer visible in the screenshot, so on
-                // iPhone/iPad we deliberately do NOT set the controls attribute.
-                // The small custom controls below sit outside the video surface.
-                if (isIOSFamily) {
+                /*
+                 * IMPORTANT MOBILE PATH
+                 * ---------------------
+                 * Do NOT use Google's /preview iframe on touch devices. Google's
+                 * embedded Drive video player currently renders oversized/broken
+                 * controls on mobile WebKit. Instead we feed the Drive file bytes
+                 * into a plain <video> and control it ourselves.
+                 *
+                 * We also deliberately DO NOT autoplay. The first Play press is a
+                 * direct user gesture, which is the most reliable way to keep iOS
+                 * in inline/custom-control mode instead of surfacing its own UI.
+                 */
+                if (useCustomTouchPlayer) {
                     const video = document.createElement('video');
                     video.className = 'ios-native-video';
                     video.src = buildDriveDirectVideoUrl(videoId);
-                    video.controls = false;
-                    video.playsInline = true;
-                    video.preload = 'auto';
+                    video.poster = `https://drive.google.com/thumbnail?id=${encodeURIComponent(videoId)}&sz=w1280-h720`;
+                    video.preload = 'metadata';
                     video.muted = false;
-                    video.setAttribute('playsinline', '');
-                    video.setAttribute('webkit-playsinline', '');
-                    video.setAttribute('disablePictureInPicture', '');
-                    video.setAttribute('disableRemotePlayback', '');
+                    video.autoplay = false;
                     video.setAttribute('aria-label', 'Portfolio video');
-                    video.removeAttribute('controls');
+                    video.setAttribute('x-webkit-airplay', 'deny');
+                    forceInlineCustomVideo(video);
 
                     currentNativeVideo = video;
                     iosVideoControls.classList.add('active');
                     iosVideoControls.setAttribute('aria-hidden', 'false');
 
-                    video.addEventListener('loadedmetadata', syncIOSVideoControls);
-                    video.addEventListener('durationchange', syncIOSVideoControls);
-                    video.addEventListener('timeupdate', syncIOSVideoControls);
-                    video.addEventListener('play', syncIOSVideoControls);
-                    video.addEventListener('pause', syncIOSVideoControls);
-                    video.addEventListener('ended', syncIOSVideoControls);
+                    const startOverlay = document.createElement('div');
+                    startOverlay.className = 'mobile-start-overlay';
 
-                    video.addEventListener('loadeddata', () => {
-                        if (video.isConnected) {
-                            modalPlayer.classList.add('is-loaded');
-                            syncIOSVideoControls();
+                    const startButton = document.createElement('button');
+                    startButton.type = 'button';
+                    startButton.setAttribute('aria-label', 'Play video');
+                    startButton.innerHTML = '&#9654;';
+                    startOverlay.appendChild(startButton);
+
+                    const reassertCustomMode = () => {
+                        if (!video.isConnected) return;
+                        forceInlineCustomVideo(video);
+                    };
+
+                    video.addEventListener('loadedmetadata', () => {
+                        reassertCustomMode();
+                        modalPlayer.classList.add('is-loaded');
+                        syncIOSVideoControls();
+                    });
+                    video.addEventListener('loadeddata', reassertCustomMode);
+                    video.addEventListener('canplay', reassertCustomMode);
+                    video.addEventListener('play', () => {
+                        reassertCustomMode();
+                        if (startOverlay.isConnected) startOverlay.remove();
+                        syncIOSVideoControls();
+                    });
+                    video.addEventListener('playing', reassertCustomMode);
+                    video.addEventListener('pause', syncIOSVideoControls);
+                    video.addEventListener('timeupdate', syncIOSVideoControls);
+                    video.addEventListener('durationchange', syncIOSVideoControls);
+                    video.addEventListener('ended', () => {
+                        syncIOSVideoControls();
+                        if (!startOverlay.isConnected && video.isConnected) {
+                            modalPlayer.appendChild(startOverlay);
                         }
-                    }, { once: true });
+                    });
+                    video.addEventListener('webkitpresentationmodechanged', reassertCustomMode);
 
                     video.addEventListener('error', () => {
                         resetIOSVideoControls();
                         showNativeVideoFallback(videoId);
                     }, { once: true });
 
-                    // Tapping the picture toggles playback without invoking any
-                    // browser control chrome.
-                    video.addEventListener('click', () => {
-                        if (video.paused || video.ended) {
-                            safePlay(video);
-                        } else {
-                            video.pause();
-                        }
+                    startButton.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        forceInlineCustomVideo(video);
+                        safePlay(video);
                     });
 
-                    modalPlayer.appendChild(video);
-
-                    // This is still inside the card click/reload user gesture.
-                    safePlay(video);
+                    modalPlayer.append(video, startOverlay);
                     syncIOSVideoControls();
                     return;
                 }
 
+                // Desktop keeps the normal Google Drive preview player.
                 const frame = document.createElement('iframe');
                 frame.src = buildDriveVideoUrl(videoId);
                 frame.loading = 'eager';
