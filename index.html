@@ -841,14 +841,41 @@
             display: none;
         }
 
-        .modal-player iframe {
-            position: relative;
+        .modal-player iframe,
+        .modal-player video {
+            position: absolute;
+            inset: 0;
             z-index: 1;
             width: 100%;
             height: 100%;
             display: block;
             border: 0;
             background: #000;
+        }
+
+        .modal-player video {
+            object-fit: contain;
+        }
+
+        .native-video-fallback {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            text-align: center;
+            background: #000;
+        }
+
+        .native-video-fallback button {
+            min-height: 44px;
+            padding: 0.8rem 1.15rem;
+            border: 1px solid rgba(255,255,255,0.28);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            cursor: pointer;
         }
 
         @keyframes spin {
@@ -1033,87 +1060,6 @@
         }
     
 
-        /* --------------------------------------------------
-           iPhone / iOS Google Drive rendering test
-           Deliberately strips clipping/compositing effects from the modal
-           while we isolate the black/transparent playback issue.
-           -------------------------------------------------- */
-        @supports (-webkit-touch-callout: none) {
-            @media (max-width: 932px) and (hover: none) and (pointer: coarse) {
-                .video-modal {
-                    padding: 0 !important;
-                    background: #000 !important;
-                    overflow: hidden !important;
-                }
-
-                .video-modal.active {
-                    display: block !important;
-                }
-
-                .modal-shell {
-                    width: 100% !important;
-                    max-width: none !important;
-                    height: 100vh !important;
-                    height: 100dvh !important;
-                    display: flex !important;
-                    flex-direction: column !important;
-                    background: #000 !important;
-                }
-
-                .modal-toolbar {
-                    flex: 0 0 auto !important;
-                    min-height: 52px !important;
-                    padding:
-                        max(6px, env(safe-area-inset-top))
-                        max(10px, env(safe-area-inset-right))
-                        6px
-                        max(10px, env(safe-area-inset-left)) !important;
-                    background: #000 !important;
-                }
-
-                .modal-player {
-                    position: relative !important;
-                    flex: 0 0 auto !important;
-                    width: 100% !important;
-                    aspect-ratio: 16 / 9 !important;
-                    overflow: visible !important;
-                    border-radius: 0 !important;
-                    box-shadow: none !important;
-                    background: transparent !important;
-                    opacity: 1 !important;
-                    transform: none !important;
-                    -webkit-transform: none !important;
-                    filter: none !important;
-                    contain: none !important;
-                    isolation: auto !important;
-                }
-
-                .modal-player::before {
-                    display: none !important;
-                    content: none !important;
-                }
-
-                .modal-player iframe {
-                    position: static !important;
-                    display: block !important;
-                    width: 100% !important;
-                    height: auto !important;
-                    aspect-ratio: 16 / 9 !important;
-                    border: 0 !important;
-                    border-radius: 0 !important;
-                    background: transparent !important;
-                    opacity: 1 !important;
-                    transform: none !important;
-                    -webkit-transform: none !important;
-                    filter: none !important;
-                    clip-path: none !important;
-                    -webkit-mask: none !important;
-                    mask: none !important;
-                    backface-visibility: visible !important;
-                    -webkit-backface-visibility: visible !important;
-                }
-            }
-        }
 </style>
 </head>
 
@@ -1171,11 +1117,12 @@
                 <video
                     class="hero-video"
                     id="heroVideo"
+                    src="Timeline%202.mp4"
+                    autoplay
                     muted
                     loop
                     playsinline
-                    preload="none"
-                    data-src="Timeline%202.mp4"
+                    preload="auto"
                     aria-label="Yannay Matarasso showreel">
                 </video>
                 <div class="hero-video-overlay"></div>
@@ -1621,8 +1568,7 @@
                -------------------------------------------------- */
 
             let siteUnlocked = false;
-            let heroSourceInitialized = false;
-            let heroInView = true;
+            let heroSourceInitialized = true;
             let currentVideoId = null;
             let lastFocusedCard = null;
             let passwordErrorTimer = null;
@@ -1632,6 +1578,8 @@
             let previewGeneration = 0;
 
             const hoverPreviewQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+            const isIOSFamily = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
             /* --------------------------------------------------
                Small helpers
@@ -1755,21 +1703,11 @@
                -------------------------------------------------- */
 
             function initializeHeroVideo() {
-                if (heroSourceInitialized) {
-                    syncHeroPlayback();
-                    return;
-                }
-
-                const source = heroVideo.dataset.src;
-                if (!source) return;
-
                 heroSourceInitialized = true;
-                heroVideo.src = source;
                 heroVideo.muted = true;
                 heroVideo.loop = true;
                 heroVideo.playsInline = true;
-                heroVideo.load();
-
+                heroVideo.autoplay = true;
                 syncHeroPlayback();
             }
 
@@ -1777,7 +1715,6 @@
                 return (
                     siteUnlocked &&
                     heroSourceInitialized &&
-                    heroInView &&
                     !modal.classList.contains('active') &&
                     document.visibilityState === 'visible'
                 );
@@ -1791,18 +1728,6 @@
                 } else {
                     if (!heroVideo.paused) heroVideo.pause();
                 }
-            }
-
-            if ('IntersectionObserver' in window) {
-                const heroObserver = new IntersectionObserver((entries) => {
-                    const entry = entries[0];
-                    heroInView = Boolean(entry && entry.isIntersecting && entry.intersectionRatio >= 0.12);
-                    syncHeroPlayback();
-                }, {
-                    threshold: [0, 0.12, 0.5]
-                });
-
-                heroObserver.observe(heroMedia);
             }
 
             document.addEventListener('visibilitychange', () => {
@@ -1932,9 +1857,71 @@
                 return `https://drive.google.com/file/d/${encodeURIComponent(videoId)}/preview`;
             }
 
+            function buildDriveDirectVideoUrl(videoId) {
+                return `https://drive.usercontent.google.com/download?id=${encodeURIComponent(videoId)}&export=download&confirm=t`;
+            }
+
+            function buildDriveViewUrl(videoId) {
+                return `https://drive.google.com/file/d/${encodeURIComponent(videoId)}/view`;
+            }
+
+            function showNativeVideoFallback(videoId) {
+                if (!modal.classList.contains('active') || currentVideoId !== videoId) return;
+
+                const fallback = document.createElement('div');
+                fallback.className = 'native-video-fallback';
+
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = 'Open video';
+                button.addEventListener('click', () => {
+                    window.open(buildDriveViewUrl(videoId), '_blank', 'noopener');
+                });
+
+                fallback.appendChild(button);
+                modalPlayer.replaceChildren(fallback);
+                modalPlayer.classList.add('is-loaded');
+            }
+
             function createDrivePlayer(videoId) {
                 modalPlayer.classList.remove('is-loaded');
                 modalPlayer.replaceChildren();
+
+                // All iPhone browsers use WebKit. Google Drive's embedded preview can
+                // render a dark compositing layer over video there, so iPhone gets a
+                // native HTML5 video element instead of Drive's iframe UI.
+                if (isIOSFamily) {
+                    const video = document.createElement('video');
+                    video.src = buildDriveDirectVideoUrl(videoId);
+                    video.controls = true;
+                    video.playsInline = true;
+                    video.preload = 'metadata';
+                    video.setAttribute('playsinline', '');
+                    video.setAttribute('webkit-playsinline', '');
+                    video.setAttribute('controlsList', 'nodownload');
+                    video.setAttribute('disablePictureInPicture', '');
+                    video.setAttribute('aria-label', 'Portfolio video');
+
+                    video.addEventListener('loadeddata', () => {
+                        if (video.isConnected) {
+                            modalPlayer.classList.add('is-loaded');
+                        }
+                    }, { once: true });
+
+                    video.addEventListener('error', () => {
+                        showNativeVideoFallback(videoId);
+                    }, { once: true });
+
+                    modalPlayer.appendChild(video);
+
+                    const playPromise = video.play();
+                    if (playPromise && typeof playPromise.catch === 'function') {
+                        playPromise.catch(() => {
+                            // The controls remain available if iOS declines autoplay.
+                        });
+                    }
+                    return;
+                }
 
                 const frame = document.createElement('iframe');
                 frame.src = buildDriveVideoUrl(videoId);
