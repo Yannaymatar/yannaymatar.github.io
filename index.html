@@ -1608,17 +1608,16 @@
         .header .logo,
         .header .nav,
         .header .mobile-menu-btn {
-            opacity: 0;
+            opacity: var(--nav-text-opacity, 0);
             pointer-events: none;
-            transition: opacity 500ms ease-out;
+            transition: none !important;
+            will-change: opacity;
         }
 
-        body.nav-text-visible .header .logo,
-        body.nav-text-visible .header .nav,
-        body.nav-text-visible .header .mobile-menu-btn {
-            opacity: 1;
+        body.nav-text-interactive .header .logo,
+        body.nav-text-interactive .header .nav,
+        body.nav-text-interactive .header .mobile-menu-btn {
             pointer-events: auto;
-            transition: opacity 1300ms ease-in-out;
         }
 
     </style>
@@ -1647,7 +1646,7 @@
             <div class="hero-content">
                 <h1 class="hero-name"><span class="first-name">YANNAY</span> <span class="last-name">MATARASSO</span></h1>
                 <h2 class="hero-title">DIRECTOR</h2>
-                <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
+                <p class="hero-description">Commercials • Music Videos • Creative • Animation</p>
             </div>
         </div>
         
@@ -1663,7 +1662,7 @@
                 <div class="hero-content">
                     <h1 class="hero-name"><span class="first-name">YANNAY</span> <span class="last-name">MATARASSO</span></h1>
                     <h2 class="hero-title">DIRECTOR</h2>
-                    <p class="hero-description">Commercial • Music Video • Creative • Animation</p>
+                    <p class="hero-description">Commercials • Music Videos • Creative • Animation</p>
                 </div>
             </div>
         </div>
@@ -2361,12 +2360,12 @@
 
 
     <script>
-        // Larkin-style menu reveal:
-        // - the black strip is always opaque
-        // - only YANNAY MATARASSO + WORK / ABOUT / CONTACT fade in
-        // - fade starts when the page has scrolled half a viewport,
-        //   which is when this bar is around the middle of the screen
-        // - arrow keeps the fade behavior already approved
+        // Larkin-style scroll-linked menu reveal:
+        // - black strip stays fully opaque
+        // - ONLY the logo/menu text fades
+        // - opacity follows scroll position directly: no timed delay/buffer
+        // - fade begins around the middle of the screen
+        // - arrow keeps its approved scroll fade
         (function () {
             const cue = document.querySelector('.hero-scroll-cue');
             let ticking = false;
@@ -2375,15 +2374,35 @@
                 return Math.max(0, Math.min(1, value));
             }
 
+            function smoothstep(value) {
+                const x = clamp01(value);
+                return x * x * (3 - 2 * x);
+            }
+
             function updateScrollFades() {
                 const y = window.scrollY || window.pageYOffset || 0;
                 const vh = Math.max(window.innerHeight || 0, 1);
 
-                // This mirrors the supplied Larkin reference:
-                // menu content begins appearing after half a viewport of scroll.
-                document.body.classList.toggle('nav-text-visible', y > (vh / 2));
+                // Begin at 50% of one viewport and finish at 63%.
+                // The opacity is calculated fresh from scroll position every frame,
+                // so it responds immediately rather than waiting for a CSS timer.
+                const fadeStart = vh * 0.50;
+                const fadeEnd = vh * 0.63;
+                const navProgress = smoothstep(
+                    (y - fadeStart) / Math.max(fadeEnd - fadeStart, 1)
+                );
 
-                // Preserve the arrow fade behavior from the previous version.
+                document.body.style.setProperty(
+                    '--nav-text-opacity',
+                    navProgress.toFixed(3)
+                );
+
+                document.body.classList.toggle(
+                    'nav-text-interactive',
+                    navProgress > 0.92
+                );
+
+                // Preserve the arrow fade behavior already approved.
                 const arrowProgress = clamp01(y / (vh * 0.20));
                 const arrowOpacity = 0.82 * (1 - arrowProgress);
 
