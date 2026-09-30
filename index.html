@@ -1451,6 +1451,42 @@
             }
         }
 
+    
+        /* =========================================================
+           R2 HOVER PREVIEWS — all portfolio cards
+           ========================================================= */
+
+        /* The old Google Drive GIF layers are retired. */
+        .gif-preview {
+            display: none !important;
+            opacity: 0 !important;
+        }
+
+        /* Keep the original thumbnail visible while the MP4 preview loads. */
+        @media (hover: hover) and (pointer: fine) {
+            .video-card:hover .static-thumb {
+                opacity: 1 !important;
+            }
+        }
+
+        .r2-hover-preview {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            z-index: 4;
+            opacity: 0;
+            pointer-events: none;
+            background: #080808;
+            transition: opacity 180ms ease;
+        }
+
+        .r2-hover-preview.is-ready {
+            opacity: 1;
+        }
+
     </style>
 </head>
 <body>
@@ -1920,45 +1956,8 @@
                 });
             });
             
-            // Smart mobile detection (only for REAL mobile phones)
-            function isMobileDevice() {
-                const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                const isSmallScreen = window.innerWidth <= 480;
-                return isMobileUA && isSmallScreen;
-            }
-            
-            // Setup GIF previews (skip only on real mobile)
-            function setupGifPreviews() {
-                if (isMobileDevice()) {
-                    console.log('Mobile detected - skipping GIF previews');
-                    return;
-                }
-                
-                console.log('Desktop/tablet detected - creating GIF previews');
-                
-                videoCards.forEach(function(card) {
-                    const videoId = card.getAttribute('data-video');
-                    const gifId = card.getAttribute('data-gif');
-                    const thumbnail = card.querySelector('.video-thumbnail');
-                    
-                    if (!gifId || !thumbnail) return;
-                    
-                    // Skip if already has GIF
-                    if (thumbnail.querySelector('.gif-preview')) return;
-                    
-                    // Create GIF preview object
-                    const gifPreview = document.createElement('object');
-                    gifPreview.classList.add('gif-preview');
-                    gifPreview.type = 'text/html';
-                    gifPreview.data = `https://drive.google.com/file/d/${gifId}/preview`;
-                    
-                    // Add to thumbnail
-                    thumbnail.appendChild(gifPreview);
-                });
-            }
-            
-            // Setup GIFs
-            setupGifPreviews();
+            // Hover previews now use the real Cloudflare R2 movies.
+            // Google Drive GIF preview embeds are no longer created.
             
             // Video click handlers
             videoCards.forEach(function(card) {
@@ -2084,60 +2083,118 @@
     </script>
 
 
+    
+
+
     <script>
-        // TEST: Dani & Danny #3 uses the real R2 movie as its hover preview.
-        // It loops only seconds 1-5 and keeps the exact same card crop.
+        // All desktop portfolio hover previews now use the real R2 movie.
+        // Each preview loops about four seconds, cropped exactly like the card.
         (function () {
-            const card = document.querySelector('[data-video="r2-dani-danny-3"]');
-            if (!card) return;
+            const hoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+            if (!hoverQuery.matches) return;
 
-            const preview = card.querySelector('video.static-thumb');
-            if (!preview) return;
+            const cards = document.querySelectorAll('.video-card[data-direct]');
+            const START_AT = 1;
+            const PREVIEW_LENGTH = 4;
 
-            const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-            if (!canHover) return;
+            cards.forEach(function (card) {
+                const thumbnail = card.querySelector('.video-thumbnail');
+                const source = card.getAttribute('data-direct');
+                if (!thumbnail || !source) return;
 
-            const START = 1;
-            const END = 5;
+                let preview = null;
+                let active = false;
+                let loopStart = START_AT;
+                let loopEnd = START_AT + PREVIEW_LENGTH;
 
-            preview.muted = true;
-            preview.playsInline = true;
+                function destroyPreview() {
+                    active = false;
 
-            function startPreview() {
-                try {
-                    if (preview.readyState >= 1) {
-                        preview.currentTime = START;
-                    }
-                } catch (e) {}
+                    if (!preview) return;
 
-                const p = preview.play();
-                if (p && typeof p.catch === 'function') {
-                    p.catch(function () {});
+                    preview.pause();
+                    preview.removeAttribute('src');
+                    preview.load();
+                    preview.remove();
+                    preview = null;
                 }
-            }
 
-            function stopPreview() {
-                preview.pause();
-                try {
-                    preview.currentTime = 0.001;
-                } catch (e) {}
-            }
+                function startPreview() {
+                    if (preview) return;
 
-            preview.addEventListener('timeupdate', function () {
-                if (preview.currentTime >= END) {
-                    try {
-                        preview.currentTime = START;
-                        const p = preview.play();
-                        if (p && typeof p.catch === 'function') {
-                            p.catch(function () {});
+                    active = true;
+                    preview = document.createElement('video');
+                    preview.className = 'r2-hover-preview';
+                    preview.muted = true;
+                    preview.defaultMuted = true;
+                    preview.playsInline = true;
+                    preview.setAttribute('playsinline', '');
+                    preview.setAttribute('webkit-playsinline', '');
+                    preview.preload = 'metadata';
+                    preview.src = source;
+
+                    thumbnail.appendChild(preview);
+
+                    preview.addEventListener('loadedmetadata', function () {
+                        if (!active || !preview) return;
+
+                        const duration = Number.isFinite(preview.duration) ? preview.duration : 0;
+
+                        if (duration > 0) {
+                            loopStart = Math.min(START_AT, Math.max(0, duration - 0.25));
+                            loopEnd = Math.min(
+                                loopStart + PREVIEW_LENGTH,
+                                Math.max(loopStart + 0.05, duration - 0.03)
+                            );
+                        } else {
+                            loopStart = START_AT;
+                            loopEnd = START_AT + PREVIEW_LENGTH;
                         }
-                    } catch (e) {}
+
+                        try {
+                            preview.currentTime = loopStart;
+                        } catch (e) {}
+                    }, { once: true });
+
+                    preview.addEventListener('loadeddata', function () {
+                        if (!active || !preview) return;
+
+                        preview.classList.add('is-ready');
+
+                        const playPromise = preview.play();
+                        if (playPromise && typeof playPromise.catch === 'function') {
+                            playPromise.catch(function () {});
+                        }
+                    }, { once: true });
+
+                    preview.addEventListener('timeupdate', function () {
+                        if (!active || !preview) return;
+
+                        if (preview.currentTime >= loopEnd) {
+                            try {
+                                preview.currentTime = loopStart;
+                                const playPromise = preview.play();
+                                if (playPromise && typeof playPromise.catch === 'function') {
+                                    playPromise.catch(function () {});
+                                }
+                            } catch (e) {}
+                        }
+                    });
                 }
+
+                card.addEventListener('mouseenter', startPreview);
+                card.addEventListener('mouseleave', destroyPreview);
+                card.addEventListener('click', destroyPreview);
             });
 
-            card.addEventListener('mouseenter', startPreview);
-            card.addEventListener('mouseleave', stopPreview);
-            card.addEventListener('click', stopPreview);
+            window.addEventListener('pagehide', function () {
+                document.querySelectorAll('.r2-hover-preview').forEach(function (video) {
+                    video.pause();
+                    video.removeAttribute('src');
+                    video.load();
+                    video.remove();
+                });
+            });
         })();
     </script>
 
