@@ -1630,8 +1630,8 @@
 
     
         /* =========================================================
-           CUSTOM VIDEO PLAYER
-           No native browser controls = no browser three-dot menu.
+           MODERN CUSTOM VIDEO PLAYER
+           Floating minimal controls, auto-hidden after 1 second.
            ========================================================= */
 
         .custom-video-shell {
@@ -1653,54 +1653,86 @@
             background: #000;
         }
 
+        .custom-video-shell.controls-hidden {
+            cursor: none;
+        }
+
         .custom-video-controls {
             position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            left: 50%;
+            bottom: 18px;
             z-index: 20;
+            width: min(720px, calc(100% - 40px));
+            transform: translateX(-50%);
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            background: linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.58) 60%, rgba(0,0,0,0));
+            gap: 9px;
+            padding: 8px 11px;
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 15px;
+            background: rgba(15,15,15,0.58);
+            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            backdrop-filter: blur(16px) saturate(120%);
+            box-shadow: 0 10px 32px rgba(0,0,0,0.22);
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 180ms ease, transform 180ms ease, visibility 180ms step-start;
+        }
+
+        .custom-video-shell.controls-hidden .custom-video-controls {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-50%) translateY(5px);
+            pointer-events: none;
+            transition: opacity 180ms ease, transform 180ms ease, visibility 180ms step-end;
         }
 
         .custom-control-btn {
             appearance: none;
             -webkit-appearance: none;
-            width: 38px;
-            height: 38px;
-            flex: 0 0 38px;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             border: 0;
+            border-radius: 50%;
             padding: 0;
             margin: 0;
             background: transparent;
-            color: #fff;
-            font: inherit;
-            font-size: 18px;
-            line-height: 1;
+            color: rgba(255,255,255,0.94);
             cursor: pointer;
-            opacity: 0.92;
+            transition: background 140ms ease, transform 140ms ease;
         }
 
         .custom-control-btn:hover {
-            opacity: 1;
+            background: rgba(255,255,255,0.10);
         }
 
-        .custom-control-btn:focus-visible,
-        .custom-video-seek:focus-visible,
-        .custom-volume-slider:focus-visible {
-            outline: 1px solid rgba(255,255,255,0.92);
-            outline-offset: 2px;
+        .custom-control-btn:active {
+            transform: scale(0.94);
+        }
+
+        .custom-control-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            display: block;
+        }
+
+        .play-btn svg {
+            width: 20px;
+            height: 20px;
         }
 
         .custom-video-seek,
         .custom-volume-slider {
-            accent-color: #fff;
+            appearance: none;
+            -webkit-appearance: none;
+            height: 3px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.28);
             cursor: pointer;
         }
 
@@ -1710,29 +1742,54 @@
         }
 
         .custom-volume-slider {
-            width: 78px;
-            flex: 0 0 78px;
+            width: 68px;
+        }
+
+        .custom-video-seek::-webkit-slider-thumb,
+        .custom-volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 0;
+            background: #fff;
+        }
+
+        .custom-video-seek::-moz-range-thumb,
+        .custom-volume-slider::-moz-range-thumb {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 0;
+            background: #fff;
+        }
+
+        .volume-wrap {
+            display: flex;
+            align-items: center;
+            width: 68px;
         }
 
         .icon-pause,
         .icon-muted {
-            display: none;
+            display: none !important;
         }
 
         .custom-video-shell.is-playing .icon-play {
-            display: none;
+            display: none !important;
         }
 
         .custom-video-shell.is-playing .icon-pause {
-            display: inline;
+            display: block !important;
         }
 
         .custom-video-shell.is-muted .icon-volume {
-            display: none;
+            display: none !important;
         }
 
         .custom-video-shell.is-muted .icon-muted {
-            display: inline;
+            display: block !important;
         }
 
         .custom-video-shell:fullscreen,
@@ -1744,19 +1801,28 @@
 
         @media (max-width: 640px) {
             .custom-video-controls {
+                bottom: 12px;
+                width: calc(100% - 24px);
                 gap: 6px;
-                padding: 9px 10px;
+                padding: 7px 9px;
+                border-radius: 13px;
             }
 
             .custom-control-btn {
-                width: 36px;
-                height: 36px;
-                flex-basis: 36px;
+                width: 32px;
+                height: 32px;
+                flex-basis: 32px;
             }
 
-            .custom-volume-slider {
-                width: 58px;
-                flex-basis: 58px;
+            .volume-wrap {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .custom-video-controls,
+            .custom-control-btn {
+                transition: none !important;
             }
         }
 
@@ -2134,36 +2200,26 @@
                 </video>
 
                 <div class="custom-video-controls" id="customVideoControls">
-                    <button class="custom-control-btn" id="customPlayPause" type="button" aria-label="Play">
-                        <span class="icon-play" aria-hidden="true">▶</span>
-                        <span class="icon-pause" aria-hidden="true">❚❚</span>
+                    <button class="custom-control-btn play-btn" id="customPlayPause" type="button" aria-label="Play">
+                        <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"></path></svg>
+                        <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"></path></svg>
                     </button>
 
-                    <input class="custom-video-seek"
-                           id="customVideoSeek"
-                           type="range"
-                           min="0"
-                           max="1000"
-                           value="0"
-                           step="1"
-                           aria-label="Video position">
+                    <input class="custom-video-seek" id="customVideoSeek" type="range"
+                           min="0" max="1000" value="0" step="1" aria-label="Video position">
 
-                    <button class="custom-control-btn custom-volume-btn" id="customMute" type="button" aria-label="Mute">
-                        <span class="icon-volume" aria-hidden="true">◖))</span>
-                        <span class="icon-muted" aria-hidden="true">◖×</span>
+                    <button class="custom-control-btn" id="customMute" type="button" aria-label="Mute">
+                        <svg class="icon-volume" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm11.5-.7v1.8a3 3 0 0 1 0 3.8v1.8a5 5 0 0 0 0-7.4z"></path></svg>
+                        <svg class="icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.2 1.2-1.4 1.4 1.7 1.7-1.7 1.7 1.4 1.4 1.7-1.7 1.7 1.7 1.4-1.4-1.7-1.7 1.7-1.7-1.4-1.4-1.7 1.7z"></path></svg>
                     </button>
 
-                    <input class="custom-volume-slider"
-                           id="customVolume"
-                           type="range"
-                           min="0"
-                           max="1"
-                           value="1"
-                           step="0.05"
-                           aria-label="Volume">
+                    <div class="volume-wrap">
+                        <input class="custom-volume-slider" id="customVolume" type="range"
+                               min="0" max="1" value="1" step="0.05" aria-label="Volume">
+                    </div>
 
                     <button class="custom-control-btn" id="customFullscreen" type="button" aria-label="Fullscreen">
-                        <span aria-hidden="true">⛶</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9V5h4v2H7v2H5zm10-4h4v4h-2V7h-2V5zM7 15v2h2v2H5v-4h2zm10 2v-2h2v4h-4v-2h2z"></path></svg>
                     </button>
                 </div>
             </div>
@@ -2281,6 +2337,28 @@
             // Hover previews now use the real Cloudflare R2 movies.
             // Google Drive GIF preview embeds are no longer created.
             
+            // Auto-hide after 1 second while playing.
+            // Mouse/touch movement shows the controls immediately again.
+            let controlsHideTimer = null;
+
+            function keepCustomControlsVisible() {
+                if (controlsHideTimer) {
+                    window.clearTimeout(controlsHideTimer);
+                    controlsHideTimer = null;
+                }
+                customVideoShell.classList.remove('controls-hidden');
+            }
+
+            function showCustomControls() {
+                keepCustomControlsVisible();
+
+                if (!directVideo.paused && !directVideo.ended) {
+                    controlsHideTimer = window.setTimeout(function() {
+                        customVideoShell.classList.add('controls-hidden');
+                    }, 1000);
+                }
+            }
+
             // Custom video controls.
             // The browser's native control bar is intentionally not used.
             function updateCustomPlayerState() {
@@ -2371,12 +2449,36 @@
                 }
             });
 
-            directVideo.addEventListener('play', updateCustomPlayerState);
-            directVideo.addEventListener('pause', updateCustomPlayerState);
-            directVideo.addEventListener('ended', updateCustomPlayerState);
+            directVideo.addEventListener('play', function() {
+                updateCustomPlayerState();
+                showCustomControls();
+            });
+            directVideo.addEventListener('pause', function() {
+                updateCustomPlayerState();
+                keepCustomControlsVisible();
+            });
+            directVideo.addEventListener('ended', function() {
+                updateCustomPlayerState();
+                keepCustomControlsVisible();
+            });
             directVideo.addEventListener('volumechange', updateCustomPlayerState);
             directVideo.addEventListener('timeupdate', updateSeekPosition);
             directVideo.addEventListener('loadedmetadata', updateSeekPosition);
+
+            // Any interaction wakes the controls. While paused, they stay visible.
+            customVideoShell.addEventListener('mousemove', showCustomControls, { passive: true });
+            customVideoShell.addEventListener('pointerdown', showCustomControls, { passive: true });
+            customVideoShell.addEventListener('touchstart', showCustomControls, { passive: true });
+
+            customVideoControls.addEventListener('mouseenter', keepCustomControlsVisible);
+            customVideoControls.addEventListener('mouseleave', function() {
+                if (!directVideo.paused && !directVideo.ended) {
+                    showCustomControls();
+                }
+            });
+
+            customVideoSeek.addEventListener('pointerdown', keepCustomControlsVisible);
+            customVolume.addEventListener('pointerdown', keepCustomControlsVisible);
 
             // Suppress the ordinary right-click video context menu.
             customVideoShell.addEventListener('contextmenu', function(event) {
@@ -2404,7 +2506,11 @@
                     directVideo.removeAttribute('src');
                     directVideo.load();
                     customVideoShell.style.display = 'none';
-                    customVideoShell.classList.remove('is-playing');
+                    customVideoShell.classList.remove('is-playing', 'controls-hidden');
+                    if (controlsHideTimer) {
+                        window.clearTimeout(controlsHideTimer);
+                        controlsHideTimer = null;
+                    }
                     customVideoSeek.value = '0';
 
                     if (directUrl) {
@@ -2412,6 +2518,7 @@
                         directVideo.src = directUrl;
                         customVideoShell.style.display = 'block';
                         directVideo.load();
+                        keepCustomControlsVisible();
 
                         const playPromise = directVideo.play();
                         if (playPromise && typeof playPromise.catch === 'function') {
@@ -2442,7 +2549,11 @@
                     directVideo.removeAttribute('src');
                     directVideo.load();
                     customVideoShell.style.display = 'none';
-                    customVideoShell.classList.remove('is-playing');
+                    customVideoShell.classList.remove('is-playing', 'controls-hidden');
+                    if (controlsHideTimer) {
+                        window.clearTimeout(controlsHideTimer);
+                        controlsHideTimer = null;
+                    }
                     customVideoSeek.value = '0';
 
                 document.body.style.overflow = 'auto';
