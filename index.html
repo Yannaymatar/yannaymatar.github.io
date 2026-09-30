@@ -1620,6 +1620,146 @@
             pointer-events: auto;
         }
 
+    
+        /* Hide the native Chromium/WebKit overflow/download controls.
+           Play/pause, volume and fullscreen remain available. */
+        #directVideo::-webkit-media-controls-overflow-button,
+        #directVideo::-webkit-media-controls-download-button {
+            display: none !important;
+        }
+
+    
+        /* =========================================================
+           CUSTOM VIDEO PLAYER
+           No native browser controls = no browser three-dot menu.
+           ========================================================= */
+
+        .custom-video-shell {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background: #000;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .custom-video-shell #directVideo {
+            display: block !important;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+
+        .custom-video-controls {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.58) 60%, rgba(0,0,0,0));
+        }
+
+        .custom-control-btn {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            padding: 0;
+            margin: 0;
+            background: transparent;
+            color: #fff;
+            font: inherit;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.92;
+        }
+
+        .custom-control-btn:hover {
+            opacity: 1;
+        }
+
+        .custom-control-btn:focus-visible,
+        .custom-video-seek:focus-visible,
+        .custom-volume-slider:focus-visible {
+            outline: 1px solid rgba(255,255,255,0.92);
+            outline-offset: 2px;
+        }
+
+        .custom-video-seek,
+        .custom-volume-slider {
+            accent-color: #fff;
+            cursor: pointer;
+        }
+
+        .custom-video-seek {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .custom-volume-slider {
+            width: 78px;
+            flex: 0 0 78px;
+        }
+
+        .icon-pause,
+        .icon-muted {
+            display: none;
+        }
+
+        .custom-video-shell.is-playing .icon-play {
+            display: none;
+        }
+
+        .custom-video-shell.is-playing .icon-pause {
+            display: inline;
+        }
+
+        .custom-video-shell.is-muted .icon-volume {
+            display: none;
+        }
+
+        .custom-video-shell.is-muted .icon-muted {
+            display: inline;
+        }
+
+        .custom-video-shell:fullscreen,
+        .custom-video-shell:-webkit-full-screen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        @media (max-width: 640px) {
+            .custom-video-controls {
+                gap: 6px;
+                padding: 9px 10px;
+            }
+
+            .custom-control-btn {
+                width: 36px;
+                height: 36px;
+                flex-basis: 36px;
+            }
+
+            .custom-volume-slider {
+                width: 58px;
+                flex-basis: 58px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -1983,12 +2123,50 @@
                     referrerpolicy="no-referrer-when-downgrade"
                     loading="lazy">
             </iframe>
-            <video id="directVideo"
-                   controls
-                   playsinline
-                   webkit-playsinline
-                   preload="metadata">
-            </video>
+            <div class="custom-video-shell" id="customVideoShell" oncontextmenu="return false;">
+                <video id="directVideo"
+                       disablePictureInPicture
+                       disableRemotePlayback
+                       playsinline
+                       webkit-playsinline
+                       preload="metadata"
+                       oncontextmenu="return false;">
+                </video>
+
+                <div class="custom-video-controls" id="customVideoControls">
+                    <button class="custom-control-btn" id="customPlayPause" type="button" aria-label="Play">
+                        <span class="icon-play" aria-hidden="true">▶</span>
+                        <span class="icon-pause" aria-hidden="true">❚❚</span>
+                    </button>
+
+                    <input class="custom-video-seek"
+                           id="customVideoSeek"
+                           type="range"
+                           min="0"
+                           max="1000"
+                           value="0"
+                           step="1"
+                           aria-label="Video position">
+
+                    <button class="custom-control-btn custom-volume-btn" id="customMute" type="button" aria-label="Mute">
+                        <span class="icon-volume" aria-hidden="true">◖))</span>
+                        <span class="icon-muted" aria-hidden="true">◖×</span>
+                    </button>
+
+                    <input class="custom-volume-slider"
+                           id="customVolume"
+                           type="range"
+                           min="0"
+                           max="1"
+                           value="1"
+                           step="0.05"
+                           aria-label="Volume">
+
+                    <button class="custom-control-btn" id="customFullscreen" type="button" aria-label="Fullscreen">
+                        <span aria-hidden="true">⛶</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2068,6 +2246,12 @@
             const modal = document.getElementById('videoModal');
             const videoFrame = document.getElementById('videoFrame');
             const directVideo = document.getElementById('directVideo');
+            const customVideoShell = document.getElementById('customVideoShell');
+            const customPlayPause = document.getElementById('customPlayPause');
+            const customVideoSeek = document.getElementById('customVideoSeek');
+            const customMute = document.getElementById('customMute');
+            const customVolume = document.getElementById('customVolume');
+            const customFullscreen = document.getElementById('customFullscreen');
             const closeBtn = document.getElementById('closeBtn');
             const videoCards = document.querySelectorAll('.video-card');
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -2097,6 +2281,116 @@
             // Hover previews now use the real Cloudflare R2 movies.
             // Google Drive GIF preview embeds are no longer created.
             
+            // Custom video controls.
+            // The browser's native control bar is intentionally not used.
+            function updateCustomPlayerState() {
+                customVideoShell.classList.toggle('is-playing', !directVideo.paused && !directVideo.ended);
+                customVideoShell.classList.toggle('is-muted', directVideo.muted || directVideo.volume === 0);
+
+                customPlayPause.setAttribute(
+                    'aria-label',
+                    (!directVideo.paused && !directVideo.ended) ? 'Pause' : 'Play'
+                );
+
+                customMute.setAttribute(
+                    'aria-label',
+                    (directVideo.muted || directVideo.volume === 0) ? 'Unmute' : 'Mute'
+                );
+            }
+
+            function updateSeekPosition() {
+                if (!Number.isFinite(directVideo.duration) || directVideo.duration <= 0) {
+                    customVideoSeek.value = '0';
+                    return;
+                }
+
+                const progress = (directVideo.currentTime / directVideo.duration) * 1000;
+                customVideoSeek.value = String(Math.max(0, Math.min(1000, progress)));
+            }
+
+            customPlayPause.addEventListener('click', function() {
+                if (directVideo.paused || directVideo.ended) {
+                    const playPromise = directVideo.play();
+                    if (playPromise && typeof playPromise.catch === 'function') {
+                        playPromise.catch(function() {});
+                    }
+                } else {
+                    directVideo.pause();
+                }
+            });
+
+            directVideo.addEventListener('click', function() {
+                customPlayPause.click();
+            });
+
+            customVideoSeek.addEventListener('input', function() {
+                if (!Number.isFinite(directVideo.duration) || directVideo.duration <= 0) return;
+
+                const fraction = Number(customVideoSeek.value) / 1000;
+                directVideo.currentTime = fraction * directVideo.duration;
+            });
+
+            customMute.addEventListener('click', function() {
+                if (directVideo.muted || directVideo.volume === 0) {
+                    directVideo.muted = false;
+
+                    if (directVideo.volume === 0) {
+                        directVideo.volume = 1;
+                        customVolume.value = '1';
+                    }
+                } else {
+                    directVideo.muted = true;
+                }
+
+                updateCustomPlayerState();
+            });
+
+            customVolume.addEventListener('input', function() {
+                const newVolume = Math.max(0, Math.min(1, Number(customVolume.value)));
+                directVideo.volume = newVolume;
+                directVideo.muted = newVolume === 0;
+                updateCustomPlayerState();
+            });
+
+            customFullscreen.addEventListener('click', function() {
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                    return;
+                }
+
+                if (customVideoShell.requestFullscreen) {
+                    customVideoShell.requestFullscreen();
+                } else if (customVideoShell.webkitRequestFullscreen) {
+                    customVideoShell.webkitRequestFullscreen();
+                } else if (directVideo.webkitEnterFullscreen) {
+                    directVideo.webkitEnterFullscreen();
+                }
+            });
+
+            directVideo.addEventListener('play', updateCustomPlayerState);
+            directVideo.addEventListener('pause', updateCustomPlayerState);
+            directVideo.addEventListener('ended', updateCustomPlayerState);
+            directVideo.addEventListener('volumechange', updateCustomPlayerState);
+            directVideo.addEventListener('timeupdate', updateSeekPosition);
+            directVideo.addEventListener('loadedmetadata', updateSeekPosition);
+
+            // Suppress the ordinary right-click video context menu.
+            customVideoShell.addEventListener('contextmenu', function(event) {
+                event.preventDefault();
+            });
+
+            directVideo.addEventListener('contextmenu', function(event) {
+                event.preventDefault();
+            });
+
+            directVideo.addEventListener('dragstart', function(event) {
+                event.preventDefault();
+            });
+
             // Video click handlers
             videoCards.forEach(function(card) {
                 card.addEventListener('click', function() {
@@ -2109,12 +2403,14 @@
                     directVideo.pause();
                     directVideo.removeAttribute('src');
                     directVideo.load();
-                    directVideo.style.display = 'none';
+                    customVideoShell.style.display = 'none';
+                    customVideoShell.classList.remove('is-playing');
+                    customVideoSeek.value = '0';
 
                     if (directUrl) {
                         // Cloudflare R2: native HTML5 playback, no Google Drive player UI.
                         directVideo.src = directUrl;
-                        directVideo.style.display = 'block';
+                        customVideoShell.style.display = 'block';
                         directVideo.load();
 
                         const playPromise = directVideo.play();
@@ -2126,6 +2422,7 @@
                     } else {
                         // Videos not migrated yet continue using Google Drive.
                         const videoUrl = 'https://drive.google.com/file/d/' + videoId + '/preview';
+                        customVideoShell.style.display = 'none';
                         videoFrame.style.display = 'block';
                         videoFrame.src = videoUrl;
                     }
@@ -2142,9 +2439,11 @@
                 videoFrame.style.display = 'block';
 
                 directVideo.pause();
-                directVideo.removeAttribute('src');
-                directVideo.load();
-                directVideo.style.display = 'none';
+                    directVideo.removeAttribute('src');
+                    directVideo.load();
+                    customVideoShell.style.display = 'none';
+                    customVideoShell.classList.remove('is-playing');
+                    customVideoSeek.value = '0';
 
                 document.body.style.overflow = 'auto';
             }
