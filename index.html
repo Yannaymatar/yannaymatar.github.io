@@ -1463,6 +1463,110 @@
             }
         }
 
+    
+        /* =========================================================
+           LARKIN-STYLE NAV REVEAL
+           The navigation lives just below the full-screen hero.
+           It rises into view from the bottom as the user scrolls,
+           then sticks to the top for the rest of the page.
+           ========================================================= */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .header {
+            position: sticky !important;
+            position: -webkit-sticky !important;
+            top: 0 !important;
+            left: auto !important;
+            right: auto !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            margin: 0 !important;
+            background: rgba(0, 0, 0, 0.96) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            box-shadow: none !important;
+            transition: none !important;
+        }
+
+        /* Override the earlier scroll-state treatment:
+           once this bar exists, it remains clean and solid. */
+        body.hero-scrolled .header {
+            background: rgba(0, 0, 0, 0.96) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        /* Small scroll cue inspired by the reference site's down arrow. */
+        .hero-scroll-cue {
+            position: absolute;
+            left: 50%;
+            bottom: clamp(22px, 3.2vh, 38px);
+            width: 44px;
+            height: 44px;
+            transform: translateX(-50%);
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.82;
+            text-decoration: none;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: opacity 180ms ease;
+        }
+
+        .hero-scroll-cue:hover {
+            opacity: 1;
+        }
+
+        .hero-scroll-cue-arrow {
+            display: block;
+            width: 17px;
+            height: 17px;
+            border-right: 1.5px solid rgba(255,255,255,0.94);
+            border-bottom: 1.5px solid rgba(255,255,255,0.94);
+            transform: rotate(45deg);
+            animation: hero-arrow-drift 1.8s ease-in-out infinite;
+        }
+
+        @keyframes hero-arrow-drift {
+            0%, 100% { transform: translateY(-3px) rotate(45deg); }
+            50%      { transform: translateY(5px) rotate(45deg); }
+        }
+
+        /* Anchored nav links should not hide section titles behind the sticky bar. */
+        #work,
+        #about,
+        #contact {
+            scroll-margin-top: 90px;
+        }
+
+        @media (max-width: 640px) {
+            .hero-scroll-cue {
+                bottom: 18px;
+                width: 40px;
+                height: 40px;
+            }
+
+            .hero-scroll-cue-arrow {
+                width: 15px;
+                height: 15px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .hero-scroll-cue-arrow {
+                animation: none;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -1479,27 +1583,6 @@
 
     <!-- Main Website Content -->
     <div class="main-content" id="mainContent">
-    <header class="header">
-        <div class="logo">YANNAY MATARASSO</div>
-        <nav class="nav">
-            <a href="#work">WORK</a>
-            <a href="#about">ABOUT</a>
-            <a href="#contact">CONTACT</a>
-        </nav>
-        <div class="mobile-menu-btn" id="mobileMenuBtn">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </header>
-
-    <nav class="mobile-nav" id="mobileNav">
-        <div class="mobile-close" id="mobileClose">&times;</div>
-        <a href="#work">WORK</a>
-        <a href="#about">ABOUT</a>
-        <a href="#contact">CONTACT</a>
-    </nav>
-
     <section class="hero">
         <!-- Desktop: Video with overlay text -->
         <div class="desktop-hero">
@@ -1530,7 +1613,33 @@
                 </div>
             </div>
         </div>
+
+        <a class="hero-scroll-cue" href="#siteNav" aria-label="Scroll down to the portfolio">
+            <span class="hero-scroll-cue-arrow" aria-hidden="true"></span>
+        </a>
     </section>
+
+    <header class="header" id="siteNav">
+        <div class="logo">YANNAY MATARASSO</div>
+        <nav class="nav">
+            <a href="#work">WORK</a>
+            <a href="#about">ABOUT</a>
+            <a href="#contact">CONTACT</a>
+        </nav>
+        <div class="mobile-menu-btn" id="mobileMenuBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="mobile-close" id="mobileClose">&times;</div>
+        <a href="#work">WORK</a>
+        <a href="#about">ABOUT</a>
+        <a href="#contact">CONTACT</a>
+    </nav>
+
 
     <section class="portfolio-section" id="work">
         <h2 class="section-title">WORK</h2>
