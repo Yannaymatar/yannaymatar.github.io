@@ -1593,6 +1593,34 @@
             pointer-events: none;
         }
 
+    
+        /* =========================================================
+           LARKIN-STYLE MENU FADE — corrected
+           The BLACK BAR itself is always fully opaque.
+           ONLY the menu/logo content fades.
+           ========================================================= */
+
+        .header {
+            opacity: 1 !important;
+            background: #000 !important;
+        }
+
+        .header .logo,
+        .header .nav,
+        .header .mobile-menu-btn {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 500ms ease-out;
+        }
+
+        body.nav-text-visible .header .logo,
+        body.nav-text-visible .header .nav,
+        body.nav-text-visible .header .mobile-menu-btn {
+            opacity: 1;
+            pointer-events: auto;
+            transition: opacity 1300ms ease-in-out;
+        }
+
     </style>
 </head>
 <body>
@@ -2333,9 +2361,12 @@
 
 
     <script>
-        // Scroll-position fades inspired by the reference site:
-        // 1) the nav fades in while it first rises into view from the bottom
-        // 2) the down arrow fades away shortly after the viewer begins scrolling
+        // Larkin-style menu reveal:
+        // - the black strip is always opaque
+        // - only YANNAY MATARASSO + WORK / ABOUT / CONTACT fade in
+        // - fade starts when the page has scrolled half a viewport,
+        //   which is when this bar is around the middle of the screen
+        // - arrow keeps the fade behavior already approved
         (function () {
             const cue = document.querySelector('.hero-scroll-cue');
             let ticking = false;
@@ -2348,18 +2379,18 @@
                 const y = window.scrollY || window.pageYOffset || 0;
                 const vh = Math.max(window.innerHeight || 0, 1);
 
-                // The nav starts invisible and reaches full opacity over roughly
-                // the first 90px of scroll — exactly while it begins rising
-                // from the bottom edge of the hero.
-                const navProgress = clamp01(y / 90);
+                // This mirrors the supplied Larkin reference:
+                // menu content begins appearing after half a viewport of scroll.
+                document.body.classList.toggle('nav-text-visible', y > (vh / 2));
 
-                // The arrow fades away more gradually, reaching zero after
-                // roughly the first 20% of one viewport-height of scrolling.
+                // Preserve the arrow fade behavior from the previous version.
                 const arrowProgress = clamp01(y / (vh * 0.20));
                 const arrowOpacity = 0.82 * (1 - arrowProgress);
 
-                document.body.style.setProperty('--nav-scroll-opacity', navProgress.toFixed(3));
-                document.body.style.setProperty('--arrow-scroll-opacity', arrowOpacity.toFixed(3));
+                document.body.style.setProperty(
+                    '--arrow-scroll-opacity',
+                    arrowOpacity.toFixed(3)
+                );
 
                 if (cue) {
                     cue.classList.toggle('is-hidden', arrowOpacity < 0.05);
