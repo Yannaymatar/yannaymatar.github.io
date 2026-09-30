@@ -503,47 +503,18 @@
             transition: opacity 0.3s ease;
         }
 
-        /* GIF Preview Styles */
+        /* Unified static thumbnail styles */
         .static-thumb {
             width: 100%;
             height: 100%;
             object-fit: cover;
             position: absolute;
-            top: 0;
-            left: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .gif-preview {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            border: none;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .video-card:hover .static-thumb {
-            opacity: 0;
-        }
-
-        .video-card:hover .gif-preview {
+            inset: 0;
             opacity: 1;
         }
 
-        /* New R2-only cards without a GIF yet: keep their automatic video thumbnail visible on hover */
-        .video-card.no-gif:hover .static-thumb {
-            opacity: 1;
-        }
-
-        .video-card.no-gif video.static-thumb {
+        video.static-thumb {
             display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
             background: #111;
         }
 
@@ -1453,21 +1424,8 @@
 
     
         /* =========================================================
-           R2 HOVER PREVIEWS — all portfolio cards
+           R2 HOVER PREVIEWS — PRELOADED / UNIFIED
            ========================================================= */
-
-        /* The old Google Drive GIF layers are retired. */
-        .gif-preview {
-            display: none !important;
-            opacity: 0 !important;
-        }
-
-        /* Keep the original thumbnail visible while the MP4 preview loads. */
-        @media (hover: hover) and (pointer: fine) {
-            .video-card:hover .static-thumb {
-                opacity: 1 !important;
-            }
-        }
 
         .r2-hover-preview {
             position: absolute;
@@ -1480,11 +1438,29 @@
             opacity: 0;
             pointer-events: none;
             background: #080808;
-            transition: opacity 180ms ease;
+            transition: opacity 140ms ease;
         }
 
-        .r2-hover-preview.is-ready {
+        /* The movie only becomes visible while actually hovering.
+           It can be fully loaded/prepared invisibly beforehand. */
+        .r2-hover-preview.is-active.is-ready {
             opacity: 1;
+        }
+
+        /* Never fade the original thumbnail merely because the card is hovered.
+           The prepared MP4 covers it only when its first frame is ready. */
+        @media (hover: hover) and (pointer: fine) {
+            .video-card:hover .static-thumb,
+            .video-card .static-thumb {
+                opacity: 1 !important;
+            }
+        }
+
+        /* Touch devices keep only their normal static thumbnails. */
+        @media (hover: none), (pointer: coarse) {
+            .r2-hover-preview {
+                display: none !important;
+            }
         }
 
     </style>
@@ -1559,7 +1535,7 @@
     <section class="portfolio-section" id="work">
         <h2 class="section-title">WORK</h2>
         <div class="video-grid">
-    <div class="video-card" data-video="1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/50sec_Landscape_Edit_28.mp4" data-gif="1PqLd0nSzecm8zU-JzEIdi0l28LKzoqtb">
+    <div class="video-card" data-video="1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/50sec_Landscape_Edit_28.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8&sz=w640-h360" alt="Celebrity Project 05" class="static-thumb">
         </div>
@@ -1569,7 +1545,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/DS.CoinMasterAdvice.mp4" data-gif="1qm26cbqUmXUuLlJs9WMSDK1bMN-RXZ-z">
+    <div class="video-card" data-video="19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/DS.CoinMasterAdvice.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=19bJgaSIDSsgDQPlVq20kopdJB6CAAvk4&sz=w640-h360" alt="Celebrity Project 07" class="static-thumb">
         </div>
@@ -1579,7 +1555,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="112kFP1glNJw4gp5azgUb_U7-ZofYQYbW" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/chuck1.mp4" data-gif="1D3mZ9Svxa6REzte5aU5suTMTD1oubsOn">
+    <div class="video-card" data-video="112kFP1glNJw4gp5azgUb_U7-ZofYQYbW" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/chuck1.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=112kFP1glNJw4gp5azgUb_U7-ZofYQYbW&sz=w640-h360" alt="Celebrity Project 03" class="static-thumb">
         </div>
@@ -1589,7 +1565,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/chuck%202.943Z.mp4" data-gif="13M9UX89mkcN-EOrHJ2YWCpCjEkfR3YkF">
+    <div class="video-card" data-video="1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/chuck%202.943Z.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1P9U_D8DZnDzrxEoCNXVyJTcefZfZsw7a&sz=w640-h360" alt="Celebrity Project 04" class="static-thumb">
         </div>
@@ -1599,7 +1575,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1xCzCRuInMFBRf8jPvlXAuyTGsboMs1cC" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/FamilyDinner.mp4" data-gif="1PBg7bz3RSs70DViCL8B-8vbvgwj3a1RX">
+    <div class="video-card" data-video="1xCzCRuInMFBRf8jPvlXAuyTGsboMs1cC" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/FamilyDinner.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1xCzCRuInMFBRf8jPvlXAuyTGsboMs1cC&sz=w640-h360" alt="Celebrity Project 15" class="static-thumb">
         </div>
@@ -1609,7 +1585,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1FVqdh0FL1Bm37R7O37hB4kVGngA6Z63o" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/Creative_InHouse_CardiB.BTS_V1_1920_1080_32SEC_EN.mp4" data-gif="1x4oZ8BOPoVFTu5Y426W_kOr9E7Ze5zhC">
+    <div class="video-card" data-video="1FVqdh0FL1Bm37R7O37hB4kVGngA6Z63o" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/Creative_InHouse_CardiB.BTS_V1_1920_1080_32SEC_EN.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1FVqdh0FL1Bm37R7O37hB4kVGngA6Z63o&sz=w640-h360" alt="Celebrity Project 16" class="static-thumb">
         </div>
@@ -1619,7 +1595,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1W3FVQa-izwxsa9rnkCS72RVmp0TJN49Q" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/Creative_InHouse_KFamily.WSKA_V1_1920_1080_20SEC_EN.mp4" data-gif="1eE6lUtEJZ1sUKqTfQv4pKhku3i0W-DsP">
+    <div class="video-card" data-video="1W3FVQa-izwxsa9rnkCS72RVmp0TJN49Q" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/Creative_InHouse_KFamily.WSKA_V1_1920_1080_20SEC_EN.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1W3FVQa-izwxsa9rnkCS72RVmp0TJN49Q&sz=w640-h360" alt="Celebrity Project 17" class="static-thumb">
         </div>
@@ -1629,7 +1605,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/presentation_59s.MP4" data-gif="1eKqyuw7mzUYkTGxGKAH_ZmbY3Ph-QTGg">
+    <div class="video-card" data-video="1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/presentation_59s.MP4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1JrvT-oOZrzms2ZMP7eSo0CgUoOupjpdj&sz=w640-h360" alt="Celebrity Project 08" class="static-thumb">
         </div>
@@ -1639,7 +1615,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/dinnerparty_original59s.MP4" data-gif="1_iu9-4F0JqlMFptEQptfeSDIiBMdFYj3">
+    <div class="video-card" data-video="1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/dinnerparty_original59s.MP4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1JZUorjn7dfozpIp6_YtxSuRs7DR7J6lw&sz=w640-h360" alt="Celebrity Project 09" class="static-thumb">
         </div>
@@ -1649,7 +1625,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1e9WFQ40OwqatrcajcT01cWjHQ33ST90J" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/EdOn.MrPresident_45S.mp4" data-gif="1XCT-HlPSdnX-ibqqax-E9NblTJ89PwOu">
+    <div class="video-card" data-video="1e9WFQ40OwqatrcajcT01cWjHQ33ST90J" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/EdOn.MrPresident_45S.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1e9WFQ40OwqatrcajcT01cWjHQ33ST90J&sz=w640-h360" alt="Celebrity Project 18" class="static-thumb">
         </div>
@@ -1659,7 +1635,7 @@
         </div>
     </div>
 
-    <div class="video-card no-gif" data-video="r2-edon-2" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/MA_STU_TLV_INF_SPC_EDon_CNM_CMA01235.EdOn.GenerationGap_1920_1080_DUR_30S_LNG_EN.mp4">
+    <div class="video-card" data-video="r2-edon-2" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/MA_STU_TLV_INF_SPC_EDon_CNM_CMA01235.EdOn.GenerationGap_1920_1080_DUR_30S_LNG_EN.mp4">
         <div class="video-thumbnail">
             <video class="static-thumb" src="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/MA_STU_TLV_INF_SPC_EDon_CNM_CMA01235.EdOn.GenerationGap_1920_1080_DUR_30S_LNG_EN.mp4#t=0.001" muted playsinline preload="metadata"></video>
         </div>
@@ -1669,7 +1645,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/JLO.Aisle_V2.mp4" data-gif="198tNfLKsjI0QWBYYPvF5ENwJvoF_aix8">
+    <div class="video-card" data-video="1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/JLO.Aisle_V2.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1kvRnzp7LdpiCYzdUJJVsfJN0-AV05VkK&sz=w640-h360" alt="Celebrity Project 10" class="static-thumb">
         </div>
@@ -1679,7 +1655,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="16mNqexuSkv2d6QlN993e9PP65vucGska" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/cma01967davidbtheline_1920_1080_dur_59s_lng_en.mp4" data-gif="1RmrIq3mn-UD7KiE3fszeFhesw7ZWA0xb">
+    <div class="video-card" data-video="16mNqexuSkv2d6QlN993e9PP65vucGska" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/cma01967davidbtheline_1920_1080_dur_59s_lng_en.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=16mNqexuSkv2d6QlN993e9PP65vucGska&sz=w640-h360" alt="Celebrity Project 12" class="static-thumb">
         </div>
@@ -1689,7 +1665,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/trt00765danidannydayerwheningreece_ver_v2_1920_1080_dur_45s_lng_en%20(1).mp4" data-gif="1HeLmEWnQPDwmRpAog1hpm4qMLvF47_7D">
+    <div class="video-card" data-video="12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/trt00765danidannydayerwheningreece_ver_v2_1920_1080_dur_45s_lng_en%20(1).mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv&sz=w640-h360" alt="Celebrity Project 01" class="static-thumb">
         </div>
@@ -1699,7 +1675,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1evsDx4HDN6OmGS977rnDR956-gPM_6LS" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/trt00763danidannydayermessyroom_ver_v2_1920_1080_dur_45s_lng_en.mp4" data-gif="137YIs93-KKPJImM8qWrj3oBFpQKkY0Dd">
+    <div class="video-card" data-video="1evsDx4HDN6OmGS977rnDR956-gPM_6LS" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/trt00763danidannydayermessyroom_ver_v2_1920_1080_dur_45s_lng_en.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1evsDx4HDN6OmGS977rnDR956-gPM_6LS&sz=w640-h360" alt="Celebrity Project 02" class="static-thumb">
         </div>
@@ -1709,7 +1685,7 @@
         </div>
     </div>
 
-    <div class="video-card no-gif" data-video="r2-dani-danny-3" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/rp_trt00764_danidannydayer_polygraph_45sec_lnd.mp4">
+    <div class="video-card" data-video="r2-dani-danny-3" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/rp_trt00764_danidannydayer_polygraph_45sec_lnd.mp4">
         <div class="video-thumbnail">
             <video class="static-thumb" src="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/rp_trt00764_danidannydayer_polygraph_45sec_lnd.mp4#t=0.001" muted playsinline preload="metadata"></video>
         </div>
@@ -1719,7 +1695,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/stamos.mp4" data-gif="1V1beXGjjW6XUwFCLW21mEQ6LYXL59QW8">
+    <div class="video-card" data-video="1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/stamos.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1gqi7Z8LJ3B8apPr8tkbpCbfL8tVWPvu6&sz=w640-h360" alt="Celebrity Project 13" class="static-thumb">
         </div>
@@ -1729,7 +1705,7 @@
         </div>
     </div>
 
-    <div class="video-card" data-video="13TTwXy5OVhB65X5qUgvkC84qabqYbLDK" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/MA_STU_TLV_INF_SPC_JohnST_CNM_CMA01239.JohnSt.HospitalSoap_1920_1080_DUR_30S_LNG_EN.mp4" data-gif="1Mt-K6SK4HHp0-IrVjCRJsl533DRXeoUN">
+    <div class="video-card" data-video="13TTwXy5OVhB65X5qUgvkC84qabqYbLDK" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/MA_STU_TLV_INF_SPC_JohnST_CNM_CMA01239.JohnSt.HospitalSoap_1920_1080_DUR_30S_LNG_EN.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=13TTwXy5OVhB65X5qUgvkC84qabqYbLDK&sz=w640-h360" alt="Celebrity Project 14" class="static-thumb">
         </div>
@@ -1742,19 +1718,19 @@
 
         <h2 class="section-title">MYSTERY</h2>
         <div class="video-grid">
-            <div class="video-card" data-video="1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/mystery/trilar.mp4" data-gif="1KvIuQWQtFl9kov5gWnSjI8r5HIgGxxd8">
+            <div class="video-card" data-video="1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/mystery/trilar.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi&sz=w640-h360" alt="Mystery Project 01" class="static-thumb">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/mystery/the%20grave.mp4" data-gif="130Y_YArEPpp2XFMPW6hT4TFn3n1QV9GZ">
+            <div class="video-card" data-video="1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/mystery/the%20grave.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1OD0hNFxkvXQzIMVoM5rhBtKCgtWqq2bl&sz=w640-h360" alt="Mystery Project 02" class="static-thumb">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/mystery/diner.mp4" data-gif="1G5JIQ_UJCs7erKvxI_7x_hGyHxdavAYi">
+            <div class="video-card" data-video="1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/mystery/diner.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1mm5B3mCospZiSLEo_jVBkWBZ_31SY22J&sz=w640-h360" alt="Mystery Project 03" class="static-thumb">
                 </div>
@@ -1763,19 +1739,19 @@
 
         <h2 class="section-title">COMEDY</h2>
         <div class="video-grid">
-            <div class="video-card" data-video="1YB9yNzRYQcs4lQieQFIz4qG011swnt-F" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/comedy/floating%2030%20.mp4" data-gif="15ivaoLlcV4uln9wwb6FXe0zJDl7ghz4t">
+            <div class="video-card" data-video="1YB9yNzRYQcs4lQieQFIz4qG011swnt-F" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/comedy/floating%2030%20.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1YB9yNzRYQcs4lQieQFIz4qG011swnt-F&sz=w640-h360" alt="Comedy Project 01" class="static-thumb">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/comedy/camping.mp4" data-gif="1RTiHEWbICfYswGuM8lvRY04Ytx0s87TR">
+            <div class="video-card" data-video="1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/comedy/camping.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1KjAEvB9SoAyOML0nEY-mhixnbCfJtDpf&sz=w640-h360" alt="Comedy Project 02" class="static-thumb">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/comedy/super%20shirley.mp4" data-gif="1SROYRBvH-A6ucTL1Oi4NYxyy8HjIzcet">
+            <div class="video-card" data-video="1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/comedy/super%20shirley.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1nBlLZoKMVs3Gu23U7ijaiOJpRQ-SJhKt&sz=w640-h360" alt="Comedy Project 03" class="static-thumb">
                 </div>
@@ -1784,31 +1760,31 @@
 
         <h2 class="section-title">ANIMATION</h2>
         <div class="video-grid">
-            <div class="video-card" data-video="1dayuByq6-No8TRFpVrOSaboVVKo5F-zQ" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Pretty_Woman_Yannay%26Anat.mp4" data-gif="1aeeDb5F4NFlsAFLRXD47xfch0C3Wnigm">
+            <div class="video-card" data-video="1dayuByq6-No8TRFpVrOSaboVVKo5F-zQ" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Pretty_Woman_Yannay%26Anat.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1JuJDawnfuF_xvHtPG2yIUGjXjgVb7mk2&sz=w640-h360" alt="Animation Project 01" class="static-thumb">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Hunted%20Dreams1.mp4" data-gif="1bMJJz52rgk9kkLUYauCrVWBgJ69T8Ib4">
+            <div class="video-card" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Hunted%20Dreams1.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1uS4tnui2_a23MCVR22G-hI7wS_o8sPt1&sz=w640-h360" alt="Animation Project 03" class="static-thumb">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1ed0UmUi3ueRlqqdquEMRAYjjYLgown67" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/basket_yan_liran_knaan4.mp4" data-gif="1OSRnWzcm0HsCzoUUQVYFuLekG080jwJN">
+            <div class="video-card" data-video="1ed0UmUi3ueRlqqdquEMRAYjjYLgown67" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/basket_yan_liran_knaan4.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1iZ0gaGjARhGBNcirkWEU4JyP7fus1YQu&sz=w640-h360" alt="Animation Project 04" class="static-thumb">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1gO5oeW2JVbQjmDHutJP0q3ZTTnadFICq" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/YANNAY_SHLOMI_AYA_ANAT.mp4" data-gif="17SAHFOZKAcXbTJmhj4huXEvUk5Mz2unP">
+            <div class="video-card" data-video="1gO5oeW2JVbQjmDHutJP0q3ZTTnadFICq" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/YANNAY_SHLOMI_AYA_ANAT.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1S-dBZR9t91App7lqHHherQmJyv4gpcMd&sz=w640-h360" alt="Animation Project 05" class="static-thumb">
                 </div>
             </div>
 
-            <div class="video-card" data-video="1oLGGrMmk5ZTO-PAJxkNqi81liQ_03VMg" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Volcano_Sequel_82sec_1920X1080.mp4" data-gif="1bUhD8rIE0jAuTqMaSkRPmPLQm-xQLnE5">
+            <div class="video-card" data-video="1oLGGrMmk5ZTO-PAJxkNqi81liQ_03VMg" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Volcano_Sequel_82sec_1920X1080.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1uUFxsw-vRLOqqQoSjzsmtICF2M6Td0YR&sz=w640-h360" alt="Animation Project 07" class="static-thumb">
                 </div>
@@ -2087,112 +2063,264 @@
 
 
     <script>
-        // All desktop portfolio hover previews now use the real R2 movie.
-        // Each preview loops about four seconds, cropped exactly like the card.
+        // PRELOADED R2 HOVER PREVIEWS
+        // Every desktop card uses the same system:
+        // - prepare the real R2 MP4 before the mouse reaches it
+        // - loop seconds 1-4 (3 seconds)
+        // - keep the exact same object-fit: cover crop as the thumbnail
+        // - keep prepared videos paused/cached after mouseleave for instant repeat hover
         (function () {
             const hoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
             if (!hoverQuery.matches) return;
 
-            const cards = document.querySelectorAll('.video-card[data-direct]');
+            const cards = Array.from(document.querySelectorAll('.video-card[data-direct]'));
             const START_AT = 1;
-            const PREVIEW_LENGTH = 4;
+            const PREVIEW_LENGTH = 3;
+            const states = new WeakMap();
 
-            cards.forEach(function (card) {
+            function safePlay(video) {
+                const p = video.play();
+                if (p && typeof p.catch === 'function') {
+                    p.catch(function () {});
+                }
+            }
+
+            function createState(card) {
+                let state = states.get(card);
+                if (state) return state;
+
                 const thumbnail = card.querySelector('.video-thumbnail');
                 const source = card.getAttribute('data-direct');
-                if (!thumbnail || !source) return;
+                if (!thumbnail || !source) return null;
 
-                let preview = null;
-                let active = false;
-                let loopStart = START_AT;
-                let loopEnd = START_AT + PREVIEW_LENGTH;
+                const video = document.createElement('video');
+                video.className = 'r2-hover-preview';
+                video.muted = true;
+                video.defaultMuted = true;
+                video.playsInline = true;
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+                video.preload = 'auto';
+                video.src = source;
 
-                function destroyPreview() {
-                    active = false;
+                state = {
+                    card: card,
+                    thumbnail: thumbnail,
+                    video: video,
+                    active: false,
+                    prepared: false,
+                    preparing: false,
+                    loopStart: START_AT,
+                    loopEnd: START_AT + PREVIEW_LENGTH
+                };
 
-                    if (!preview) return;
+                states.set(card, state);
+                thumbnail.appendChild(video);
 
-                    preview.pause();
-                    preview.removeAttribute('src');
-                    preview.load();
-                    preview.remove();
-                    preview = null;
-                }
+                video.addEventListener('timeupdate', function () {
+                    if (!state.active) return;
 
-                function startPreview() {
-                    if (preview) return;
-
-                    active = true;
-                    preview = document.createElement('video');
-                    preview.className = 'r2-hover-preview';
-                    preview.muted = true;
-                    preview.defaultMuted = true;
-                    preview.playsInline = true;
-                    preview.setAttribute('playsinline', '');
-                    preview.setAttribute('webkit-playsinline', '');
-                    preview.preload = 'metadata';
-                    preview.src = source;
-
-                    thumbnail.appendChild(preview);
-
-                    preview.addEventListener('loadedmetadata', function () {
-                        if (!active || !preview) return;
-
-                        const duration = Number.isFinite(preview.duration) ? preview.duration : 0;
-
-                        if (duration > 0) {
-                            loopStart = Math.min(START_AT, Math.max(0, duration - 0.25));
-                            loopEnd = Math.min(
-                                loopStart + PREVIEW_LENGTH,
-                                Math.max(loopStart + 0.05, duration - 0.03)
-                            );
-                        } else {
-                            loopStart = START_AT;
-                            loopEnd = START_AT + PREVIEW_LENGTH;
-                        }
-
+                    if (video.currentTime >= state.loopEnd) {
                         try {
-                            preview.currentTime = loopStart;
+                            video.currentTime = state.loopStart;
+                            safePlay(video);
                         } catch (e) {}
-                    }, { once: true });
+                    }
+                });
 
-                    preview.addEventListener('loadeddata', function () {
-                        if (!active || !preview) return;
+                return state;
+            }
 
-                        preview.classList.add('is-ready');
+            function markPrepared(state) {
+                if (!state || state.prepared) return;
 
-                        const playPromise = preview.play();
-                        if (playPromise && typeof playPromise.catch === 'function') {
-                            playPromise.catch(function () {});
-                        }
-                    }, { once: true });
+                state.prepared = true;
+                state.preparing = false;
+                state.video.classList.add('is-ready');
 
-                    preview.addEventListener('timeupdate', function () {
-                        if (!active || !preview) return;
+                if (state.active) {
+                    state.video.classList.add('is-active');
+                    safePlay(state.video);
+                }
+            }
 
-                        if (preview.currentTime >= loopEnd) {
-                            try {
-                                preview.currentTime = loopStart;
-                                const playPromise = preview.play();
-                                if (playPromise && typeof playPromise.catch === 'function') {
-                                    playPromise.catch(function () {});
-                                }
-                            } catch (e) {}
-                        }
-                    });
+            function prepareCard(card) {
+                const state = createState(card);
+                if (!state || state.prepared || state.preparing) return;
+
+                state.preparing = true;
+                const video = state.video;
+
+                function seekToStart() {
+                    const duration = Number.isFinite(video.duration) ? video.duration : 0;
+
+                    if (duration > 0) {
+                        state.loopStart = Math.min(
+                            START_AT,
+                            Math.max(0, duration - 0.20)
+                        );
+
+                        state.loopEnd = Math.min(
+                            state.loopStart + PREVIEW_LENGTH,
+                            Math.max(state.loopStart + 0.05, duration - 0.02)
+                        );
+                    }
+
+                    try {
+                        video.currentTime = state.loopStart;
+                    } catch (e) {
+                        markPrepared(state);
+                    }
                 }
 
-                card.addEventListener('mouseenter', startPreview);
-                card.addEventListener('mouseleave', destroyPreview);
-                card.addEventListener('click', destroyPreview);
+                if (video.readyState >= 1) {
+                    seekToStart();
+                } else {
+                    video.addEventListener('loadedmetadata', seekToStart, { once: true });
+                }
+
+                // Once the seeked frame is decodable, briefly start the muted movie
+                // invisibly. This warms the decoder/cache before the first real hover.
+                video.addEventListener('seeked', function warmDecoder() {
+                    if (state.prepared) return;
+
+                    const p = video.play();
+
+                    if (p && typeof p.then === 'function') {
+                        p.then(function () {
+                            window.setTimeout(function () {
+                                if (!state.active) {
+                                    video.pause();
+                                    try { video.currentTime = state.loopStart; } catch (e) {}
+                                }
+                                markPrepared(state);
+                            }, 90);
+                        }).catch(function () {
+                            markPrepared(state);
+                        });
+                    } else {
+                        markPrepared(state);
+                    }
+                }, { once: true });
+
+                // Fallback for browsers that don't emit seeked as expected.
+                video.addEventListener('canplay', function () {
+                    window.setTimeout(function () {
+                        markPrepared(state);
+                    }, 0);
+                }, { once: true });
+
+                video.load();
+            }
+
+            function startPreview(card) {
+                const state = createState(card);
+                if (!state) return;
+
+                state.active = true;
+                prepareCard(card);
+
+                const video = state.video;
+
+                try {
+                    // Prepared/buffered videos should seek back to the same
+                    // starting frame almost instantly.
+                    video.currentTime = state.loopStart;
+                } catch (e) {}
+
+                if (state.prepared || video.readyState >= 3) {
+                    state.video.classList.add('is-ready');
+                    state.video.classList.add('is-active');
+                    safePlay(video);
+                } else {
+                    // Keep the thumbnail visible until the MP4 has a usable frame.
+                    const showWhenReady = function () {
+                        if (!state.active) return;
+                        state.video.classList.add('is-ready');
+                        state.video.classList.add('is-active');
+                        safePlay(video);
+                    };
+
+                    video.addEventListener('canplay', showWhenReady, { once: true });
+                }
+            }
+
+            function stopPreview(card) {
+                const state = states.get(card);
+                if (!state) return;
+
+                state.active = false;
+                state.video.classList.remove('is-active');
+                state.video.pause();
+
+                try {
+                    state.video.currentTime = state.loopStart;
+                } catch (e) {}
+
+                // Important: do NOT destroy/unload it.
+                // Leaving it prepared is why the second hover is instant.
+            }
+
+            cards.forEach(function (card) {
+                card.addEventListener('mouseenter', function () {
+                    startPreview(card);
+                });
+
+                card.addEventListener('mouseleave', function () {
+                    stopPreview(card);
+                });
+
+                card.addEventListener('click', function () {
+                    stopPreview(card);
+                });
             });
 
+            // Prepare the first two desktop rows while the viewer is still
+            // watching the hero. This makes the first WORK hovers much faster.
+            cards.slice(0, 6).forEach(function (card, index) {
+                window.setTimeout(function () {
+                    prepareCard(card);
+                }, 180 * index);
+            });
+
+            // Then prepare each card BEFORE it reaches the viewport.
+            // rootMargin roughly covers the visible row + the next row.
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            prepareCard(entry.target);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    root: null,
+                    rootMargin: '900px 0px 900px 0px',
+                    threshold: 0.01
+                });
+
+                cards.forEach(function (card) {
+                    observer.observe(card);
+                });
+            } else {
+                // Older-browser fallback: progressively prepare everything.
+                cards.forEach(function (card, index) {
+                    window.setTimeout(function () {
+                        prepareCard(card);
+                    }, 250 * index);
+                });
+            }
+
+            // Clean up only when actually leaving the page.
             window.addEventListener('pagehide', function () {
-                document.querySelectorAll('.r2-hover-preview').forEach(function (video) {
-                    video.pause();
-                    video.removeAttribute('src');
-                    video.load();
-                    video.remove();
+                cards.forEach(function (card) {
+                    const state = states.get(card);
+                    if (!state) return;
+
+                    state.video.pause();
+                    state.video.removeAttribute('src');
+                    state.video.load();
+                    state.video.remove();
                 });
             });
         })();
