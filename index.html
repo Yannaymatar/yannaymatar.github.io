@@ -1567,6 +1567,32 @@
             }
         }
 
+    
+        /* =========================================================
+           SCROLL-POSITION FADES
+           Nav fades in as it first rises from the bottom of the hero.
+           Arrow fades away early in the scroll.
+           ========================================================= */
+
+        body {
+            --nav-scroll-opacity: 0;
+            --arrow-scroll-opacity: 0.82;
+        }
+
+        .header {
+            opacity: var(--nav-scroll-opacity) !important;
+            will-change: opacity;
+        }
+
+        .hero-scroll-cue {
+            opacity: var(--arrow-scroll-opacity) !important;
+            will-change: opacity;
+        }
+
+        .hero-scroll-cue.is-hidden {
+            pointer-events: none;
+        }
+
     </style>
 </head>
 <body>
@@ -2302,6 +2328,55 @@
                     video.pause();
                 });
             });
+        })();
+    </script>
+
+
+    <script>
+        // Scroll-position fades inspired by the reference site:
+        // 1) the nav fades in while it first rises into view from the bottom
+        // 2) the down arrow fades away shortly after the viewer begins scrolling
+        (function () {
+            const cue = document.querySelector('.hero-scroll-cue');
+            let ticking = false;
+
+            function clamp01(value) {
+                return Math.max(0, Math.min(1, value));
+            }
+
+            function updateScrollFades() {
+                const y = window.scrollY || window.pageYOffset || 0;
+                const vh = Math.max(window.innerHeight || 0, 1);
+
+                // The nav starts invisible and reaches full opacity over roughly
+                // the first 90px of scroll — exactly while it begins rising
+                // from the bottom edge of the hero.
+                const navProgress = clamp01(y / 90);
+
+                // The arrow fades away more gradually, reaching zero after
+                // roughly the first 20% of one viewport-height of scrolling.
+                const arrowProgress = clamp01(y / (vh * 0.20));
+                const arrowOpacity = 0.82 * (1 - arrowProgress);
+
+                document.body.style.setProperty('--nav-scroll-opacity', navProgress.toFixed(3));
+                document.body.style.setProperty('--arrow-scroll-opacity', arrowOpacity.toFixed(3));
+
+                if (cue) {
+                    cue.classList.toggle('is-hidden', arrowOpacity < 0.05);
+                }
+
+                ticking = false;
+            }
+
+            function requestUpdate() {
+                if (ticking) return;
+                ticking = true;
+                window.requestAnimationFrame(updateScrollFades);
+            }
+
+            window.addEventListener('scroll', requestUpdate, { passive: true });
+            window.addEventListener('resize', requestUpdate, { passive: true });
+            updateScrollFades();
         })();
     </script>
 
