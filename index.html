@@ -2083,5 +2083,63 @@
         })();
     </script>
 
+
+    <script>
+        // TEST: Dani & Danny #3 uses the real R2 movie as its hover preview.
+        // It loops only seconds 1-5 and keeps the exact same card crop.
+        (function () {
+            const card = document.querySelector('[data-video="r2-dani-danny-3"]');
+            if (!card) return;
+
+            const preview = card.querySelector('video.static-thumb');
+            if (!preview) return;
+
+            const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            if (!canHover) return;
+
+            const START = 1;
+            const END = 5;
+
+            preview.muted = true;
+            preview.playsInline = true;
+
+            function startPreview() {
+                try {
+                    if (preview.readyState >= 1) {
+                        preview.currentTime = START;
+                    }
+                } catch (e) {}
+
+                const p = preview.play();
+                if (p && typeof p.catch === 'function') {
+                    p.catch(function () {});
+                }
+            }
+
+            function stopPreview() {
+                preview.pause();
+                try {
+                    preview.currentTime = 0.001;
+                } catch (e) {}
+            }
+
+            preview.addEventListener('timeupdate', function () {
+                if (preview.currentTime >= END) {
+                    try {
+                        preview.currentTime = START;
+                        const p = preview.play();
+                        if (p && typeof p.catch === 'function') {
+                            p.catch(function () {});
+                        }
+                    } catch (e) {}
+                }
+            });
+
+            card.addEventListener('mouseenter', startPreview);
+            card.addEventListener('mouseleave', stopPreview);
+            card.addEventListener('click', stopPreview);
+        })();
+    </script>
+
 </body>
 </html>
