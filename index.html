@@ -2031,6 +2031,35 @@
             }
         }
 
+    
+        /* =========================================================
+           TOUCH-ONLY NATIVE FULLSCREEN PLAYER
+           Desktop does not use this element.
+           ========================================================= */
+
+        #mobileFullscreenVideo {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            background: #000;
+            z-index: -1;
+        }
+
+        #mobileFullscreenVideo:fullscreen,
+        #mobileFullscreenVideo:-webkit-full-screen {
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 2147483647;
+            background: #000;
+            object-fit: contain;
+        }
+
     </style>
 </head>
 <body>
@@ -2530,6 +2559,7 @@
             const customVolume = document.getElementById('customVolume');
             const customFullscreen = document.getElementById('customFullscreen');
             const closeBtn = document.getElementById('closeBtn');
+            const mobileFullscreenVideo = document.getElementById('mobileFullscreenVideo');
             const videoCards = document.querySelectorAll('.video-card');
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
             const mobileNav = document.getElementById('mobileNav');
@@ -2714,12 +2744,137 @@
                 event.preventDefault();
             });
 
+            // Touch phones/tablets bypass the modal entirely.
+            // This avoids changing body overflow on Android/iOS and therefore
+            // avoids the scroll-lock path that caused the reported Android issue.
+            const useTouchFullscreenPlayback = window.matchMedia(
+                '(hover: none), (pointer: coarse)'
+            ).matches;
+
+            let mobileFullscreenActive = false;
+
+            function cleanupMobileFullscreenVideo() {
+                if (!mobileFullscreenVideo) return;
+
+                mobileFullscreenActive = false;
+                mobileFullscreenVideo.pause();
+                mobileFullscreenVideo.removeAttribute('src');
+                mobileFullscreenVideo.load();
+            }
+
+            function openTouchFullscreenVideo(url) {
+                if (!mobileFullscreenVideo || !url) return;
+
+                cleanupMobileFullscreenVideo();
+
+                mobileFullscreenActive = true;
+                mobileFullscreenVideo.src = url;
+                mobileFullscreenVideo.load();
+
+                // Keep this call directly inside the tap/click event path.
+                // Android/Chromium uses the standard Fullscreen API.
+                if (mobileFullscreenVideo.requestFullscreen) {
+                    try {
+                        const fsPromise = mobileFullscreenVideo.requestFullscreen();
+                        if (fsPromise && typeof fsPromise.catch === 'function') {
+                            fsPromise.catch(function () {});
+                        }
+                    } catch (e) {}
+                } else if (mobileFullscreenVideo.webkitEnterFullscreen) {
+                    // iPhone/iPad native video fullscreen.
+                    try {
+                        mobileFullscreenVideo.webkitEnterFullscreen();
+                    } catch (e) {
+                        // On iPhone, starting a video without playsinline from
+                        // a user tap can still hand off to the native player.
+                    }
+                }
+
+                const playPromise = mobileFullscreenVideo.play();
+                if (playPromise && typeof playPromise.catch === 'function') {
+                    playPromise.catch(function () {});
+                }
+            }
+
+            // iOS tells us explicitly when its native fullscreen player closes.
+            mobileFullscreenVideo.addEventListener('webkitendfullscreen', function () {
+                cleanupMobileFullscreenVideo();
+            });
+
+            // Standard Android/Chromium fullscreen exit.
+            document.addEventListener('fullscreenchange', function () {
+                if (
+                    mobileFullscreenActive &&
+                    document.fullscreenElement !== mobileFullscreenVideo
+                ) {
+                    cleanupMobileFullscreenVideo();
+                }
+            });
+
+            document.addEventListener('webkitfullscreenchange', function () {
+                if (
+                    mobileFullscreenActive &&
+                    document.webkitFullscreenElement &&
+                    document.webkitFullscreenElement !== mobileFullscreenVideo
+                ) {
+                    cleanupMobileFullscreenVideo();
+                }
+            });
+
+            mobileFullscreenVideo.addEventListener('ended', function () {
+                // Leave fullscreen behavior to the browser, but never leave a
+                // hidden video playing/loaded behind the portfolio.
+                if (
+                    !document.fullscreenElement &&
+                    !document.webkitFullscreenElement
+                ) {
+                    cleanupMobileFullscreenVideo();
+                }
+            });
+
+
+            window.addEventListener('pagehide', function () {
+                if (mobileFullscreenActive) {
+                    cleanupMobileFullscreenVideo();
+                }
+            });
+
+            document.addEventListener('visibilitychange', function () {
+                if (
+                    mobileFullscreenActive &&
+                    document.visibilityState === 'visible' &&
+                    !document.fullscreenElement &&
+                    !document.webkitFullscreenElement
+                ) {
+                    // Covers Android browsers returning from their native
+                    // fullscreen surface without a reliable fullscreenchange.
+                    window.setTimeout(function () {
+                        if (
+                            mobileFullscreenActive &&
+                            !document.fullscreenElement &&
+                            !document.webkitFullscreenElement
+                        ) {
+                            cleanupMobileFullscreenVideo();
+                        }
+                    }, 120);
+                }
+            });
+
             // Video click handlers
             videoCards.forEach(function(card) {
                 card.addEventListener('click', function() {
                     const directUrl = card.getAttribute('data-direct');
                     const videoId = card.getAttribute('data-video');
 
+                    // MOBILE / TOUCH TABLET:
+                    // Go directly to fullscreen and never open/lock the modal.
+                    if (useTouchFullscreenPlayback && directUrl) {
+                        openTouchFullscreenVideo(directUrl);
+                        return;
+                    }
+
+                    // DESKTOP:
+                    // Keep the existing modal/custom-player behavior unchanged.
                     videoFrame.src = '';
                     videoFrame.style.display = 'none';
 
@@ -3370,6 +3525,18 @@
             updateTouchPreview();
         })();
     </script>
+
+
+    <!-- Touch-only fullscreen player.
+         Kept outside the desktop modal so mobile never locks body scrolling. -->
+    <video id="mobileFullscreenVideo"
+           controls
+           controlsList="nodownload noplaybackrate noremoteplayback"
+           disablePictureInPicture
+           disableRemotePlayback
+           preload="none"
+           oncontextmenu="return false;"
+           aria-label="Fullscreen project video"></video>
 
 </body>
 </html>
