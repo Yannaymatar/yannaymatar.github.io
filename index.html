@@ -1951,6 +1951,50 @@
             }
         }
 
+    
+        /* =========================================================
+           TOUCH PREVIEW SEAM FIX
+           Safari/iPad can round the video layer by a fraction of a pixel
+           differently from the still underneath. Overscan the preview
+           slightly, then clip it inside the card.
+           ========================================================= */
+
+        @media (hover: none), (pointer: coarse) {
+            .video-thumbnail {
+                overflow: hidden !important;
+                isolation: isolate;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+
+            .video-card .r2-hover-preview {
+                display: block !important;
+                position: absolute !important;
+
+                /* Deliberately extend beyond all four edges. */
+                top: -2px !important;
+                left: -2px !important;
+                width: calc(100% + 4px) !important;
+                height: calc(100% + 4px) !important;
+
+                max-width: none !important;
+                max-height: none !important;
+                object-fit: cover !important;
+                object-position: 50% 50% !important;
+
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+
+            /* Once the moving preview is genuinely ready, remove the still
+               underneath so no sliver of it can ever peek through. */
+            .video-card.touch-preview-ready .static-thumb {
+                opacity: 0 !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -3076,6 +3120,7 @@
                     video.classList.add('is-ready');
 
                     if (state.active) {
+                        card.classList.add('touch-preview-ready');
                         try { video.currentTime = 0; } catch (e) {}
                         safePlay(video);
                     }
@@ -3108,6 +3153,7 @@
                 if (state.ready || state.video.readyState >= 3) {
                     state.ready = true;
                     state.video.classList.add('is-ready');
+                    card.classList.add('touch-preview-ready');
                     safePlay(state.video);
                 } else {
                     state.video.load();
@@ -3116,7 +3162,7 @@
 
             function deactivateCard(card) {
                 const state = states.get(card);
-                card.classList.remove('touch-preview-active');
+                card.classList.remove('touch-preview-active', 'touch-preview-ready');
 
                 if (!state) return;
 
