@@ -1826,6 +1826,93 @@
             }
         }
 
+    
+        /* =========================================================
+           MOBILE + IPAD VIEWPORT / OVERSCROLL FIXES
+           ========================================================= */
+
+        html,
+        body {
+            width: 100%;
+            max-width: 100%;
+            background: #000 !important;
+
+            /* Prevent real horizontal overflow first, then use clip where supported. */
+            overflow-x: hidden !important;
+            overflow-x: clip !important;
+
+            /* Prevent browser rubber-band from exposing the fixed hero underneath. */
+            overscroll-behavior-x: none;
+            overscroll-behavior-y: none;
+            overscroll-behavior: none;
+        }
+
+        .main-content,
+        .hero,
+        .portfolio-section,
+        .about-section,
+        .contact-section {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            overflow-x: clip;
+        }
+
+        /* Once the hero has completely left the page, it no longer needs
+           to remain fixed behind the rest of the site. Hiding it means that
+           even browser-edge bounce can only reveal black, never the reel. */
+        body.hero-offstage .desktop-hero {
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+
+        /* Long contact text must never make the document wider than the screen. */
+        .contact-section {
+            overflow: hidden !important;
+        }
+
+        .contact-section a {
+            display: inline-block;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* iPhone / iPad: use the ACTUAL visible browser viewport.
+           100svh was too short in some mobile browser states, which allowed
+           the black WORK section to show on the first frame. */
+        @media (max-width: 1180px), (hover: none) and (pointer: coarse) {
+            .hero {
+                height: 100vh !important;
+                height: 100dvh !important;
+                min-height: 100dvh !important;
+            }
+
+            .desktop-hero {
+                width: 100% !important;
+                height: 100vh !important;
+                height: 100dvh !important;
+                min-height: 100dvh !important;
+            }
+
+            .desktop-hero .hero-video {
+                width: 100% !important;
+                height: 100% !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .contact-section {
+                padding-left: 1.25rem !important;
+                padding-right: 1.25rem !important;
+            }
+
+            .contact-section a {
+                font-size: clamp(1rem, 4.7vw, 1.3rem) !important;
+                letter-spacing: 0.5px !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -2233,6 +2320,22 @@
         const CORRECT_PASSWORD = 'yannay2026'; // Change this to your desired password
         
         document.addEventListener('DOMContentLoaded', function() {
+            // Mobile browsers often restore the previous scroll position.
+            // For this portfolio landing page, a fresh open should begin on the hero.
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+
+            if (!window.location.hash) {
+                window.scrollTo(0, 0);
+                requestAnimationFrame(function() {
+                    window.scrollTo(0, 0);
+                });
+                window.setTimeout(function() {
+                    window.scrollTo(0, 0);
+                }, 80);
+            }
+
             const passwordOverlay = document.getElementById('passwordOverlay');
             const passwordInput = document.getElementById('passwordInput');
             const passwordButton = document.getElementById('passwordButton');
@@ -2837,6 +2940,42 @@
             window.addEventListener('scroll', requestUpdate, { passive: true });
             window.addEventListener('resize', requestUpdate, { passive: true });
             updateScrollFades();
+        })();
+    </script>
+
+
+    <script>
+        // Keep the fixed reel available only while it can actually be seen.
+        // Deep in the site it is hidden, so iOS/iPad edge-bounce cannot expose it.
+        (function () {
+            const heroSection = document.querySelector('.hero');
+            if (!heroSection) return;
+
+            let ticking = false;
+
+            function updateHeroOffstageState() {
+                const y = window.scrollY || window.pageYOffset || 0;
+                const heroHeight = Math.max(heroSection.offsetHeight, window.innerHeight || 0);
+                document.body.classList.toggle('hero-offstage', y >= heroHeight - 2);
+                ticking = false;
+            }
+
+            function requestHeroStateUpdate() {
+                if (ticking) return;
+                ticking = true;
+                window.requestAnimationFrame(updateHeroOffstageState);
+            }
+
+            window.addEventListener('scroll', requestHeroStateUpdate, { passive: true });
+            window.addEventListener('resize', requestHeroStateUpdate, { passive: true });
+            window.addEventListener('pageshow', function() {
+                if (!window.location.hash) {
+                    window.scrollTo(0, 0);
+                }
+                requestHeroStateUpdate();
+            });
+
+            updateHeroOffstageState();
         })();
     </script>
 
