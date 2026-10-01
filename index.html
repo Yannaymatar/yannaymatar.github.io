@@ -1913,6 +1913,44 @@
             }
         }
 
+    
+        /* =========================================================
+           TOUCH PREVIEWS — MOBILE + IPAD
+           Touch screens have no real hover, so the card/row nearest
+           the vertical center of the screen becomes the active preview.
+           ========================================================= */
+
+        @media (hover: none), (pointer: coarse) {
+            /* Allow the tiny R2 preview layer to exist/load on touch.
+               It remains invisible until its card is activated. */
+            .video-card .r2-hover-preview {
+                display: block !important;
+                opacity: 0 !important;
+            }
+
+            .video-card.touch-preview-active .r2-hover-preview.is-ready {
+                opacity: 1 !important;
+            }
+
+            /* Re-enable the existing desktop-style title treatment only
+               for the centered card / centered row. */
+            .video-card.touch-preview-active .video-info {
+                display: flex !important;
+                opacity: 1 !important;
+                background: rgba(0,0,0,0.18) !important;
+            }
+
+            .video-card.touch-preview-active .video-info h3 {
+                transform: translateY(0) !important;
+            }
+
+            /* Keep non-active touch cards completely clean. */
+            .video-card:not(.touch-preview-active) .video-info {
+                display: none !important;
+                opacity: 0 !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -2976,6 +3014,221 @@
             });
 
             updateHeroOffstageState();
+        })();
+    </script>
+
+
+    <script>
+        // TOUCH EQUIVALENT OF HOVER
+        // Phone: the card nearest the screen center plays.
+        // iPad/tablet: every card in that same visual row plays together.
+        // Devices with genuine mouse/trackpad hover keep the normal desktop behavior.
+        (function () {
+            const genuineHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            if (genuineHover) return;
+
+            const cards = Array.from(document.querySelectorAll('.video-card[data-preview]'));
+            if (!cards.length) return;
+
+            const states = new WeakMap();
+            let activeCards = new Set();
+            let ticking = false;
+
+            function safePlay(video) {
+                const promise = video.play();
+                if (promise && typeof promise.catch === 'function') {
+                    promise.catch(function () {});
+                }
+            }
+
+            function ensurePreview(card) {
+                let state = states.get(card);
+                if (state) return state;
+
+                const thumbnail = card.querySelector('.video-thumbnail');
+                const previewUrl = card.getAttribute('data-preview');
+                if (!thumbnail || !previewUrl) return null;
+
+                const video = document.createElement('video');
+                video.className = 'r2-hover-preview';
+                video.muted = true;
+                video.defaultMuted = true;
+                video.playsInline = true;
+                video.loop = true;
+                video.preload = 'metadata';
+                video.setAttribute('muted', '');
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+                video.src = previewUrl;
+
+                state = {
+                    video: video,
+                    ready: false,
+                    active: false
+                };
+
+                states.set(card, state);
+                thumbnail.appendChild(video);
+
+                function markReady() {
+                    if (state.ready) return;
+                    state.ready = true;
+                    video.classList.add('is-ready');
+
+                    if (state.active) {
+                        try { video.currentTime = 0; } catch (e) {}
+                        safePlay(video);
+                    }
+                }
+
+                video.addEventListener('loadeddata', markReady, { once: true });
+                video.addEventListener('canplay', markReady, { once: true });
+
+                return state;
+            }
+
+            function preloadCard(card) {
+                const state = ensurePreview(card);
+                if (!state) return;
+
+                state.video.preload = 'auto';
+                if (state.video.readyState < 2) {
+                    state.video.load();
+                }
+            }
+
+            function activateCard(card) {
+                const state = ensurePreview(card);
+                if (!state) return;
+
+                state.active = true;
+                card.classList.add('touch-preview-active');
+                state.video.preload = 'auto';
+
+                if (state.ready || state.video.readyState >= 3) {
+                    state.ready = true;
+                    state.video.classList.add('is-ready');
+                    safePlay(state.video);
+                } else {
+                    state.video.load();
+                }
+            }
+
+            function deactivateCard(card) {
+                const state = states.get(card);
+                card.classList.remove('touch-preview-active');
+
+                if (!state) return;
+
+                state.active = false;
+                state.video.pause();
+
+                try {
+                    state.video.currentTime = 0;
+                } catch (e) {}
+            }
+
+            function sameVisualRow(cardA, cardB) {
+                const a = cardA.getBoundingClientRect();
+                const b = cardB.getBoundingClientRect();
+
+                // Cards in the same CSS grid row have effectively the same top.
+                // Tolerance handles subpixel/grid rounding on iPad.
+                return Math.abs(a.top - b.top) <= 18;
+            }
+
+            function updateTouchPreview() {
+                const vh = Math.max(window.innerHeight || 0, 1);
+                const centerY = vh * 0.50;
+
+                const visibleCards = cards.filter(function (card) {
+                    const rect = card.getBoundingClientRect();
+                    return rect.bottom > 0 && rect.top < vh;
+                });
+
+                let nextActive = new Set();
+
+                if (visibleCards.length) {
+                    let nearest = visibleCards[0];
+                    let nearestDistance = Infinity;
+
+                    visibleCards.forEach(function (card) {
+                        const rect = card.getBoundingClientRect();
+                        const cardCenter = rect.top + (rect.height / 2);
+                        const distance = Math.abs(cardCenter - centerY);
+
+                        if (distance < nearestDistance) {
+                            nearest = card;
+                            nearestDistance = distance;
+                        }
+                    });
+
+                    // Activate every visible card belonging to the nearest card's row.
+                    visibleCards.forEach(function (card) {
+                        if (sameVisualRow(card, nearest)) {
+                            nextActive.add(card);
+                        }
+                    });
+                }
+
+                activeCards.forEach(function (card) {
+                    if (!nextActive.has(card)) {
+                        deactivateCard(card);
+                    }
+                });
+
+                nextActive.forEach(function (card) {
+                    if (!activeCards.has(card)) {
+                        activateCard(card);
+                    }
+                });
+
+                activeCards = nextActive;
+                ticking = false;
+            }
+
+            function requestTouchPreviewUpdate() {
+                if (ticking) return;
+                ticking = true;
+                window.requestAnimationFrame(updateTouchPreview);
+            }
+
+            // Quietly load cards shortly before they reach the screen.
+            if ('IntersectionObserver' in window) {
+                const preloadObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            preloadCard(entry.target);
+                            preloadObserver.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    root: null,
+                    rootMargin: '650px 0px 650px 0px',
+                    threshold: 0.01
+                });
+
+                cards.forEach(function (card) {
+                    preloadObserver.observe(card);
+                });
+            } else {
+                cards.slice(0, 8).forEach(preloadCard);
+            }
+
+            // Tapping still opens the full movie immediately.
+            cards.forEach(function (card) {
+                card.addEventListener('click', function () {
+                    deactivateCard(card);
+                });
+            });
+
+            window.addEventListener('scroll', requestTouchPreviewUpdate, { passive: true });
+            window.addEventListener('resize', requestTouchPreviewUpdate, { passive: true });
+            window.addEventListener('orientationchange', function () {
+                window.setTimeout(requestTouchPreviewUpdate, 120);
+            }, { passive: true });
+
+            updateTouchPreview();
         })();
     </script>
 
