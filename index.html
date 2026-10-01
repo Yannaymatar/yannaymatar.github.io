@@ -1932,22 +1932,32 @@
                 opacity: 1 !important;
             }
 
-            /* Re-enable the existing desktop-style title treatment only
-               for the centered card / centered row. */
-            .video-card.touch-preview-active .video-info {
+            /* Touch title behavior mirrors desktop hover:
+               it is always present, but fades + rises into place.
+               No display:none means no one-frame pop. */
+            .video-card .video-info {
                 display: flex !important;
-                opacity: 1 !important;
+                opacity: 0 !important;
                 background: rgba(0,0,0,0.18) !important;
+                pointer-events: none !important;
+                transition: opacity 260ms ease !important;
+            }
+
+            .video-card .video-info h3 {
+                transform: translateY(10px) !important;
+                transition:
+                    transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                    opacity 260ms ease !important;
+                opacity: 0 !important;
+            }
+
+            .video-card.touch-preview-active .video-info {
+                opacity: 1 !important;
             }
 
             .video-card.touch-preview-active .video-info h3 {
                 transform: translateY(0) !important;
-            }
-
-            /* Keep non-active touch cards completely clean. */
-            .video-card:not(.touch-preview-active) .video-info {
-                display: none !important;
-                opacity: 0 !important;
+                opacity: 1 !important;
             }
         }
 
