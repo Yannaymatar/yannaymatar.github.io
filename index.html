@@ -1987,11 +1987,12 @@
                 -webkit-backface-visibility: hidden;
                 backface-visibility: hidden;
             }
+        }
 
-            /* Once the moving preview is genuinely ready, remove the still
-               underneath so no sliver of it can ever peek through. */
-            .video-card.touch-preview-ready .static-thumb {
-                opacity: 0 !important;
+    
+        @media (hover: none), (pointer: coarse) {
+            .video-card .r2-hover-preview {
+                transition: opacity 150ms ease !important;
             }
         }
 
@@ -3108,7 +3109,8 @@
                 state = {
                     video: video,
                     ready: false,
-                    active: false
+                    active: false,
+                    stopTimer: null
                 };
 
                 states.set(card, state);
@@ -3120,7 +3122,6 @@
                     video.classList.add('is-ready');
 
                     if (state.active) {
-                        card.classList.add('touch-preview-ready');
                         try { video.currentTime = 0; } catch (e) {}
                         safePlay(video);
                     }
@@ -3147,13 +3148,18 @@
                 if (!state) return;
 
                 state.active = true;
+
+                if (state.stopTimer) {
+                    window.clearTimeout(state.stopTimer);
+                    state.stopTimer = null;
+                }
+
                 card.classList.add('touch-preview-active');
                 state.video.preload = 'auto';
 
                 if (state.ready || state.video.readyState >= 3) {
                     state.ready = true;
                     state.video.classList.add('is-ready');
-                    card.classList.add('touch-preview-ready');
                     safePlay(state.video);
                 } else {
                     state.video.load();
@@ -3162,16 +3168,32 @@
 
             function deactivateCard(card) {
                 const state = states.get(card);
-                card.classList.remove('touch-preview-active', 'touch-preview-ready');
+                card.classList.remove('touch-preview-active');
 
                 if (!state) return;
 
                 state.active = false;
-                state.video.pause();
 
-                try {
-                    state.video.currentTime = 0;
-                } catch (e) {}
+                if (state.stopTimer) {
+                    window.clearTimeout(state.stopTimer);
+                }
+
+                // IMPORTANT:
+                // Let the preview fade away while it is still displaying its
+                // current decoded frame. Only after it is invisible do we pause
+                // and reset it. The still image has remained underneath the
+                // whole time, so there is never an empty/black frame between them.
+                state.stopTimer = window.setTimeout(function () {
+                    state.stopTimer = null;
+
+                    if (state.active) return;
+
+                    state.video.pause();
+
+                    try {
+                        state.video.currentTime = 0;
+                    } catch (e) {}
+                }, 180);
             }
 
             function sameVisualRow(cardA, cardB) {
