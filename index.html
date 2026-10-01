@@ -1940,22 +1940,22 @@
                 opacity: 0 !important;
                 background: rgba(0,0,0,0.18) !important;
                 pointer-events: none !important;
-                transition: opacity 260ms ease !important;
+                transition: opacity 300ms ease !important;
             }
 
             .video-card .video-info h3 {
                 transform: translateY(10px) !important;
                 transition:
-                    transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
-                    opacity 260ms ease !important;
+                    transform 300ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                    opacity 300ms ease !important;
                 opacity: 0 !important;
             }
 
-            .video-card.touch-preview-active .video-info {
+            .video-card.touch-title-visible .video-info {
                 opacity: 1 !important;
             }
 
-            .video-card.touch-preview-active .video-info h3 {
+            .video-card.touch-title-visible .video-info h3 {
                 transform: translateY(0) !important;
                 opacity: 1 !important;
             }
@@ -2003,6 +2003,31 @@
         @media (hover: none), (pointer: coarse) {
             .video-card .r2-hover-preview {
                 transition: opacity 150ms ease !important;
+            }
+        }
+
+    
+        /* =========================================================
+           HERO PROFESSION LINE — MOBILE / IPAD READABILITY
+           ========================================================= */
+
+        @media (max-width: 1180px), (hover: none) and (pointer: coarse) {
+            .desktop-hero .hero-description {
+                width: min(90vw, 760px) !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                font-size: clamp(1.02rem, 1.8vw, 1.28rem) !important;
+                line-height: 1.45 !important;
+                letter-spacing: clamp(1.2px, 0.22vw, 2.2px) !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .desktop-hero .hero-description {
+                width: 92vw !important;
+                font-size: clamp(0.94rem, 4vw, 1.05rem) !important;
+                line-height: 1.5 !important;
+                letter-spacing: 1.1px !important;
             }
         }
 
@@ -3120,7 +3145,9 @@
                     video: video,
                     ready: false,
                     active: false,
-                    stopTimer: null
+                    stopTimer: null,
+                    titleExitFrame1: null,
+                    titleExitFrame2: null
                 };
 
                 states.set(card, state);
@@ -3164,7 +3191,17 @@
                     state.stopTimer = null;
                 }
 
-                card.classList.add('touch-preview-active');
+                if (state.titleExitFrame1) {
+                    window.cancelAnimationFrame(state.titleExitFrame1);
+                    state.titleExitFrame1 = null;
+                }
+
+                if (state.titleExitFrame2) {
+                    window.cancelAnimationFrame(state.titleExitFrame2);
+                    state.titleExitFrame2 = null;
+                }
+
+                card.classList.add('touch-preview-active', 'touch-title-visible');
                 state.video.preload = 'auto';
 
                 if (state.ready || state.video.readyState >= 3) {
@@ -3180,7 +3217,10 @@
                 const state = states.get(card);
                 card.classList.remove('touch-preview-active');
 
-                if (!state) return;
+                if (!state) {
+                    card.classList.remove('touch-title-visible');
+                    return;
+                }
 
                 state.active = false;
 
@@ -3188,11 +3228,32 @@
                     window.clearTimeout(state.stopTimer);
                 }
 
-                // IMPORTANT:
+                if (state.titleExitFrame1) {
+                    window.cancelAnimationFrame(state.titleExitFrame1);
+                }
+                if (state.titleExitFrame2) {
+                    window.cancelAnimationFrame(state.titleExitFrame2);
+                }
+
+                // Safari/iPadOS can collapse a class removal into the same
+                // rendering frame. Keep the title visible for two paint frames,
+                // then remove its visibility class. That makes the reverse
+                // opacity + downward movement animate reliably.
+                state.titleExitFrame1 = window.requestAnimationFrame(function () {
+                    state.titleExitFrame1 = null;
+
+                    state.titleExitFrame2 = window.requestAnimationFrame(function () {
+                        state.titleExitFrame2 = null;
+
+                        if (!state.active) {
+                            card.classList.remove('touch-title-visible');
+                        }
+                    });
+                });
+
                 // Let the preview fade away while it is still displaying its
                 // current decoded frame. Only after it is invisible do we pause
-                // and reset it. The still image has remained underneath the
-                // whole time, so there is never an empty/black frame between them.
+                // and reset it. The still image remains underneath throughout.
                 state.stopTimer = window.setTimeout(function () {
                     state.stopTimer = null;
 
