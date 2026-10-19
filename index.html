@@ -2079,7 +2079,7 @@
     <section class="hero">
         <!-- Desktop: Video with overlay text -->
         <div class="desktop-hero">
-            <video class="hero-video" autoplay muted loop playsinline>
+            <video class="hero-video" preload="metadata" muted loop playsinline>
                 <source src="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/showreel/Showreel2.mp4" type="video/mp4">
             </video>
             <div class="hero-video-overlay"></div>
@@ -2093,7 +2093,7 @@
         <!-- Mobile: Separate video and text sections -->
         <div class="mobile-hero">
             <div class="mobile-video-section">
-                <video class="hero-video" autoplay muted loop playsinline>
+                <video class="hero-video" preload="metadata" muted loop playsinline>
                     <source src="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/showreel/Showreel2.mp4" type="video/mp4">
                 </video>
             </div>
@@ -2137,7 +2137,7 @@
     <section class="portfolio-section" id="work">
         <h2 class="section-title">WORK</h2>
         <div class="video-grid">
-    <div class="video-card" data-video="1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/50sec_Landscape_Edit_28.mp4" data-preview="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/previwes/50sec_Landscape_Edit_28_1.mp4">
+    <div class="video-card" data-video="1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/DS.PoliceLineup.mp4" data-preview="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/previwes/50sec_Landscape_Edit_28_1.mp4">
         <div class="video-thumbnail">
             <img src="https://drive.google.com/thumbnail?id=1Wsfx3smD86FwQUaRac-AUUd_0Eri11R8&sz=w640-h360" alt="Celebrity Project 05" class="static-thumb">
         </div>
@@ -2368,7 +2368,7 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Hunted%20Dreams1.mp4" data-preview="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/previwes/Hunted%20Dreams1_1.mp4">
+            <div class="video-card" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Hunted%20Dreams1_1.mp4" data-preview="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/previwes/Hunted%20Dreams1_1.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1uS4tnui2_a23MCVR22G-hI7wS_o8sPt1&sz=w640-h360" alt="Animation Project 03" class="static-thumb">
                 </div>
@@ -2386,7 +2386,7 @@
                 </div>
             </div>
 
-            <div class="video-card" data-video="1oLGGrMmk5ZTO-PAJxkNqi81liQ_03VMg" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Volcano_Sequel_82sec_1920X1080.mp4" data-preview="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/previwes/Volcano_Sequel_82sec_1920X1080_1.mp4">
+            <div class="video-card" data-video="1oLGGrMmk5ZTO-PAJxkNqi81liQ_03VMg" data-direct="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/animation/Volcano_Sequel_82sec_1920X1080_1.mp4" data-preview="https://pub-f8014cd6376b4ed88f13e9eb5f248997.r2.dev/previwes/Volcano_Sequel_82sec_1920X1080_1.mp4">
                 <div class="video-thumbnail">
                     <img src="https://drive.google.com/thumbnail?id=1uUFxsw-vRLOqqQoSjzsmtICF2M6Td0YR&sz=w640-h360" alt="Animation Project 07" class="static-thumb">
                 </div>
@@ -2488,6 +2488,39 @@
             const passwordButton = document.getElementById('passwordButton');
             const passwordError = document.getElementById('passwordError');
             const mainContent = document.getElementById('mainContent');
+            const heroReels = Array.from(document.querySelectorAll('.hero-video'));
+            let heroReelStarted = false;
+
+            // Keep both hero reels at frame zero while the password screen is up.
+            // CSS uses .desktop-hero on all screen sizes in this design; the old
+            // .mobile-hero element is hidden and does not need a second decoder.
+            heroReels.forEach(function(reel) {
+                reel.pause();
+                try { reel.currentTime = 0; } catch (e) {}
+            });
+
+            function startHeroReelFromBeginning() {
+                if (heroReelStarted) return;
+                heroReelStarted = true;
+
+                const reel = document.querySelector('.desktop-hero .hero-video');
+                if (!reel) return;
+
+                reel.muted = true;
+                reel.pause();
+                try { reel.currentTime = 0; } catch (e) {}
+
+                // Playback is requested only after the password is accepted,
+                // or immediately for an already-authenticated/recruiter visit.
+                const playRequest = reel.play();
+                if (playRequest && typeof playRequest.catch === 'function') {
+                    playRequest.catch(function () {
+                        // Browsers may still limit video playback in some modes.
+                        // Do not advance the reel behind the password screen.
+                    });
+                }
+            }
+
             
             // Recruiter access links
             // Use: https://yannaymatar.github.io/?access=recruiter2025
@@ -2537,6 +2570,7 @@
             function showMainContent() {
                 passwordOverlay.classList.add('hidden');
                 mainContent.classList.add('show');
+                startHeroReelFromBeginning();
             }
             
             // Event listeners
@@ -2561,6 +2595,34 @@
             const closeBtn = document.getElementById('closeBtn');
             const mobileFullscreenVideo = document.getElementById('mobileFullscreenVideo');
             const videoCards = document.querySelectorAll('.video-card');
+            // The browser's original body overflow must be restored, not
+            // overwritten with 'auto'. In particular, changing the page's
+            // scrolling container can disrupt middle-wheel auto-scroll on PC.
+            let modalOverflowBeforeOpen = null;
+
+            function lockDesktopModalScroll() {
+                if (modalOverflowBeforeOpen === null) {
+                    modalOverflowBeforeOpen = {
+                        value: document.body.style.getPropertyValue('overflow'),
+                        priority: document.body.style.getPropertyPriority('overflow')
+                    };
+                }
+                document.body.style.setProperty('overflow', 'hidden');
+            }
+
+            function restoreDesktopModalScroll() {
+                if (modalOverflowBeforeOpen === null) return;
+
+                const previous = modalOverflowBeforeOpen;
+                modalOverflowBeforeOpen = null;
+
+                if (previous.value) {
+                    document.body.style.setProperty('overflow', previous.value, previous.priority);
+                } else {
+                    document.body.style.removeProperty('overflow');
+                }
+            }
+
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
             const mobileNav = document.getElementById('mobileNav');
             const mobileClose = document.getElementById('mobileClose');
@@ -2573,7 +2635,7 @@
             
             mobileClose.addEventListener('click', function() {
                 mobileNav.classList.remove('active');
-                document.body.style.overflow = 'auto';
+                document.body.style.removeProperty('overflow');
             });
             
             // Close mobile menu when clicking on nav links
@@ -2581,7 +2643,7 @@
             mobileNavLinks.forEach(function(link) {
                 link.addEventListener('click', function() {
                     mobileNav.classList.remove('active');
-                    document.body.style.overflow = 'auto';
+                    document.body.style.removeProperty('overflow');
                 });
             });
             
@@ -2911,7 +2973,7 @@
                     }
 
                     modal.style.display = 'block';
-                    document.body.style.overflow = 'hidden';
+                    lockDesktopModalScroll();
                 });
             });
 
@@ -2932,7 +2994,7 @@
                     }
                     customVideoSeek.value = '0';
 
-                document.body.style.overflow = 'auto';
+                restoreDesktopModalScroll();
             }
 
             closeBtn.addEventListener('click', closeModal);
