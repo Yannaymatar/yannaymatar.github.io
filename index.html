@@ -2244,24 +2244,304 @@
             .access-request-trigger { margin-top: 15px; }
         }
 
+
+        /* =============================================================
+           ACCESS SCREEN — REFINED EDITORIAL ART DIRECTION
+           Keep the password and request flows intact. Prevent the
+           oversized old glow pseudo-element from causing BOTH scrollbars.
+           Only the overlay can scroll on unusually short devices, and
+           the scrollbar itself is concealed (content stays reachable).
+           ============================================================= */
+        .password-overlay {
+            inset: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            padding: 22px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            background: radial-gradient(ellipse 75% 60% at 50% 38%, #171511 0%, #0b0b0a 60%, #070707 100%);
+            overscroll-behavior: contain;
+        }
+        .password-overlay::-webkit-scrollbar { display: none; width: 0; height: 0; }
+        .password-overlay.hidden { pointer-events: none; }
+
+        .password-container {
+            flex: 0 0 auto;
+            margin: auto 0;
+            width: min(100%, 462px);
+            max-width: 462px;
+            max-height: none;
+            padding: 39px 43px 35px;
+            text-align: left;
+            overflow: visible;
+            scrollbar-width: none;
+            border: 1px solid rgba(255,255,255,.13);
+            border-radius: 3px;
+            background: rgba(14,14,13,.94);
+            box-shadow: 0 25px 86px rgba(0,0,0,.28);
+            backdrop-filter: none;
+        }
+        .password-container::before { content: none !important; display: none !important; }
+
+        .access-wordmark {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 23px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid rgba(255,255,255,.16);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1.45;
+            font-weight: 500;
+            letter-spacing: 1.7px;
+            white-space: nowrap;
+            color: #eee9e1;
+        }
+        .access-wordmark span:last-child { color: #9e9b95; font-size: 9px; letter-spacing: 1.4px; }
+        .access-eyebrow {
+            margin: 0 0 14px;
+            color: #cfaa55;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            line-height: 1.4;
+            letter-spacing: 2px;
+        }
+        .password-title,
+        .access-request-panel .password-title {
+            margin: 0 0 13px;
+            padding: 0;
+            color: #f4f1eb;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(34px, 5vw, 41px);
+            font-weight: 400;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            text-transform: none;
+            text-shadow: none;
+            white-space: normal;
+        }
+        .password-subtitle, .access-request-intro {
+            margin: 0 0 31px;
+            color: #aea9a0;
+            opacity: 1;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.65;
+            letter-spacing: .1px;
+            text-transform: none;
+        }
+        .password-field-label,
+        .access-request-label {
+            display: block;
+            margin: 0 0 9px;
+            color: #dad5ca;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            line-height: 1.4;
+            letter-spacing: 1.55px;
+            text-transform: uppercase;
+        }
+        .password-input, .access-request-input {
+            display: block;
+            width: 100%;
+            height: 49px;
+            min-width: 0;
+            padding: 0 14px;
+            border: 1px solid rgba(255,255,255,.20);
+            border-radius: 2px;
+            background: #1a1a18;
+            color: #f2eee9;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: normal;
+            letter-spacing: .2px;
+            text-align: left;
+            box-shadow: none;
+            transition: border-color .22s ease, background .22s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .password-input { margin: 0 0 17px; }
+        .access-request-input { margin: 0 0 17px; }
+        .access-request-input:last-of-type { margin-bottom: 24px; }
+        .password-input::placeholder, .access-request-input::placeholder {
+            color: #898681;
+            opacity: 1;
+            letter-spacing: .2px;
+        }
+        .password-input:focus, .access-request-input:focus,
+        .access-request-input:focus-visible {
+            outline: none;
+            border-color: #d5b56f;
+            box-shadow: none;
+            background: #20201d;
+        }
+        .password-button {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid #d8b766;
+            border-radius: 2px;
+            background: #dcba69;
+            color: #15130f;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.7px;
+            line-height: 1.4;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: none;
+            transition: background .2s ease, border-color .2s ease;
+        }
+        .password-button:hover { background: #edca7c; border-color: #edca7c; transform: none; box-shadow: none; }
+        .password-button:focus-visible, .access-request-trigger:focus-visible, .access-request-back:focus-visible {
+            outline: 2px solid #dfbe72;
+            outline-offset: 4px;
+        }
+        .password-error {
+            max-height: 0;
+            margin: 0;
+            opacity: 0;
+            visibility: hidden;
+            overflow: hidden;
+            color: #e3a4a0;
+            font-size: 12px;
+            line-height: 1.5;
+            transition: opacity .2s ease, max-height .2s ease, margin .2s ease;
+        }
+        .password-error.show { max-height: 50px; margin: 11px 0 0; visibility: visible; opacity: 1; }
+        .access-footer-cta {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 32px;
+            padding-top: 23px;
+            border-top: 1px solid rgba(255,255,255,.13);
+            color: #9e9991;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.65;
+        }
+        .access-request-trigger, .access-request-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            border-radius: 0;
+            background: none;
+            color: #e5c67d;
+            font: inherit;
+            font-size: 12px;
+            line-height: 1.65;
+            font-weight: 500;
+            letter-spacing: .1px;
+            text-decoration: none;
+            text-transform: none;
+            transition: color .2s ease;
+            cursor: pointer;
+        }
+        .access-request-trigger:hover, .access-request-back:hover { color: #f4d99b; }
+        .access-request-trigger span { display: inline-block; font-size: 13px; }
+        .access-request-panel { animation: access-request-appear .28s ease both; }
+        .access-request-fields { text-align: left; }
+        .access-request-label span { color: #858078; font-size: 10px; }
+        .access-request-submit:disabled { opacity: .6; cursor: wait; }
+        .access-request-back {
+            margin-top: 28px;
+            padding: 13px 0 0;
+            border-top: 1px solid rgba(255,255,255,.13);
+            width: 100%;
+            justify-content: center;
+            color: #b8b2a7;
+        }
+        .access-request-status {
+            margin-top: 11px;
+            color: #e3a4a0;
+            text-align: left;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .access-request-success { padding: 12px 0 8px; text-align: left; color: #bfb9ae; font-size: 13px; line-height: 1.7; }
+        .access-request-success strong {
+            display: block;
+            margin: 0 0 6px;
+            color: #e6c77d;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-weight: 400;
+            font-size: 23px;
+            line-height: 1.3;
+            letter-spacing: -.35px;
+        }
+        .access-request-panel.is-submitted .access-request-intro { display: none; }
+        .access-request-panel.is-submitted .password-title { margin-bottom: 14px; }
+        @media (max-width: 640px) {
+            .password-overlay { padding: 16px; }
+            .password-container { width: 100%; padding: 30px 25px 27px; }
+            .access-wordmark { margin-bottom: 30px; padding-bottom: 20px; font-size: 9px; letter-spacing: 1.3px; }
+            .access-wordmark span:last-child { font-size: 8px; letter-spacing: 1px; }
+            .password-title, .access-request-panel .password-title { font-size: 35px; }
+            .password-subtitle, .access-request-intro { margin-bottom: 25px; }
+            .access-footer-cta { margin-top: 25px; padding-top: 20px; }
+            .access-request-back { margin-top: 19px; }
+        }
+        @media (max-height: 680px) {
+            .password-overlay { padding-top: 12px; padding-bottom: 12px; }
+            .password-container { padding-top: 25px; padding-bottom: 25px; }
+            .access-wordmark { margin-bottom: 22px; padding-bottom: 16px; }
+            .access-request-intro, .password-subtitle { margin-bottom: 18px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .access-request-panel { animation: none; }
+            .password-button, .password-input, .access-request-input { transition: none; }
+        }
+
     </style>
 </head>
 <body>
     <!-- Password Protection Overlay -->
     <div class="password-overlay" id="passwordOverlay">
         <div class="password-container">
+            <div class="access-wordmark" aria-label="Yannay Matarasso — Director">
+                <span>YANNAY MATARASSO</span>
+                <span>DIRECTOR</span>
+            </div>
+
             <div class="password-login-panel" id="passwordLoginPanel">
-                <h1 class="password-title">Access</h1>
-                <p class="password-subtitle">Enter Password to Continue</p>
-                <input type="password" class="password-input" id="passwordInput" placeholder="Password" autocomplete="off" aria-label="Password">
-                <button class="password-button" id="passwordButton" type="button">Enter</button>
+                <p class="access-eyebrow">SELECTED WORK</p>
+                <h1 class="password-title">Private viewing.</h1>
+                <p class="password-subtitle">Enter your password to explore the portfolio.</p>
+                <label class="access-request-label password-field-label" for="passwordInput">Password</label>
+                <input type="password" class="password-input" id="passwordInput" placeholder="Enter password" autocomplete="off" aria-label="Password">
+                <button class="password-button" id="passwordButton" type="button">View portfolio</button>
                 <div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
-                <button class="access-request-trigger" id="requestAccessTrigger" type="button" aria-controls="requestAccessPanel" aria-expanded="false">Request Access</button>
+                <div class="access-footer-cta">
+                    <span>Don't have a password?</span>
+                    <button class="access-request-trigger" id="requestAccessTrigger" type="button" aria-controls="requestAccessPanel" aria-expanded="false">Request access <span aria-hidden="true">↗</span></button>
+                </div>
             </div>
 
             <div class="access-request-panel" id="requestAccessPanel" hidden>
-                <h2 class="password-title">Request Access</h2>
-                <p class="access-request-intro">Interested in viewing my work? Leave your details and I'll get back to you.</p>
+                <p class="access-eyebrow">PORTFOLIO INQUIRIES</p>
+                <h2 class="password-title" id="accessRequestHeading">Request access.</h2>
+                <p class="access-request-intro">To request a viewing password, please share your details below.</p>
 
                 <form id="portfolioAccessForm" action="https://formspree.io/f/mljgkzzy" method="POST">
                     <div class="access-request-fields" id="accessRequestFields">
@@ -2283,11 +2563,11 @@
                     </div>
                     <div class="access-request-status" id="accessRequestStatus" role="status" aria-live="polite"></div>
                     <div class="access-request-success" id="accessRequestSuccess" hidden>
-                        <strong>Request sent</strong>
-                        Thank you! I'll get back to you by email.
+                        <strong>Request received.</strong>
+                        <span>I'll be in touch by email.</span>
                     </div>
                 </form>
-                <button class="access-request-back" id="requestAccessBack" type="button">← Back to Password</button>
+                <button class="access-request-back" id="requestAccessBack" type="button"><span aria-hidden="true">←</span> Back to password</button>
             </div>
         </div>
     </div>
@@ -2817,6 +3097,8 @@
 
                     accessRequestFields.hidden = true;
                     accessRequestSuccess.hidden = false;
+                    requestAccessPanel.classList.add('is-submitted');
+                    document.getElementById('accessRequestHeading').textContent = 'Thank you.';
                     portfolioAccessForm.reset();
                 } catch (error) {
                     accessRequestStatus.textContent = 'Could not send your request. Please try again.';
