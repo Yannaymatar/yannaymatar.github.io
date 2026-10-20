@@ -2060,17 +2060,235 @@
             object-fit: contain;
         }
 
+
+        /* Request Access: discreet extension of the original password screen. */
+        .password-overlay {
+            overflow-y: auto;
+            padding: 16px 0;
+        }
+
+        .password-container {
+            max-height: calc(100vh - 32px);
+            max-height: calc(100dvh - 32px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .access-request-trigger,
+        .access-request-back {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, .78);
+            font: inherit;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color .22s ease, opacity .22s ease;
+        }
+
+        .access-request-trigger {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 7px 8px;
+        }
+
+        .access-request-trigger:hover,
+        .access-request-back:hover {
+            color: #FFD700;
+        }
+
+        .access-request-trigger:focus-visible,
+        .access-request-back:focus-visible {
+            outline: 2px solid #FFD700;
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+        .access-request-panel {
+            animation: access-request-appear .27s ease both;
+        }
+
+        .access-request-panel[hidden],
+        .password-login-panel[hidden],
+        .access-request-success[hidden],
+        .access-request-fields[hidden] {
+            display: none !important;
+        }
+
+        @keyframes access-request-appear {
+            from { opacity: 0; transform: translateY(7px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .access-request-panel .password-title {
+            font-size: 1.6rem;
+            letter-spacing: 3.5px;
+            white-space: nowrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .access-request-intro {
+            color: rgba(255,255,255,.74);
+            font-size: .82rem;
+            line-height: 1.6;
+            margin-top: -12px;
+            margin-bottom: 20px;
+            letter-spacing: .12px;
+        }
+
+        .access-request-fields {
+            text-align: left;
+        }
+
+        .access-request-label {
+            display: block;
+            font-size: .7rem;
+            color: rgba(255,255,255,.77);
+            text-transform: uppercase;
+            letter-spacing: 1.45px;
+            margin: 0 0 7px;
+        }
+
+        .access-request-input {
+            display: block;
+            width: 100%;
+            height: 43px;
+            margin: 0 0 17px;
+            padding: 9px 12px;
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,.25);
+            border-radius: 5px;
+            font: inherit;
+            font-size: .9rem;
+            line-height: 1.3;
+            letter-spacing: .15px;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .access-request-input:focus-visible {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 2px rgba(255,215,0,.16);
+        }
+
+        .access-request-input::placeholder {
+            color: rgba(255, 255, 255, .42);
+        }
+
+        .access-request-input:last-of-type {
+            margin-bottom: 22px;
+        }
+
+        .access-request-submit:disabled {
+            opacity: .55;
+            cursor: wait;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .access-request-back {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 8px 12px;
+        }
+
+        .access-request-status {
+            color: #ff9696;
+            font-size: .79rem;
+            line-height: 1.45;
+            min-height: 0;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .access-request-status:empty {
+            display: none;
+        }
+
+        .access-request-success {
+            color: rgba(255,255,255,.9);
+            text-align: center;
+            padding: 12px 0 3px;
+            font-size: .94rem;
+            line-height: 1.65;
+        }
+
+        .access-request-success strong {
+            display: block;
+            color: #FFD700;
+            font-size: 1.1rem;
+            letter-spacing: .5px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        /* Keep the anti-spam field available to bots but offscreen for humans. */
+        .access-request-honeypot {
+            position: absolute !important;
+            left: -10000px !important;
+            width: 1px !important;
+            height: 1px !important;
+            overflow: hidden !important;
+        }
+
+        @media (max-width: 640px) {
+            .password-container {
+                padding: 2rem 1.4rem;
+                width: min(94%, 400px);
+            }
+            .access-request-trigger { margin-top: 15px; }
+        }
+
     </style>
 </head>
 <body>
     <!-- Password Protection Overlay -->
     <div class="password-overlay" id="passwordOverlay">
         <div class="password-container">
-            <h1 class="password-title">Access</h1>
-            <p class="password-subtitle">Enter Password to Continue</p>
-            <input type="password" class="password-input" id="passwordInput" placeholder="Password" autocomplete="off">
-            <button class="password-button" id="passwordButton">Enter</button>
-            <div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
+            <div class="password-login-panel" id="passwordLoginPanel">
+                <h1 class="password-title">Access</h1>
+                <p class="password-subtitle">Enter Password to Continue</p>
+                <input type="password" class="password-input" id="passwordInput" placeholder="Password" autocomplete="off" aria-label="Password">
+                <button class="password-button" id="passwordButton" type="button">Enter</button>
+                <div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
+                <button class="access-request-trigger" id="requestAccessTrigger" type="button" aria-controls="requestAccessPanel" aria-expanded="false">Request Access</button>
+            </div>
+
+            <div class="access-request-panel" id="requestAccessPanel" hidden>
+                <h2 class="password-title">Request Access</h2>
+                <p class="access-request-intro">Interested in viewing my work? Leave your details and I'll get back to you.</p>
+
+                <form id="portfolioAccessForm" action="https://formspree.io/f/mljgkzzy" method="POST">
+                    <div class="access-request-fields" id="accessRequestFields">
+                        <label class="access-request-label" for="requesterName">Name</label>
+                        <input class="access-request-input" id="requesterName" name="name" type="text" autocomplete="name" placeholder="Your name" maxlength="120" required>
+
+                        <label class="access-request-label" for="requesterEmail">Email</label>
+                        <input class="access-request-input" id="requesterEmail" name="email" type="email" autocomplete="email" placeholder="you@company.com" maxlength="254" required>
+
+                        <label class="access-request-label" for="requesterCompany">Company / Role <span style="opacity:.55;text-transform:none;letter-spacing:0">(optional)</span></label>
+                        <input class="access-request-input" id="requesterCompany" name="company_role" type="text" autocomplete="organization" placeholder="Company or role" maxlength="160">
+
+                        <div class="access-request-honeypot" aria-hidden="true">
+                            <label for="requesterWebsite">Leave this field empty</label>
+                            <input id="requesterWebsite" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+                        </div>
+                        <input type="hidden" name="_subject" value="Portfolio access request – Yannay Matarasso">
+                        <button class="password-button access-request-submit" id="accessRequestSubmit" type="submit">Send Request</button>
+                    </div>
+                    <div class="access-request-status" id="accessRequestStatus" role="status" aria-live="polite"></div>
+                    <div class="access-request-success" id="accessRequestSuccess" hidden>
+                        <strong>Request sent</strong>
+                        Thank you! I'll get back to you by email.
+                    </div>
+                </form>
+                <button class="access-request-back" id="requestAccessBack" type="button">← Back to Password</button>
+            </div>
         </div>
     </div>
 
@@ -2539,6 +2757,75 @@
             const passwordInput = document.getElementById('passwordInput');
             const passwordButton = document.getElementById('passwordButton');
             const passwordError = document.getElementById('passwordError');
+            // Portfolio access requests via Formspree. No password is emailed
+            // or exposed to visitors; approving a request is still manual.
+            const passwordLoginPanel = document.getElementById('passwordLoginPanel');
+            const requestAccessPanel = document.getElementById('requestAccessPanel');
+            const requestAccessTrigger = document.getElementById('requestAccessTrigger');
+            const requestAccessBack = document.getElementById('requestAccessBack');
+            const portfolioAccessForm = document.getElementById('portfolioAccessForm');
+            const accessRequestSubmit = document.getElementById('accessRequestSubmit');
+            const accessRequestStatus = document.getElementById('accessRequestStatus');
+            const accessRequestFields = document.getElementById('accessRequestFields');
+            const accessRequestSuccess = document.getElementById('accessRequestSuccess');
+
+            function setAccessRequestOpen(open) {
+                passwordLoginPanel.hidden = open;
+                requestAccessPanel.hidden = !open;
+                requestAccessTrigger.setAttribute('aria-expanded', String(open));
+                if (open) {
+                    window.requestAnimationFrame(function () {
+                        document.getElementById('requesterName').focus();
+                    });
+                } else {
+                    passwordInput.focus();
+                }
+            }
+
+            requestAccessTrigger.addEventListener('click', function () {
+                setAccessRequestOpen(true);
+            });
+
+            requestAccessBack.addEventListener('click', function () {
+                if (accessRequestSubmit.disabled) return;
+                setAccessRequestOpen(false);
+            });
+
+            // Esc returns to the regular password screen.
+            requestAccessPanel.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && !accessRequestSubmit.disabled) {
+                    setAccessRequestOpen(false);
+                }
+            });
+
+            portfolioAccessForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                if (accessRequestSubmit.disabled) return;
+                if (!portfolioAccessForm.reportValidity()) return;
+
+                accessRequestStatus.textContent = '';
+                accessRequestSubmit.disabled = true;
+                accessRequestSubmit.textContent = 'SENDING...';
+
+                try {
+                    const response = await fetch(portfolioAccessForm.action, {
+                        method: 'POST',
+                        body: new FormData(portfolioAccessForm),
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!response.ok) throw new Error('Form submission failed');
+
+                    accessRequestFields.hidden = true;
+                    accessRequestSuccess.hidden = false;
+                    portfolioAccessForm.reset();
+                } catch (error) {
+                    accessRequestStatus.textContent = 'Could not send your request. Please try again.';
+                } finally {
+                    accessRequestSubmit.disabled = false;
+                    accessRequestSubmit.textContent = 'Send Request';
+                }
+            });
+
             const mainContent = document.getElementById('mainContent');
             const heroReels = Array.from(document.querySelectorAll('.hero-video'));
             let heroReelStarted = false;
