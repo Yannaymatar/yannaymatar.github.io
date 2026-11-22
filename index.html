@@ -3091,6 +3091,41 @@
             #passwordLoginPanel .password-go-button { transition: none; }
         }
 
+
+        /* Hunted Dreams: display music-video artist credit on hover. */
+        .video-card.music-video-card .video-info p {
+            display: block !important;
+            margin-top: 0.5rem !important;
+            font-size: clamp(0.62rem, 0.75vw, 0.85rem) !important;
+            font-weight: 300 !important;
+            letter-spacing: 0.14em !important;
+            line-height: 1.5 !important;
+            opacity: 0.95 !important;
+            text-transform: uppercase !important;
+            color: #fff !important;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.85) !important;
+        }
+
+        /* On touch screens, make this one requested credit readable without hover. */
+        @media (hover: none), (pointer: coarse) {
+            .video-card.music-video-card .video-info {
+                display: flex !important;
+                opacity: 1 !important;
+                inset: auto 0 0 !important;
+                padding: 1.75rem 0.5rem 0.6rem !important;
+                background: linear-gradient(0deg, rgba(0,0,0,0.85), transparent) !important;
+            }
+            .video-card.music-video-card .video-info h3 {
+                transform: none !important;
+                font-size: 0.83rem !important;
+                letter-spacing: 0.12em !important;
+            }
+            .video-card.music-video-card .video-info p {
+                margin-top: 0.15rem !important;
+                font-size: 0.62rem !important;
+                letter-spacing: 0.09em !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -3264,28 +3299,12 @@
 <h3>Jennifer Lopez</h3>
 <p></p>
 </div>
-</div><div class="video-card" data-direct="https://videos.yannaymatarasso.com/cma01967davidbtheline_1920_1080_dur_59s_lng_en.mp4" data-preview="https://videos.yannaymatarasso.com/previwes/cma01967davidbtheline_1920_1080_dur_59s_lng_en_1.mp4" data-video="16mNqexuSkv2d6QlN993e9PP65vucGska">
-<div class="video-thumbnail">
-<img alt="Celebrity Project 12" class="static-thumb" src="https://drive.google.com/thumbnail?id=16mNqexuSkv2d6QlN993e9PP65vucGska&amp;sz=w640-h360"/>
-</div>
-<div class="video-info">
-<h3>David Beckham</h3>
-<p></p>
-</div>
 </div><div class="video-card" data-direct="https://videos.yannaymatarasso.com/trt00765danidannydayerwheningreece_ver_v2_1920_1080_dur_45s_lng_en%20(1).mp4" data-preview="https://videos.yannaymatarasso.com/previwes/trt00765danidannydayerwheningreece_ver_v2_1920_1080_dur_45s_lng_en%20%281%29_1.mp4" data-video="12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv">
 <div class="video-thumbnail">
 <img alt="Celebrity Project 01" class="static-thumb" src="https://drive.google.com/thumbnail?id=12wWsQMpe_Q7-dLo6dVnlCxJXUxS5s4Hv&amp;sz=w640-h360"/>
 </div>
 <div class="video-info">
 <h3>Dani &amp; Danny Dyer</h3>
-<p></p>
-</div>
-</div><div class="video-card" data-direct="https://videos.yannaymatarasso.com/chuck1.mp4" data-preview="https://videos.yannaymatarasso.com/previwes/chuck1_1.mp4" data-video="112kFP1glNJw4gp5azgUb_U7-ZofYQYbW">
-<div class="video-thumbnail">
-<img alt="Celebrity Project 03" class="static-thumb" src="https://drive.google.com/thumbnail?id=112kFP1glNJw4gp5azgUb_U7-ZofYQYbW&amp;sz=w640-h360"/>
-</div>
-<div class="video-info">
-<h3>Chuck Norris</h3>
 <p></p>
 </div>
 </div><div class="video-card" data-direct="https://videos.yannaymatarasso.com/mystery/trilar.mp4" data-preview="https://videos.yannaymatarasso.com/previwes/trilar_1.mp4" data-video="1k1qThlLeOS_w5Pji-NfYPuX-G-uTsCzi">
@@ -3305,9 +3324,13 @@
 <video aria-label="Animation Showreel thumbnail" class="static-thumb" muted="" playsinline="" preload="metadata" src="https://videos.yannaymatarasso.com/previwes/GIF%20ANIMATION.mp4#t=0.001"></video>
 </div>
 <div class="video-info"><h3>Animation Showreel</h3><p></p></div>
-</div><div class="video-card" data-direct="https://videos.yannaymatarasso.com/animation/Hunted%20Dreams1_1.mp4" data-preview="https://videos.yannaymatarasso.com/previwes/Hunted%20Dreams1_1.mp4" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj">
+</div><div class="video-card music-video-card" data-direct="https://videos.yannaymatarasso.com/animation/Hunted%20Dreams1_1.mp4" data-preview="https://videos.yannaymatarasso.com/previwes/Hunted%20Dreams1_1.mp4" data-video="1YrCFmmj7zF5fA2Ftu_a114CYfzx1xsqj" aria-label="Hunted Dreams — Music video for Venetian Snares">
 <div class="video-thumbnail">
-<img alt="Animation Project 03" class="static-thumb" src="https://drive.google.com/thumbnail?id=1uS4tnui2_a23MCVR22G-hI7wS_o8sPt1&amp;sz=w640-h360"/>
+<img alt="Hunted Dreams — Venetian Snares music video" class="static-thumb" src="https://drive.google.com/thumbnail?id=1uS4tnui2_a23MCVR22G-hI7wS_o8sPt1&amp;sz=w640-h360"/>
+</div>
+<div class="video-info">
+<h3>Hunted Dreams</h3>
+<p>Music Video · Venetian Snares</p>
 </div>
 </div></div></section>
 
